@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route url="/V1/prxgt/dcp/report/accounting" method="POST">
+        <!-- Get data for DCP Accounting Reports. -->
+        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\AccountingInterface" method="exec"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/prxgt/dcp/report/check" method="POST">
+        <!-- Get data for DCP Downline Reports. -->
+        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface" method="exec"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/prxgt/dcp/report/downline" method="POST">
+        <!-- Get data for DCP Downline Reports. -->
+        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\DownlineInterface" method="exec"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+</routes>
