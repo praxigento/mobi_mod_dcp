@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <head>
+        <css src="https://unpkg.com/@angular/material/prebuilt-themes/indigo-pink.css" src_type="url"/>
+        <css src="https://fonts.googleapis.com/icon?family=Material+Icons" src_type="url"/>
+        <!-- MOBI-730: styles for optimized DCP code -->
+        <css src="/dcp.spa/styles.bundle.css" src_type="url"/>
+        <css src="Praxigento_Dcp::css/dcp.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Praxigento\Dcp\Block\Landing"
+                   template="Praxigento_Dcp::landing.phtml"
+                   name="dcp.landing"
+                   cacheable="true"/>
+        </referenceContainer>
+    </body>
+</page>
