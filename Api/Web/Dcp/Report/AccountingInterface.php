@@ -5,9 +5,6 @@
 
 namespace Praxigento\Dcp\Api\Web\Dcp\Report;
 
-use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Request as ARequest;
-use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response as AResponse;
-
 /**
  * Get data for DCP Accounting report.
  */
@@ -19,5 +16,5 @@ interface AccountingInterface
      *
      * Magento 2 WebAPI requires full names in documentation (aliases are not allowed).
      */
-    public function exec(ARequest $request): AResponse;
+    public function exec($request);
 }
