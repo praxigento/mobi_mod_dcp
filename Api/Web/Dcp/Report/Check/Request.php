@@ -13,7 +13,7 @@ namespace Praxigento\Dcp\Api\Web\Dcp\Report\Check;
  *
  */
 class Request
-    extends \Praxigento\Core\App\Api\Web\Request
+    extends \Praxigento\Core\Api\App\Web\Request
 {
     /**
      * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Request\Data
