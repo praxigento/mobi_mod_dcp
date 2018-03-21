@@ -8,6 +8,7 @@ namespace Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\InfBonus as DInf;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile as DOrgProfile;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OverBonus as DOver;
+use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Pension as DPension;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus as DPersonal;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs as DQualLegs;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\TeamBonus as DTeam;
@@ -19,6 +20,7 @@ class Sections
     const A_INFINITY_BONUS = 'infinity_bonus';
     const A_ORG_PROFILE = 'org_profile';
     const A_OVERRIDE_BONUS = 'override_bonus';
+    const A_PENSION = 'pension';
     const A_PERSONAL_BONUS = 'personal_bonus';
     const A_QUAL_LEGS = 'qual_legs';
     const A_TEAM_BONUS = 'team_bonus';
@@ -48,6 +50,15 @@ class Sections
     public function getOverBonus()
     {
         $result = parent::get(self::A_OVERRIDE_BONUS);
+        return $result;
+    }
+
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Pension
+     */
+    public function getPension()
+    {
+        $result = parent::get(self::A_PENSION);
         return $result;
     }
 
@@ -100,6 +111,11 @@ class Sections
     public function setOverBonus(DOver $data)
     {
         parent::set(self::A_OVERRIDE_BONUS, $data);
+    }
+
+    public function setPension(DPension $data)
+    {
+        parent::set(self::A_PENSION, $data);
     }
 
     public function setPersonalBonus(DPersonal $data)

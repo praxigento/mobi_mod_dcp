@@ -36,16 +36,16 @@ class Totals
         QBGetAmntCredit $qbGetAmntCredit,
         QBGetAmntDebit $qbGetAmntDebit,
         QBGetSumCredit $qbGetSumCredit,
-        HGetCalcs $rouGetCalcs,
-        HIsSchemeEu $rouIsSchemeEu
+        HGetCalcs $hlpGetCalcs,
+        HIsSchemeEu $hlpIsSchemeEu
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetAmntCredit = $qbGetAmntCredit;
         $this->qbGetAmntDebit = $qbGetAmntDebit;
         $this->qbGetSumCredit = $qbGetSumCredit;
-        $this->hlpGetCalcs = $rouGetCalcs;
-        $this->hlpIsSchemeEu = $rouIsSchemeEu;
+        $this->hlpGetCalcs = $hlpGetCalcs;
+        $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
     public function exec($custId, $period): DTotals

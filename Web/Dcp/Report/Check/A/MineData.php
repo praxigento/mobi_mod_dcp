@@ -7,14 +7,6 @@ namespace Praxigento\Dcp\Web\Dcp\Report\Check\A;
 
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Context as AContext;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections as DSections;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer as SubCustomer;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus as SubInfBonus;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile as SubOrgProfile;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus as SubOverBonus;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus as SubPersBonus;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs as SubQualLegs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus as SubTeamBonus;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals as SubTotals;
 
 /**
  * Process step to mine requested data from DB.
@@ -22,41 +14,45 @@ use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals as SubTotals;
 class MineData
 {
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer */
-    private $subCustomer;
+    private $ownCustomer;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus */
-    private $subInfBonus;
+    private $ownInfBonus;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile */
-    private $subOrgProfile;
+    private $ownOrgProfile;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus */
-    private $subOverBonus;
+    private $ownOverBonus;
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Pension */
+    private $ownPension;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus */
-    private $subPersBonus;
+    private $ownPersBonus;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs */
-    private $subQualLegs;
+    private $ownQualLegs;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus */
-    private $subTeamBonus;
+    private $ownTeamBonus;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals */
-    private $subTotals;
+    private $ownTotals;
 
     public function __construct(
-        SubCustomer $subCustomer,
-        SubInfBonus $subInfBonus,
-        SubOrgProfile $subOrgProfile,
-        SubOverBonus $subOverBonus,
-        SubPersBonus $subPersBonus,
-        SubQualLegs $subQualLegs,
-        SubTeamBonus $subTeamBonus,
-        SubTotals $subTotals
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer $ownCustomer,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus $ownInfBonus,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile $ownOrgProfile,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus $ownOverBonus,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Pension $ownPension,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus $ownPersBonus,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs $ownQualLegs,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus $ownTeamBonus,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals $ownTotals
     )
     {
-        $this->subCustomer = $subCustomer;
-        $this->subInfBonus = $subInfBonus;
-        $this->subOrgProfile = $subOrgProfile;
-        $this->subOverBonus = $subOverBonus;
-        $this->subPersBonus = $subPersBonus;
-        $this->subQualLegs = $subQualLegs;
-        $this->subTeamBonus = $subTeamBonus;
-        $this->subTotals = $subTotals;
+        $this->ownCustomer = $ownCustomer;
+        $this->ownInfBonus = $ownInfBonus;
+        $this->ownOrgProfile = $ownOrgProfile;
+        $this->ownOverBonus = $ownOverBonus;
+        $this->ownPension = $ownPension;
+        $this->ownPersBonus = $ownPersBonus;
+        $this->ownQualLegs = $ownQualLegs;
+        $this->ownTeamBonus = $ownTeamBonus;
+        $this->ownTotals = $ownTotals;
     }
 
     public function exec(AContext $ctx): AContext
@@ -68,25 +64,27 @@ class MineData
             $period = $ctx->getPeriod();
 
             /* perform processing */
-            $customer = $this->subCustomer->exec($custId, $period);
-            $persBonus = $this->subPersBonus->exec($custId, $period);
-            $teamBonus = $this->subTeamBonus->exec($custId, $period);
-            $qualLegs = $this->subQualLegs->exec($custId, $period);
-            $overBonus = $this->subOverBonus->exec($custId, $period);
-            $infBonus = $this->subInfBonus->exec($custId, $period);
-            $totals = $this->subTotals->exec($custId, $period);
-            $orgProfile = $this->subOrgProfile->exec($custId, $period);
+            $customer = $this->ownCustomer->exec($custId, $period);
+            $infBonus = $this->ownInfBonus->exec($custId, $period);
+            $orgProfile = $this->ownOrgProfile->exec($custId, $period);
+            $overBonus = $this->ownOverBonus->exec($custId, $period);
+            $pension = $this->ownPension->exec($custId, $period);
+            $persBonus = $this->ownPersBonus->exec($custId, $period);
+            $qualLegs = $this->ownQualLegs->exec($custId, $period);
+            $teamBonus = $this->ownTeamBonus->exec($custId, $period);
+            $totals = $this->ownTotals->exec($custId, $period);
 
             /* put result data into context */
             $ctx->respCustomer = $customer;
             $sections = new DSections();
-            $sections->setPersonalBonus($persBonus);
-            $sections->setTeamBonus($teamBonus);
-            $sections->setQualLegs($qualLegs);
-            $sections->setOverBonus($overBonus);
             $sections->setInfBonus($infBonus);
-            $sections->setTotals($totals);
             $sections->setOrgProfile($orgProfile);
+            $sections->setOverBonus($overBonus);
+            $sections->setPension($pension);
+            $sections->setPersonalBonus($persBonus);
+            $sections->setQualLegs($qualLegs);
+            $sections->setTeamBonus($teamBonus);
+            $sections->setTotals($totals);
             $ctx->respSections = $sections;
         }
         return $ctx;
