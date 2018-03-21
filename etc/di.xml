@@ -3,4 +3,14 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
+    <!-- ******* -->
+    <!-- API Web -->
+    <!-- ******* -->
+    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\AccountingInterface"
+                type="Praxigento\Dcp\Web\Dcp\Report\Accounting"/>
+    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface"
+                type="Praxigento\Dcp\Web\Dcp\Report\Check"/>
+    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\DownlineInterface"
+                type="Praxigento\Dcp\Web\Dcp\Report\Downline"/>
+    
 </config>

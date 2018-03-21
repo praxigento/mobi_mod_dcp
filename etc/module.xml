@@ -4,6 +4,7 @@
     <module name="Praxigento_Dcp" setup_version="0.1.0">
         <sequence>
             <module name="Praxigento_BonusReferral"/>
+            <module name="Praxigento_PensionFund"/>
         </sequence>
     </module>
 </config>
