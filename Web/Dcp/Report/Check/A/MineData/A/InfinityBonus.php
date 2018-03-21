@@ -8,10 +8,10 @@ namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\InfBonus as DInfBonus;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\InfBonus\Item as DItem;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query\GetItems as QBGetItems;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "Infinity Bonus" section of the DCP's "Check" report.
@@ -20,7 +20,7 @@ class InfinityBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus\Db\Query\GetItems */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $rouGetCalcs;

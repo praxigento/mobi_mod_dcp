@@ -3,16 +3,16 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query;
 
 use Praxigento\Accounting\Repo\Entity\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Entity\Data\Transaction as ETrans;
 use Praxigento\BonusBase\Repo\Entity\Data\Log\Opers as ELogOper;
 
 /**
- * Build query to get credit amounts summary grouped by calculationId & customerId (infinity bonus, for example).
+ * Build query to get credit amount of the one-transaction-per-user operation (personal bonus, for example).
  */
-class GetSumCredit
+class GetAmountCredit
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
     /** Tables aliases for external usage ('camelCase' naming) */
@@ -50,10 +50,8 @@ class GetSumCredit
         /* LEFT JOIN prxgt_acc_transaction to get link to accounts */
         $tbl = $this->resource->getTableName(ETrans::ENTITY_NAME);
         $as = $asTrans;
-        $source = 'SUM(' . ETrans::ATTR_VALUE . ')';
-        $exp = new \Praxigento\Core\App\Repo\Query\Expression($source);
         $cols = [
-            self::A_AMOUNT => $exp
+            self::A_AMOUNT => ETrans::ATTR_VALUE
         ];
         $cond = $as . '.' . ETrans::ATTR_OPERATION_ID . '=' . $asLog . '.' . ELogOper::ATTR_OPER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);

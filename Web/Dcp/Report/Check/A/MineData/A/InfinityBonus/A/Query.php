@@ -3,7 +3,7 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus\A;
 
 use Praxigento\Accounting\Repo\Entity\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Entity\Data\Transaction as ETrans;
@@ -15,9 +15,9 @@ use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
 use Praxigento\Santegra\Config as Cfg;
 
 /**
- * the same as \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus\Db\Query\GetItems
+ * the same as \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query\GetItems
  */
-class GetItems
+class Query
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
 

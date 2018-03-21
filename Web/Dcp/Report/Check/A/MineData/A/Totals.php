@@ -9,9 +9,9 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Totals as DTo
 use Praxigento\Santegra\Config as Cfg;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetAmountCredit as QBGetAmntCredit;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetAmountDebit as QBGetAmntDebit;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetSumCredit as QBGetSumCredit;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit as QBGetAmntCredit;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit as QBGetAmntDebit;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit as QBGetSumCredit;
 
 /**
  * Action to build "Totals" section of the DCP's "Check" report.
@@ -20,11 +20,11 @@ class Totals
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetAmountCredit */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit */
     private $qbGetAmntCredit;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetAmountDebit */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit */
     private $qbGetAmntDebit;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query\GetSumCredit */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit */
     private $qbGetSumCredit;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $rouGetCalcs;

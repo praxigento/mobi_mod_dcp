@@ -6,7 +6,7 @@
 namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A\Db\Query\GetCustomer as QBGetCustomer;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A\Query as QBGetCustomer;
 
 /**
  * Utility to build "Customer" property of the DCP's "Check" report.

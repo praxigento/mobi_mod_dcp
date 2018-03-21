@@ -3,21 +3,17 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\InfinityBonus\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus\A ;
 
 use Praxigento\Accounting\Repo\Entity\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Entity\Data\Transaction as ETrans;
 use Praxigento\BonusBase\Repo\Entity\Data\Log\Customers as ELogCust;
 use Praxigento\BonusBase\Repo\Entity\Data\Log\Opers as ELogOper;
-use Praxigento\BonusBase\Repo\Entity\Data\Rank as ERankCode;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
 use Praxigento\Santegra\Config as Cfg;
 
-/**
- * the same as \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query\GetItems
- */
-class GetItems
+class Query
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
 
@@ -28,7 +24,6 @@ class GetItems
     const AS_DWNL_CUST = 'dwnCust';
     const AS_LOG_CUST = 'logCust';
     const AS_LOG_OPER = 'logOper';
-    const AS_RANK_CODE = 'rankCode';
     const AS_TRANS = 'trans';
 
     /** Columns/expressions aliases for external usage ('camelCase' naming) */
@@ -39,11 +34,11 @@ class GetItems
     const A_NAME_FIRST = 'nameFirst';
     const A_NAME_LAST = 'nameLast';
     const A_PV = 'pv';
-    const A_RANK_CODE = 'rankCode';
 
     /** Bound variables names ('camelCase' naming) */
-    const BND_CALC_ID_BONUS = 'calcIdCompress';
-    const BND_CALC_ID_COMPRESS = 'calcIdBonus';
+    const BND_CALC_ID_PV_WRITE_OFF = 'calcIdPvWriteOff';
+    const BND_CALC_ID_TEAM_DEF = 'calcIdTeamDef';
+    const BND_CALC_ID_TEAM_EU = 'calcIdTeamEu';
     const BND_CUST_ID = 'custId';
 
     /** Entities are used in the query */
@@ -53,7 +48,6 @@ class GetItems
     const E_DWNL_CUST = EDwnCust::ENTITY_NAME;
     const E_LOG_CUST = ELogCust::ENTITY_NAME;
     const E_LOG_OPER = ELogOper::ENTITY_NAME;
-    const E_RANK_CODE = ERankCode::ENTITY_NAME;
     const E_TRANS = ETrans::ENTITY_NAME;
 
 
@@ -69,7 +63,6 @@ class GetItems
         $asDwnlCust = self::AS_DWNL_CUST;
         $asLogCust = self::AS_LOG_CUST;
         $asLogOper = self::AS_LOG_OPER;
-        $asRankCode = self::AS_RANK_CODE;
         $asTrans = self::AS_TRANS;
 
         /* FROM prxgt_bon_base_log_opers  */
@@ -129,24 +122,16 @@ class GetItems
             self::A_DEPTH => EBonDwnl::ATTR_DEPTH,
             self::A_PV => EBonDwnl::ATTR_PV
         ];
-        $onCalcRef = $as . '.' . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS;
+        $onCalcRef = $as . '.' . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID_PV_WRITE_OFF;
         $onCustId = $as . '.' . EBonDwnl::ATTR_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::ATTR_CUSTOMER_ID;
         $cond = "($onCalcRef) AND ($onCustId)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
-        /* JOIN prxgt_bon_base_rank to get rankCodes for rankIds */
-        $tbl = $this->resource->getTableName(ERankCode::ENTITY_NAME);
-        $as = $asRankCode;
-        $cols = [
-            self::A_RANK_CODE => ERankCode::ATTR_CODE
-        ];
-        $cond = $as . '.' . ERankCode::ATTR_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_RANK_REF;
-        $result->joinLeft([$as => $tbl], $cond, $cols);
-
         /* query tuning */
-        $byCalcBonus = "$asLogOper." . ELogOper::ATTR_CALC_ID . '=:' . self::BND_CALC_ID_BONUS;
+        $byCalcIdDef = "$asLogOper." . ELogOper::ATTR_CALC_ID . '=:' . self::BND_CALC_ID_TEAM_DEF;
+        $byCalcIdEu = "$asLogOper." . ELogOper::ATTR_CALC_ID . '=:' . self::BND_CALC_ID_TEAM_EU;
         $byCustId = "$asAcc." . EAcc::ATTR_CUST_ID . '=:' . self::BND_CUST_ID;
-        $result->where("($byCalcBonus) AND ($byCustId)");
+        $result->where("(($byCalcIdDef) OR ($byCalcIdEu)) AND ($byCustId)");
 
         return $result;
     }

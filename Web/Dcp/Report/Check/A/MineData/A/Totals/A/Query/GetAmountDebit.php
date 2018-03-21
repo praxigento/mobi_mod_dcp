@@ -3,7 +3,7 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query;
 
 use Praxigento\Accounting\Repo\Entity\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Entity\Data\Transaction as ETrans;

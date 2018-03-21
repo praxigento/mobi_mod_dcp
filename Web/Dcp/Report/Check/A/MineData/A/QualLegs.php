@@ -10,10 +10,10 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs as DQualLegs;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs\Item as DItem;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs\Qualification as DQual;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs\Db\Query\GetItems as QBGetItems;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "QualificationLegs" section of the DCP's "Check" report.
@@ -22,7 +22,7 @@ class QualLegs
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs\Db\Query\GetItems */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Compression\Phase2\Legs */
     private $repoLegs;

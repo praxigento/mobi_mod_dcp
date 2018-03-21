@@ -9,9 +9,9 @@ use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus as DPersonalBonus;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus\Item as DItem;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\Db\Query\GetItems as QBGetItems;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "Personal Bonus" section of the DCP's "Check" report.
@@ -20,7 +20,7 @@ class PersBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\Db\Query\GetItems */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
     private $repoBonDwn;
@@ -30,7 +30,7 @@ class PersBonus
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwn,
-        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\Db\Query\GetItems $qbGetItems,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\A\Query $qbGetItems,
         RouGetCalcs $rouGetCalcs
     )
     {

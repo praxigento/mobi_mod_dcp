@@ -8,9 +8,9 @@ namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 use Praxigento\BonusHybrid\Repo\Entity\Downline as RepoBonDwnl;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile as DOrgProfile;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile\Item as DItem;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile\Db\Query\GetGenerations as QBGetGen;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "Organization Profile" section of the DCP's "Check" report.

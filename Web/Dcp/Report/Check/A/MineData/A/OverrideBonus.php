@@ -11,7 +11,7 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OverBonus\Ite
 use Praxigento\Santegra\Config as Cfg;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query\GetItems as QBGetItems;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\A\Query as QBGetItems;
 
 /**
  * Action to build "Override Bonus" section of the DCP's "Check" report.
@@ -20,7 +20,7 @@ class OverrideBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\Db\Query\GetItems */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $rouGetCalcs;

@@ -3,7 +3,7 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A;
 
 use Praxigento\Downline\Config as Cfg;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnlCust;
@@ -14,7 +14,7 @@ use Praxigento\Downline\Repo\Query\Snap\OnDate\Builder as QBBase;
  * Query builder to be used in "Praxigento\Dcp\Api\Web\Dcp\Report\Check" context
  * to get customer data for the given date.
  */
-class GetCustomer
+class Query
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
     /** Tables aliases for external usage ('camelCase' naming) */

@@ -9,9 +9,9 @@ use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\TeamBonus as DTeamBonus;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\TeamBonus\Item as DItem;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus\A\Query as QBGetItems;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Santegra\Config as Cfg;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus\Db\Query\GetItems as QBGetItems;
 
 /**
  * Action to build "Team Bonus" section of the DCP's "Check" report.
@@ -20,24 +20,24 @@ class TeamBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus\Db\Query\GetItems */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\TeamBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
     private $repoBonDwn;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $rouGetCalcs;
+    private $HGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwn,
         QBGetItems $qbGetItems,
-        RouGetCalcs $rouGetCalcs
+        HGetCalcs $HGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->repoBonDwn = $repoBonDwn;
         $this->qbGetItems = $qbGetItems;
-        $this->rouGetCalcs = $rouGetCalcs;
+        $this->HGetCalcs = $HGetCalcs;
     }
 
     public function exec($custId, $period): DTeamBonus
@@ -53,7 +53,7 @@ class TeamBonus
         $percent = 0;
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->HGetCalcs->exec($dsBegin, $dsEnd);
         if (
             isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF]) &&
             isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF]) &&

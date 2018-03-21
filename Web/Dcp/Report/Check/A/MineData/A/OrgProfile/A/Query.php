@@ -3,7 +3,7 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile\Db\Query;
+namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile\A;
 
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline\Qualification as EBonQual;
@@ -11,7 +11,7 @@ use Praxigento\BonusHybrid\Repo\Entity\Data\Downline\Qualification as EBonQual;
 /**
  * Get downline tree data by generations.
  */
-class GetGenerations
+class Query
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
 
