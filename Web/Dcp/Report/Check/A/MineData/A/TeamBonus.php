@@ -25,19 +25,19 @@ class TeamBonus
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
     private $repoBonDwn;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $HGetCalcs;
+    private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwn,
         QBGetItems $qbGetItems,
-        HGetCalcs $HGetCalcs
+        HGetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->repoBonDwn = $repoBonDwn;
         $this->qbGetItems = $qbGetItems;
-        $this->HGetCalcs = $HGetCalcs;
+        $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
     public function exec($custId, $period): DTeamBonus
@@ -53,7 +53,7 @@ class TeamBonus
         $percent = 0;
 
         /* perform processing */
-        $calcs = $this->HGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (
             isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF]) &&
             isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF]) &&

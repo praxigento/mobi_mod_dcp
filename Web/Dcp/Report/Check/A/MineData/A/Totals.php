@@ -7,8 +7,8 @@ namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Totals as DTotals;
 use Praxigento\Santegra\Config as Cfg;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit as QBGetAmntCredit;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit as QBGetAmntDebit;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit as QBGetSumCredit;
@@ -27,25 +27,25 @@ class Totals
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit */
     private $qbGetSumCredit;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $rouGetCalcs;
+    private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
-    private $rouIsSchemeEu;
+    private $hlpIsSchemeEu;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetAmntCredit $qbGetAmntCredit,
         QBGetAmntDebit $qbGetAmntDebit,
         QBGetSumCredit $qbGetSumCredit,
-        RouGetCalcs $rouGetCalcs,
-        RouIsSchemeEu $rouIsSchemeEu
+        HGetCalcs $rouGetCalcs,
+        HIsSchemeEu $rouIsSchemeEu
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetAmntCredit = $qbGetAmntCredit;
         $this->qbGetAmntDebit = $qbGetAmntDebit;
         $this->qbGetSumCredit = $qbGetSumCredit;
-        $this->rouGetCalcs = $rouGetCalcs;
-        $this->rouIsSchemeEu = $rouIsSchemeEu;
+        $this->hlpGetCalcs = $rouGetCalcs;
+        $this->hlpIsSchemeEu = $rouIsSchemeEu;
     }
 
     public function exec($custId, $period): DTotals
@@ -65,9 +65,9 @@ class Totals
         $amntFee = 0;
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
-            $isSchemeEu = $this->rouIsSchemeEu->exec($custId);
+            $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
             $idBonPers = $calcs[Cfg::CODE_TYPE_CALC_BONUS_PERSONAL];
             $idBonCourt = $calcs[Cfg::CODE_TYPE_CALC_BONUS_COURTESY];
             $idProcFee = $calcs[Cfg::CODE_TYPE_CALC_PROC_FEE];

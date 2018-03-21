@@ -11,8 +11,8 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs as D
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs\Item as DItem;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs\Qualification as DQual;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\QualLegs\A\Query as QBGetItems;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
 use Praxigento\Santegra\Config as Cfg;
 
 /**
@@ -27,23 +27,23 @@ class QualLegs
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Compression\Phase2\Legs */
     private $repoLegs;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $rouGetCalcs;
+    private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
-    private $rouIsSchemeEu;
+    private $hlpIsSchemeEu;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Entity\Compression\Phase2\Legs $repoLegs,
         QBGetItems $qbGetItems,
-        RouGetCalcs $rouGetCalcs,
-        RouIsSchemeEu $rouIsSchemeEu
+        HGetCalcs $hlpGetCalcs,
+        HIsSchemeEu $hlpIsSchemeEu
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->repoLegs = $repoLegs;
         $this->qbGetItems = $qbGetItems;
-        $this->rouGetCalcs = $rouGetCalcs;
-        $this->rouIsSchemeEu = $rouIsSchemeEu;
+        $this->hlpGetCalcs = $hlpGetCalcs;
+        $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
     public function exec($custId, $period): DQualLegs
@@ -57,9 +57,9 @@ class QualLegs
         $qual = new DQual();
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
-            $isSchemeEu = $this->rouIsSchemeEu->exec($custId);
+            $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
             if ($isSchemeEu) {
                 $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU];
             } else {
@@ -80,6 +80,7 @@ class QualLegs
      * @param int $calcId
      * @param int $custId
      * @return DItem[]
+     * @throws \Exception
      */
     private function getItems($calcId, $custId)
     {

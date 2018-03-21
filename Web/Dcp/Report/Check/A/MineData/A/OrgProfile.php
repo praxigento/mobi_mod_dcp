@@ -5,11 +5,11 @@
 
 namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Downline as RepoBonDwnl;
+use Praxigento\BonusHybrid\Repo\Entity\Downline as RBonDwnl;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile as DOrgProfile;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile\Item as DItem;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Santegra\Config as Cfg;
 
 /**
@@ -21,22 +21,22 @@ class OrgProfile
     private $hlpPeriod;
     /** @var QBGetGen */
     private $qbGetGen;
-    /** @var RepoBonDwnl */
+    /** @var RBonDwnl */
     private $repoBonDwnl;
-    /** @var RouGetCalcs */
-    private $rouGetCalcs;
+    /** @var HGetCalcs */
+    private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        RepoBonDwnl $repoBonDwnl,
+        RBonDwnl $repoBonDwnl,
         QBGetGen $qbGetGen,
-        RouGetCalcs $rouGetCalcs
+        HGetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->repoBonDwnl = $repoBonDwnl;
         $this->qbGetGen = $qbGetGen;
-        $this->rouGetCalcs = $rouGetCalcs;
+        $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
     public function exec($custId, $period): DOrgProfile
@@ -49,7 +49,7 @@ class OrgProfile
         $items = [];
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
             $calcIdWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
             $items = $this->getItems($calcIdWriteOff, $custId);

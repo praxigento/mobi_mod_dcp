@@ -10,7 +10,7 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus as DPersonalBonus;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus\Item as DItem;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\A\Query as QBGetItems;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Santegra\Config as Cfg;
 
 /**
@@ -25,19 +25,19 @@ class PersBonus
     /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
     private $repoBonDwn;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $rouGetCalcs;
+    private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwn,
         \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\PersBonus\A\Query $qbGetItems,
-        RouGetCalcs $rouGetCalcs
+        HGetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->repoBonDwn = $repoBonDwn;
         $this->qbGetItems = $qbGetItems;
-        $this->rouGetCalcs = $rouGetCalcs;
+        $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
     public function exec($custId, $period): DPersonalBonus
@@ -54,7 +54,7 @@ class PersBonus
         $percent = 0;
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (
             isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF]) &&
             isset($calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1])

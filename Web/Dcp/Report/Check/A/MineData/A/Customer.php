@@ -15,12 +15,12 @@ class Customer
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var QBGetCustomer */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A\Query */
     private $qbGetCustomer;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        QBGetCustomer $qbGetCustomer
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Customer\A\Query $qbGetCustomer
     )
     {
         $this->hlpPeriod = $hlpPeriod;

@@ -8,10 +8,10 @@ namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OverBonus as DOverBonus;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OverBonus\Item as DItem;
-use Praxigento\Santegra\Config as Cfg;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as RouGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as RouIsSchemeEu;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\A\Query as QBGetItems;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "Override Bonus" section of the DCP's "Check" report.
@@ -23,21 +23,21 @@ class OverrideBonus
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\OverrideBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $rouGetCalcs;
+    private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
-    private $rouIsSchemeEu;
+    private $hlpIsSchemeEu;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetItems $qbGetItems,
-        RouGetCalcs $rouGetCalcs,
-        RouIsSchemeEu $rouIsSchemeEu
+        HGetCalcs $hlpGetCalcs,
+        HIsSchemeEu $hlpIsSchemeEu
     )
     {
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetItems = $qbGetItems;
-        $this->rouGetCalcs = $rouGetCalcs;
-        $this->rouIsSchemeEu = $rouIsSchemeEu;
+        $this->hlpGetCalcs = $hlpGetCalcs;
+        $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
     public function exec($custId, $period): DOverBonus
@@ -50,9 +50,9 @@ class OverrideBonus
         $items = [];
 
         /* perform processing */
-        $calcs = $this->rouGetCalcs->exec($dsBegin, $dsEnd);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
-            $isSchemeEu = $this->rouIsSchemeEu->exec($custId);
+            $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
             if ($isSchemeEu) {
                 $calcCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU];
                 $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_EU];
@@ -77,6 +77,7 @@ class OverrideBonus
      * @param $calcBonus
      * @param $custId
      * @return array
+     * @throws \Exception
      */
     private function getItems($calcCompress, $calcBonus, $custId)
     {
