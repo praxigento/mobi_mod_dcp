@@ -14,7 +14,7 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data\Customer as DResp
 use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data\Trans as DRespTrans;
 use Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder as QBAccTrans;
 use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
-use Praxigento\Dcp\Web\Dcp\Report\Accounting\Repo\Query\GetBalance\Builder as QBBal;
+use Praxigento\Dcp\Web\Dcp\Report\Accounting\A\Repo\Query\GetBalance as QBBal;
 
 class Accounting
     extends \Praxigento\Core\App\Web\Processor\WithQuery
@@ -40,7 +40,7 @@ class Accounting
     private $authenticator;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Accounting\Repo\Query\GetBalance\Builder */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Accounting\A\Repo\Query\GetBalance */
     private $qbBalance;
     /** @var \Praxigento\Downline\Repo\Query\Customer\Get */
     private $qbCust;
@@ -50,7 +50,7 @@ class Accounting
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder $qbDcpTrans,
-        \Praxigento\Dcp\Web\Dcp\Report\Accounting\Repo\Query\GetBalance\Builder $qbBalance,
+        \Praxigento\Dcp\Web\Dcp\Report\Accounting\A\Repo\Query\GetBalance $qbBalance,
         \Praxigento\Downline\Repo\Query\Customer\Get $qbCust
     ) {
         parent::__construct($manObj, $qbDcpTrans);

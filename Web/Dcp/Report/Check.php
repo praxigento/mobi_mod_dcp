@@ -13,20 +13,20 @@ class Check
     implements \Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface
 {
 
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\Authorize */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\Authorize */
     private $procAuthorize;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\ComposeResponse */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\ComposeResponse */
     private $procComposeResp;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\MineData */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A */
     private $procMineData;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\ParseRequest */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\ParseRequest */
     private $procParseRequest;
 
     public function __construct(
-        \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\Authorize $procAuthorize,
-        \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\ComposeResponse $procComposeResp,
-        \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\MineData $procMineData,
-        \Praxigento\Dcp\Web\Dcp\Report\Check\Fun\Proc\ParseRequest $procParseRequest
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\Authorize $procAuthorize,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\ComposeResponse $procComposeResp,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData $procMineData,
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\ParseRequest $procParseRequest
     )
     {
         $this->procAuthorize = $procAuthorize;
