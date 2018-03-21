@@ -17,7 +17,7 @@ class Check
     private $procAuthorize;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\ComposeResponse */
     private $procComposeResp;
-    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A */
+    /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData */
     private $procMineData;
     /** @var \Praxigento\Dcp\Web\Dcp\Report\Check\A\ParseRequest */
     private $procParseRequest;
@@ -52,6 +52,13 @@ class Check
 
         /* get result from context */
         $result = $ctx->getWebResponse();
+        $data = $result->getData();
+        $cust = $data->getCustomer();
+        if (is_null($cust)) {
+            $envelop = $result->getResult();
+            $envelop->setCode(AResponse::CODE_NO_DATA);
+            $result->setData(null);
+        }
         return $result;
     }
 

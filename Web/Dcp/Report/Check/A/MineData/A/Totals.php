@@ -6,12 +6,12 @@
 namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Totals as DTotals;
-use Praxigento\Santegra\Config as Cfg;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit as QBGetAmntCredit;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit as QBGetAmntDebit;
 use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit as QBGetSumCredit;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
+use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
+use Praxigento\Santegra\Config as Cfg;
 
 /**
  * Action to build "Totals" section of the DCP's "Check" report.
@@ -48,7 +48,13 @@ class Totals
         $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
-    public function exec($custId, $period): DTotals
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Totals|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
@@ -68,17 +74,17 @@ class Totals
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
             $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
-            $idBonPers = $calcs[Cfg::CODE_TYPE_CALC_BONUS_PERSONAL];
-            $idBonCourt = $calcs[Cfg::CODE_TYPE_CALC_BONUS_COURTESY];
-            $idProcFee = $calcs[Cfg::CODE_TYPE_CALC_PROC_FEE];
+            $idBonPers = $calcs[Cfg::CODE_TYPE_CALC_BONUS_PERSONAL] ?? null;
+            $idBonCourt = $calcs[Cfg::CODE_TYPE_CALC_BONUS_COURTESY] ?? null;
+            $idProcFee = $calcs[Cfg::CODE_TYPE_CALC_PROC_FEE] ?? null;
             if ($isSchemeEu) {
-                $idBonTeam = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_EU];
-                $idBonOver = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_EU];
-                $idBonInf = $calcs[Cfg::CODE_TYPE_CALC_BONUS_INFINITY_EU];
+                $idBonTeam = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_EU] ?? null;
+                $idBonOver = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_EU] ?? null;
+                $idBonInf = $calcs[Cfg::CODE_TYPE_CALC_BONUS_INFINITY_EU] ?? null;
             } else {
-                $idBonTeam = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF];
-                $idBonOver = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_DEF];
-                $idBonInf = $calcs[Cfg::CODE_TYPE_CALC_BONUS_INFINITY_DEF];
+                $idBonTeam = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF] ?? null;
+                $idBonOver = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_DEF] ?? null;
+                $idBonInf = $calcs[Cfg::CODE_TYPE_CALC_BONUS_INFINITY_DEF] ?? null;
             }
 
             /* fetch data from DB */

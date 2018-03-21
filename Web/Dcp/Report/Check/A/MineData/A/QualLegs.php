@@ -46,7 +46,13 @@ class QualLegs
         $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
-    public function exec($custId, $period): DQualLegs
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\QualLegs|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
@@ -61,12 +67,14 @@ class QualLegs
         if (count($calcs) > 0) {
             $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
             if ($isSchemeEu) {
-                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU];
+                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU] ?? null;
             } else {
-                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF];
+                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF] ?? null;
             }
-            $items = $this->getItems($calcId, $custId);
-            $qual = $this->getQualData($calcId, $custId);
+            if ($calcId) {
+                $items = $this->getItems($calcId, $custId);
+                $qual = $this->getQualData($calcId, $custId);
+            }
         }
 
         /* compose result */

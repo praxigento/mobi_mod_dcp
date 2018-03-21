@@ -39,7 +39,13 @@ class OrgProfile
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
-    public function exec($custId, $period): DOrgProfile
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OrgProfile|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
@@ -51,8 +57,10 @@ class OrgProfile
         /* perform processing */
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
-            $calcIdWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
-            $items = $this->getItems($calcIdWriteOff, $custId);
+            $calcIdWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF] ?? null;
+            if ($calcIdWriteOff) {
+                $items = $this->getItems($calcIdWriteOff, $custId);
+            }
         }
 
         /* compose result */

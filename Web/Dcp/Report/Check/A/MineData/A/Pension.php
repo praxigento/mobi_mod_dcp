@@ -26,7 +26,13 @@ class Pension
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
-    public function exec($custId, $period): DPension
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Pension|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);

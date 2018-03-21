@@ -27,10 +27,14 @@ class Customer
         $this->qbGetCustomer = $qbGetCustomer;
     }
 
-    public function exec($custId, $period): DCustomer
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
-        $result = new DCustomer();
-
         /* define local working data */
         $onDate = $this->hlpPeriod->getPeriodLastDate($period);
 
@@ -53,11 +57,14 @@ class Customer
         $name = "$nameFirst $nameLast";
 
         /* compose result */
-        $result->setId($custId);
-        $result->setMlmId($mlmId);
-        $result->setLevel($level);
-        $result->setName($name);
-
+        $result = null;
+        if ($custId) {
+            $result = new DCustomer();
+            $result->setId($custId);
+            $result->setMlmId($mlmId);
+            $result->setLevel($level);
+            $result->setName($name);
+        }
         return $result;
     }
 }

@@ -40,7 +40,13 @@ class OverrideBonus
         $this->hlpIsSchemeEu = $hlpIsSchemeEu;
     }
 
-    public function exec($custId, $period): DOverBonus
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\OverBonus|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
@@ -54,14 +60,15 @@ class OverrideBonus
         if (count($calcs) > 0) {
             $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
             if ($isSchemeEu) {
-                $calcCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU];
-                $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_EU];
+                $calcCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU] ?? null;
+                $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_EU] ?? null;
             } else {
-                $calcCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF];
-                $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_DEF];
+                $calcCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF] ?? null;
+                $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_OVERRIDE_DEF] ?? null;
             }
-
-            $items = $this->getItems($calcCompress, $calcBonus, $custId);
+            if ($calcCompress && $calcBonus) {
+                $items = $this->getItems($calcCompress, $calcBonus, $custId);
+            }
         }
 
         /* compose result */

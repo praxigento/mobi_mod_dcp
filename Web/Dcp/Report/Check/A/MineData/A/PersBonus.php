@@ -40,7 +40,13 @@ class PersBonus
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
-    public function exec($custId, $period): DPersonalBonus
+    /**
+     * @param $custId
+     * @param $period
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\PersonalBonus|null
+     * @throws \Exception
+     */
+    public function exec($custId, $period)
     {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
@@ -83,6 +89,7 @@ class PersBonus
      * @param $calcCompressPhase1
      * @param $custId
      * @return array
+     * @throws \Exception
      */
     private function getItems($calcPvWriteOff, $calcCompressPhase1, $custId)
     {

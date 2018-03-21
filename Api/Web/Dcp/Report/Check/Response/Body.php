@@ -16,9 +16,9 @@ class Body
     const A_SECTIONS = 'sections';
 
     /**
-     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer|null
      */
-    public function getCustomer(): \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Customer
+    public function getCustomer()
     {
         $result = parent::get(self::A_CUSTOMER);
         return $result;
@@ -27,16 +27,16 @@ class Body
     /**
      * @return string
      */
-    public function getPeriod(): string
+    public function getPeriod()
     {
         $result = parent::get(self::A_PERIOD);
         return $result;
     }
 
     /**
-     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections
+     * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections|null
      */
-    public function getSections(): \Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections
+    public function getSections()
     {
         $result = parent::get(self::A_SECTIONS);
         return $result;
