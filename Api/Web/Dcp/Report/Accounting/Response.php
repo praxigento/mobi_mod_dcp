@@ -14,6 +14,8 @@ namespace Praxigento\Dcp\Api\Web\Dcp\Report\Accounting;
 class Response
     extends \Praxigento\Core\Api\App\Web\Response
 {
+    const CODE_NO_DATA = 'NO_DATA';
+
     /**
      * @return \Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data
      */

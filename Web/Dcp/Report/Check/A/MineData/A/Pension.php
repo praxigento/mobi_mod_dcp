@@ -6,7 +6,6 @@
 namespace Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A;
 
 use Praxigento\Dcp\Api\Web\Dcp\Report\Check\Response\Body\Sections\Pension as DPension;
-use Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 
 /**
  * Action to build "Pension" section of the DCP's "Check" report.
@@ -17,11 +16,15 @@ class Pension
     private $hlpGetCalcs;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
+    /** @var \Praxigento\PensionFund\Repo\Entity\Registry */
+    private $repoReg;
 
     public function __construct(
+        \Praxigento\PensionFund\Repo\Entity\Registry $repoReg,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        HGetCalcs $hlpGetCalcs
+        \Praxigento\Dcp\Web\Dcp\Report\Check\A\MineData\A\Z\Helper\GetCalcs $hlpGetCalcs
     ) {
+        $this->repoReg = $repoReg;
         $this->hlpPeriod = $hlpPeriod;
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
@@ -42,6 +45,7 @@ class Pension
 
 
         /* perform processing */
+        $pension = $this->repoReg->getById($custId);
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
 

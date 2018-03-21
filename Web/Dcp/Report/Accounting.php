@@ -13,8 +13,8 @@ use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data\Balance as DRespB
 use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data\Customer as DRespCust;
 use Praxigento\Dcp\Api\Web\Dcp\Report\Accounting\Response\Data\Trans as DRespTrans;
 use Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder as QBAccTrans;
-use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 use Praxigento\Dcp\Web\Dcp\Report\Accounting\A\Repo\Query\GetBalance as QBBal;
+use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 
 class Accounting
     extends \Praxigento\Core\App\Web\Processor\WithQuery
@@ -79,6 +79,12 @@ class Accounting
         assert($request instanceof ARequest);
         $data = parent::process($request);
         $result = new AResponse($data);
+        /* conveyors are bad for debug */
+        if ($result->getData()->getCustomer()) {
+            $result->getResult()->setCode(AResponse::CODE_SUCCESS);
+        } else {
+            $result->getResult()->setCode(AResponse::CODE_NO_DATA);
+        }
         return $result;
     }
 

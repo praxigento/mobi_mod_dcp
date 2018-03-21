@@ -77,6 +77,12 @@ class Downline
         assert($request instanceof ARequest);
         $data = parent::process($request);
         $result = new AResponse($data);
+        /* conveyors are bad for debug */
+        if ($data->getCustomer()) {
+            $result->getResult()->setCode(AResponse::CODE_SUCCESS);
+        } else {
+            $result->getResult()->setCode(AResponse::CODE_NO_DATA);
+        }
         return $result;
     }
 
