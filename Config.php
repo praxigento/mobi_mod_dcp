@@ -6,7 +6,7 @@
  */
 
 namespace Praxigento\Dcp;
-use \Praxigento\BonusBase\Config as BonBaseCfg;
+
 class Config
     extends \Praxigento\PensionFund\Config
 {

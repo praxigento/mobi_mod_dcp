@@ -3,10 +3,10 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Api\Web\Report\Pension;
+namespace Praxigento\Dcp\Api\Web\Report\Profile;
 
 /**
- * Request to get data for DCP Pension report.
+ * Request to get data for DCP Distributor Profile report.
  *
  * (Define getters explicitly to use with Swagger tool)
  * (Define setters explicitly to use with Magento JSON2PHP conversion tool)

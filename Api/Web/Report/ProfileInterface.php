@@ -6,13 +6,13 @@
 namespace Praxigento\Dcp\Api\Web\Report;
 
 /**
- * Get data for DCP Pension report.
+ * Get data for DCP Profile report.
  */
-interface PensionInterface
+interface ProfileInterface
 {
     /**
-     * @param \Praxigento\Dcp\Api\Web\Report\Pension\Request $request
-     * @return \Praxigento\Dcp\Api\Web\Report\Pension\Response
+     * @param \Praxigento\Dcp\Api\Web\Report\Profile\Request $request
+     * @return \Praxigento\Dcp\Api\Web\Report\Profile\Response
      *
      * Magento 2 WebAPI requires full names in documentation (aliases are not allowed).
      */

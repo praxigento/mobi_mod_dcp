@@ -3,10 +3,10 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Api\Web\Report\Pension\Response;
+namespace Praxigento\Dcp\Api\Web\Report\Profile\Response;
 
 /**
- * Data for DCP Pension report.
+ * Data for DCP Distributor Profile report.
  *
  * (Define getters explicitly to use with Swagger tool)
  *

@@ -26,9 +26,9 @@
         </resources>
     </route>
 
-    <route url="/V1/prxgt/dcp/report/pension" method="POST">
-        <!-- Get data for DCP Pension Reports. -->
-        <service class="Praxigento\Dcp\Api\Web\Report\PensionInterface" method="exec"/>
+    <route url="/V1/prxgt/dcp/report/profile" method="POST">
+        <!-- Get data for DCP Distributor Profile Reports. -->
+        <service class="Praxigento\Dcp\Api\Web\Report\ProfileInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>

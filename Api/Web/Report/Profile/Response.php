@@ -3,10 +3,10 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Api\Web\Report\Pension;
+namespace Praxigento\Dcp\Api\Web\Report\Profile;
 
 /**
- * Response to get data for DCP Pension report.
+ * Response to get data for DCP Distributor Profile report.
  *
  * (Define getters explicitly to use with Swagger tool)
  *
@@ -17,7 +17,7 @@ class Response
     const CODE_NO_DATA = 'NO_DATA';
 
     /**
-     * @return \Praxigento\Dcp\Api\Web\Report\Pension\Response\Data
+     * @return \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data
      */
     public function getData()
     {
@@ -26,7 +26,7 @@ class Response
     }
 
     /**
-     * @param \Praxigento\Dcp\Api\Web\Report\Pension\Response\Data $data
+     * @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data $data
      */
     public function setData($data)
     {

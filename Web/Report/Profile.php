@@ -5,12 +5,12 @@
 
 namespace Praxigento\Dcp\Web\Report;
 
-use Praxigento\Dcp\Api\Web\Report\Pension\Request as ARequest;
-use Praxigento\Dcp\Api\Web\Report\Pension\Response as AResponse;
-use Praxigento\Dcp\Api\Web\Report\Pension\Response\Data as AData;
+use Praxigento\Dcp\Api\Web\Report\Profile\Request as ARequest;
+use Praxigento\Dcp\Api\Web\Report\Profile\Response as AResponse;
+use Praxigento\Dcp\Api\Web\Report\Profile\Response\Data as AData;
 
-class Pension
-    implements \Praxigento\Dcp\Api\Web\Report\PensionInterface
+class Profile
+    implements \Praxigento\Dcp\Api\Web\Report\ProfileInterface
 {
     /** @var \Praxigento\Core\Api\App\Web\Authenticator\Front */
     private $authenticator;

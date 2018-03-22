@@ -12,7 +12,7 @@
                 type="Praxigento\Dcp\Web\Report\Check"/>
     <preference for="Praxigento\Dcp\Api\Web\Report\DownlineInterface"
                 type="Praxigento\Dcp\Web\Report\Downline"/>
-    <preference for="Praxigento\Dcp\Api\Web\Report\PensionInterface"
-                type="Praxigento\Dcp\Web\Report\Pension"/>
+    <preference for="Praxigento\Dcp\Api\Web\Report\ProfileInterface"
+                type="Praxigento\Dcp\Web\Report\Profile"/>
     
 </config>
