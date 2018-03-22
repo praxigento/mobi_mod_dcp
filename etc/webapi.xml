@@ -11,7 +11,7 @@
     </route>
 
     <route url="/V1/prxgt/dcp/report/check" method="POST">
-        <!-- Get data for DCP Downline Reports. -->
+        <!-- Get data for DCP Checks Reports. -->
         <service class="Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
@@ -21,6 +21,14 @@
     <route url="/V1/prxgt/dcp/report/downline" method="POST">
         <!-- Get data for DCP Downline Reports. -->
         <service class="Praxigento\Dcp\Api\Web\Dcp\Report\DownlineInterface" method="exec"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/prxgt/dcp/report/pension" method="POST">
+        <!-- Get data for DCP Pension Reports. -->
+        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\PensionInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
