@@ -11,7 +11,7 @@ use Praxigento\BonusBase\Repo\Data\Log\Customers as ELogCust;
 use Praxigento\BonusBase\Repo\Data\Log\Opers as ELogOper;
 use Praxigento\BonusBase\Repo\Data\Rank as ERankCode;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
+use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 use Praxigento\Dcp\Config as Cfg;
 
 /**

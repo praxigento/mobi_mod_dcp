@@ -26,7 +26,7 @@ class Profile
     private $qbGetBonusStats;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $repoBonDwnl;
-    /** @var \Praxigento\Downline\Repo\Entity\Customer */
+    /** @var \Praxigento\Downline\Repo\Dao\Customer */
     private $repoDwnlCust;
     /** @var \Praxigento\PensionFund\Repo\Entity\Registry */
     private $repoPension;
@@ -37,7 +37,7 @@ class Profile
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\BonusBase\Repo\Dao\Rank $repoRank,
         \Praxigento\BonusHybrid\Repo\Dao\Downline $repoBonDwnl,
-        \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust,
+        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust,
         \Praxigento\PensionFund\Repo\Entity\Registry $repoPension,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats $qbGetBonusStats

@@ -6,8 +6,8 @@
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer\A;
 
 use Praxigento\Downline\Config as Cfg;
-use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnlCust;
-use Praxigento\Downline\Repo\Entity\Data\Snap as EDwnlSnap;
+use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
+use Praxigento\Downline\Repo\Data\Snap as EDwnlSnap;
 use Praxigento\Downline\Repo\Query\Snap\OnDate\Builder as QBBase;
 
 /**

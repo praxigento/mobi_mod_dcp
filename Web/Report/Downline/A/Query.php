@@ -8,7 +8,7 @@ namespace Praxigento\Dcp\Web\Report\Downline\A;
 use Praxigento\BonusBase\Repo\Data\Rank as ERank;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response\Entry as DReportEntry;
-use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnlCust;
+use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 use Praxigento\Dcp\Config as Cfg;
 
 /**

@@ -14,12 +14,12 @@ class IsSchemeEu
 {
     /** @var \Praxigento\BonusHybrid\Helper\IScheme */
     private $hlpScheme;
-    /** @var \Praxigento\Downline\Repo\Entity\Customer */
+    /** @var \Praxigento\Downline\Repo\Dao\Customer */
     private $repoDwnlCust;
 
     public function __construct(
         \Praxigento\BonusHybrid\Helper\IScheme $hlpScheme,
-        \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust
+        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust
     )
     {
         $this->hlpScheme = $hlpScheme;

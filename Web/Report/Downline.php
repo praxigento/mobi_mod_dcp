@@ -37,16 +37,16 @@ class Downline
     private $qbDownline;
     /** @var \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder */
     private $qbLastCalc;
-    /** @var \Praxigento\Downline\Repo\Entity\Customer */
+    /** @var \Praxigento\Downline\Repo\Dao\Customer */
     private $repoDwnlCust;
-    /** @var \Praxigento\Downline\Repo\Entity\Snap */
+    /** @var \Praxigento\Downline\Repo\Dao\Snap */
     private $repoSnap;
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $manObj,
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
-        \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust,
-        \Praxigento\Downline\Repo\Entity\Snap $repoSnap,
+        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust,
+        \Praxigento\Downline\Repo\Dao\Snap $repoSnap,
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
         \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod
@@ -192,7 +192,7 @@ class Downline
         $request->setDev($dev);
         $rootCustId = $this->authenticator->getCurrentUserId($request);
 
-        /** @var \Praxigento\Downline\Repo\Entity\Data\Snap $customerRoot */
+        /** @var \Praxigento\Downline\Repo\Data\Snap $customerRoot */
         $customerRoot = $this->repoSnap->getByCustomerIdOnDate($rootCustId, $period);
         if ($customerRoot === false) {
             /* probably this is new customer that is not in Downline Snaps */

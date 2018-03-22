@@ -11,7 +11,7 @@ use Praxigento\Accounting\Repo\Data\Transaction as ETran;
 use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
 use Praxigento\Accounting\Repo\Data\Type\Operation as ETypeOper;
 use Praxigento\BonusBase\Repo\Data\Log\Customers as ELogCust;
-use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnlCust;
+use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 
 /**
  * Build query to get transactions data for DCP Accounting Report.
