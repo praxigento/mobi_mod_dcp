@@ -3,12 +3,12 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Report\Accounting\A\Repo\Query;
+namespace Praxigento\Dcp\Web\Report\Accounting\A;
 
 use Praxigento\Accounting\Repo\Entity\Data\Account as EAccount;
 use Praxigento\Accounting\Repo\Entity\Data\Type\Asset as ETypeAsset;
 
-class GetBalance
+class Query
     extends \Praxigento\Accounting\Repo\Query\Balance\OnDate\Closing\Builder
 {
     /** Tables aliases for external usage ('camelCase' naming) */

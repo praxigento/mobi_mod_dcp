@@ -21,8 +21,6 @@ class MineData
     private $ownOrgProfile;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus */
     private $ownOverBonus;
-    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Pension */
-    private $ownPension;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus */
     private $ownPersBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs */
@@ -37,7 +35,6 @@ class MineData
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus $ownInfBonus,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile $ownOrgProfile,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus $ownOverBonus,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Pension $ownPension,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus $ownPersBonus,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs $ownQualLegs,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus $ownTeamBonus,
@@ -48,7 +45,6 @@ class MineData
         $this->ownInfBonus = $ownInfBonus;
         $this->ownOrgProfile = $ownOrgProfile;
         $this->ownOverBonus = $ownOverBonus;
-        $this->ownPension = $ownPension;
         $this->ownPersBonus = $ownPersBonus;
         $this->ownQualLegs = $ownQualLegs;
         $this->ownTeamBonus = $ownTeamBonus;
@@ -68,7 +64,6 @@ class MineData
             $infBonus = $this->ownInfBonus->exec($custId, $period);
             $orgProfile = $this->ownOrgProfile->exec($custId, $period);
             $overBonus = $this->ownOverBonus->exec($custId, $period);
-            $pension = $this->ownPension->exec($custId, $period);
             $persBonus = $this->ownPersBonus->exec($custId, $period);
             $qualLegs = $this->ownQualLegs->exec($custId, $period);
             $teamBonus = $this->ownTeamBonus->exec($custId, $period);
@@ -80,7 +75,6 @@ class MineData
             $sections->setInfBonus($infBonus);
             $sections->setOrgProfile($orgProfile);
             $sections->setOverBonus($overBonus);
-            $sections->setPension($pension);
             $sections->setPersonalBonus($persBonus);
             $sections->setQualLegs($qualLegs);
             $sections->setTeamBonus($teamBonus);

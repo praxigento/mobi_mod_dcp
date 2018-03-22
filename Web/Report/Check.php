@@ -52,14 +52,14 @@ class Check
 
         /* get result from context */
         $result = $ctx->getWebResponse();
-        $envelop = $result->getResult();
+        $respRes = $result->getResult();
         $data = $result->getData();
         $cust = $data->getCustomer();
         if (is_null($cust)) {
-            $envelop->setCode(AResponse::CODE_NO_DATA);
+            $respRes->setCode(AResponse::CODE_NO_DATA);
             $result->setData(null);
         } else {
-            $envelop->setCode(AResponse::CODE_SUCCESS);
+            $respRes->setCode(AResponse::CODE_SUCCESS);
         }
         return $result;
     }
