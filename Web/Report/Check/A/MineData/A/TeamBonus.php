@@ -11,7 +11,7 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus as DTea
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus\Item as DItem;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Team Bonus" section of the DCP's "Check" report.

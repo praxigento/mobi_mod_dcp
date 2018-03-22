@@ -12,7 +12,7 @@ use Praxigento\BonusBase\Repo\Entity\Data\Log\Opers as ELogOper;
 use Praxigento\BonusBase\Repo\Entity\Data\Rank as ERankCode;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * the same as \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus\A\Query

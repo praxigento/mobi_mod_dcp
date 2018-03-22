@@ -11,7 +11,7 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus as 
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus\Item as DItem;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Personal Bonus" section of the DCP's "Check" report.

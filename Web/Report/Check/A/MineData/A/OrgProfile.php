@@ -10,7 +10,7 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile as DOr
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile\Item as DItem;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Organization Profile" section of the DCP's "Check" report.

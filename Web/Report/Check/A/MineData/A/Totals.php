@@ -11,7 +11,7 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit a
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit as QBGetSumCredit;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Totals" section of the DCP's "Check" report.

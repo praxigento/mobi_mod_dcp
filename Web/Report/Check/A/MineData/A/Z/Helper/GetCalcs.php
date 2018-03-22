@@ -6,7 +6,7 @@
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper;
 
 use Praxigento\BonusBase\Repo\Query\Period\Calcs\Get\Builder as QBGetPeriodCalcs;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Get complete calculations IDs by calc type code for given period bounds.

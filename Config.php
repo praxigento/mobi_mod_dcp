@@ -6,9 +6,9 @@
  */
 
 namespace Praxigento\Dcp;
-
+use \Praxigento\BonusBase\Config as BonBaseCfg;
 class Config
-    extends \Praxigento\BonusReferral\Config
+    extends \Praxigento\PensionFund\Config
 {
     const MODULE = 'Praxigento_Dcp';
 }

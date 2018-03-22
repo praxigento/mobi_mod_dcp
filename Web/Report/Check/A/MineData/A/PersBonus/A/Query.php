@@ -8,7 +8,7 @@ namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Compression\Phase1\Transfer\Pv as EPhase1Transfer;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 class Query
     extends \Praxigento\Core\App\Repo\Query\Builder

@@ -8,8 +8,8 @@ namespace Praxigento\Dcp\Web\Report;
 use Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder as QBLastCalc;
 use Praxigento\Dcp\Api\Web\Report\Downline\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response as AResponse;
-use Praxigento\Santegra\Config as Cfg;
-use Praxigento\Santegra\Repo\Own\Query\Report\Downline as QBDownline;
+use Praxigento\Dcp\Web\Report\Downline\A\Query as QBDownline;
+use Praxigento\Dcp\Config as Cfg;
 
 class Downline
     extends \Praxigento\Core\App\Web\Processor\WithQuery
@@ -33,7 +33,7 @@ class Downline
     private $authenticator;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Santegra\Repo\Own\Query\Report\Downline */
+    /** @var \Praxigento\Dcp\Web\Report\Downline\A\Query */
     private $qbDownline;
     /** @var \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder */
     private $qbLastCalc;
@@ -48,7 +48,7 @@ class Downline
         \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust,
         \Praxigento\Downline\Repo\Entity\Snap $repoSnap,
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
-        \Praxigento\Santegra\Repo\Own\Query\Report\Downline $qbDownline,
+        \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod
     ) {
         /* don't pass query builder to the parent - we have 4 builders in the operation, not one */

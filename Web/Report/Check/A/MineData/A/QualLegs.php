@@ -13,7 +13,7 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualific
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
-use Praxigento\Santegra\Config as Cfg;
+use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "QualificationLegs" section of the DCP's "Check" report.
