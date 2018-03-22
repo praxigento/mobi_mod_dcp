@@ -6,13 +6,13 @@
     <!-- ******* -->
     <!-- API Web -->
     <!-- ******* -->
-    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\AccountingInterface"
-                type="Praxigento\Dcp\Web\Dcp\Report\Accounting"/>
-    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface"
-                type="Praxigento\Dcp\Web\Dcp\Report\Check"/>
-    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\DownlineInterface"
-                type="Praxigento\Dcp\Web\Dcp\Report\Downline"/>
-    <preference for="Praxigento\Dcp\Api\Web\Dcp\Report\PensionInterface"
-                type="Praxigento\Dcp\Web\Dcp\Report\Pension"/>
+    <preference for="Praxigento\Dcp\Api\Web\Report\AccountingInterface"
+                type="Praxigento\Dcp\Web\Report\Accounting"/>
+    <preference for="Praxigento\Dcp\Api\Web\Report\CheckInterface"
+                type="Praxigento\Dcp\Web\Report\Check"/>
+    <preference for="Praxigento\Dcp\Api\Web\Report\DownlineInterface"
+                type="Praxigento\Dcp\Web\Report\Downline"/>
+    <preference for="Praxigento\Dcp\Api\Web\Report\PensionInterface"
+                type="Praxigento\Dcp\Web\Report\Pension"/>
     
 </config>

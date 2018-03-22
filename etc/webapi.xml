@@ -4,7 +4,7 @@
 
     <route url="/V1/prxgt/dcp/report/accounting" method="POST">
         <!-- Get data for DCP Accounting Reports. -->
-        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\AccountingInterface" method="exec"/>
+        <service class="Praxigento\Dcp\Api\Web\Report\AccountingInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
@@ -12,7 +12,7 @@
 
     <route url="/V1/prxgt/dcp/report/check" method="POST">
         <!-- Get data for DCP Checks Reports. -->
-        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\CheckInterface" method="exec"/>
+        <service class="Praxigento\Dcp\Api\Web\Report\CheckInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
@@ -20,7 +20,7 @@
 
     <route url="/V1/prxgt/dcp/report/downline" method="POST">
         <!-- Get data for DCP Downline Reports. -->
-        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\DownlineInterface" method="exec"/>
+        <service class="Praxigento\Dcp\Api\Web\Report\DownlineInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
@@ -28,7 +28,7 @@
 
     <route url="/V1/prxgt/dcp/report/pension" method="POST">
         <!-- Get data for DCP Pension Reports. -->
-        <service class="Praxigento\Dcp\Api\Web\Dcp\Report\PensionInterface" method="exec"/>
+        <service class="Praxigento\Dcp\Api\Web\Report\PensionInterface" method="exec"/>
         <resources>
             <resource ref="anonymous"/>
         </resources>
