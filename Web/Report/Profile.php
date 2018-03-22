@@ -6,7 +6,7 @@
 namespace Praxigento\Dcp\Web\Report;
 
 use Praxigento\Accounting\Repo\Data\Account as EAccount;
-use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
+use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Profile\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Profile\Response as AResponse;
 use Praxigento\Dcp\Api\Web\Report\Profile\Response\Data as AData;
@@ -24,7 +24,7 @@ class Profile
     private $qbGetBalances;
     /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats */
     private $qbGetBonusStats;
-    /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $repoBonDwnl;
     /** @var \Praxigento\Downline\Repo\Entity\Customer */
     private $repoDwnlCust;
@@ -36,7 +36,7 @@ class Profile
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\BonusBase\Repo\Dao\Rank $repoRank,
-        \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwnl,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $repoBonDwnl,
         \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust,
         \Praxigento\PensionFund\Repo\Entity\Registry $repoPension,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,

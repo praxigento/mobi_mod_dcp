@@ -5,7 +5,7 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Data\Compression\Phase2\Legs as ELegs;
+use Praxigento\BonusHybrid\Repo\Data\Compression\Phase2\Legs as ELegs;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs as DQualLegs;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Item as DItem;
@@ -24,7 +24,7 @@ class QualLegs
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query */
     private $qbGetItems;
-    /** @var \Praxigento\BonusHybrid\Repo\Entity\Compression\Phase2\Legs */
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs */
     private $repoLegs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
@@ -33,7 +33,7 @@ class QualLegs
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\BonusHybrid\Repo\Entity\Compression\Phase2\Legs $repoLegs,
+        \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs $repoLegs,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu

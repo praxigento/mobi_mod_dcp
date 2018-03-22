@@ -5,7 +5,7 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
+use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnCust;
 use Praxigento\Dcp\Config as Cfg;
 

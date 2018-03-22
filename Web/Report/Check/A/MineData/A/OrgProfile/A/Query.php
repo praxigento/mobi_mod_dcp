@@ -5,8 +5,8 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
-use Praxigento\BonusHybrid\Repo\Entity\Data\Downline\Qualification as EBonQual;
+use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
+use Praxigento\BonusHybrid\Repo\Data\Downline\Qualification as EBonQual;
 
 /**
  * Get downline tree data by generations.

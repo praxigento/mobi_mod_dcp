@@ -5,7 +5,7 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
+use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus as DPersonalBonus;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus\Item as DItem;
@@ -22,14 +22,14 @@ class PersBonus
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A\Query */
     private $qbGetItems;
-    /** @var \Praxigento\BonusHybrid\Repo\Entity\Downline */
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $repoBonDwn;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwn,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $repoBonDwn,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A\Query $qbGetItems,
         HGetCalcs $hlpGetCalcs
     )

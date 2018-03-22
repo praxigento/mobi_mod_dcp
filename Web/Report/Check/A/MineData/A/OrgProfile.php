@@ -5,7 +5,7 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
-use Praxigento\BonusHybrid\Repo\Entity\Downline as RBonDwnl;
+use Praxigento\BonusHybrid\Repo\Dao\Downline as RBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile as DOrgProfile;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile\Item as DItem;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
