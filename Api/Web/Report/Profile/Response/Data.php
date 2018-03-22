@@ -14,136 +14,75 @@ namespace Praxigento\Dcp\Api\Web\Report\Profile\Response;
 class Data
     extends \Praxigento\Core\Data
 {
-    const ATTR_AMOUNT_IN = 'amount_in';
-    const ATTR_AMOUNT_PERCENT = 'amount_percent';
-    const ATTR_AMOUNT_RETURNED = 'amount_returned';
-    const A_BALANCE_CLOSE = 'balance_close';
-    const A_BALANCE_OPEN = 'balance_open';
-    const A_MONTH_LEFT = 'month_left';
-    const A_MONTH_SINCE = 'month_since';
-    const A_MONTH_TOTAL = 'month_total';
-    const A_MONTH_UNQ = 'month_unq';
+    const A_BALANCES = 'balances';
+    const A_BONUS_STATS = 'bonus_stats';
+    const A_MLM_ID_OWN = 'mlm_id_own';
+    const A_MLM_ID_PARENT = 'mlm_id_parent';
+    const A_PENSION = 'pension';
 
-    /** @return float */
-    public function getAmountIn()
+    /** @return \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Balance\Item[] */
+    public function getBalances()
     {
-        $result = parent::get(self::ATTR_AMOUNT_IN);
+        $result = parent::get(self::A_BALANCES);
         return $result;
     }
 
-    /** @return float */
-    public function getAmountPercent()
+    /** @return \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats */
+    public function getBonusStats()
     {
-        $result = parent::get(self::ATTR_AMOUNT_PERCENT);
+        $result = parent::get(self::A_BONUS_STATS);
         return $result;
     }
 
-    /** @return float */
-    public function getAmountReturned()
+    /** @return string */
+    public function getMlmIdOwn()
     {
-        $result = parent::get(self::ATTR_AMOUNT_RETURNED);
+        $result = parent::get(self::A_MLM_ID_OWN);
         return $result;
     }
 
-    /**
-     * @return float
-     */
-    public function getBalanceClose()
+    /** @return string */
+    public function getMlmIdParent()
     {
-        $result = parent::get(self::A_BALANCE_CLOSE);
+        $result = parent::get(self::A_MLM_ID_PARENT);
         return $result;
     }
 
-    /**
-     * @return float
-     */
-    public function getBalanceOpen()
+    /** @return \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Pension */
+    public function getPension()
     {
-        $result = parent::get(self::A_BALANCE_OPEN);
+        $result = parent::get(self::A_PENSION);
         return $result;
     }
 
-    /**
-     * @return int
-     */
-    public function getMonthLeft()
+    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Balance\Item[] $data */
+    public function setBalances($data)
     {
-        $result = parent::get(self::A_MONTH_LEFT);
-        return $result;
+        parent::set(self::A_BALANCES, $data);
     }
 
-    /**
-     * @return string YYYY/MM
-     */
-    public function getMonthSince()
+    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats $data */
+    public function setBonusStats($data)
     {
-        $result = parent::get(self::A_MONTH_SINCE);
-        return $result;
+        parent::set(self::A_BONUS_STATS, $data);
     }
 
-    /**
-     * @return int
-     */
-    public function getMonthTotal()
+    /** @param string $data */
+    public function setMlmIdOwn($data)
     {
-        $result = parent::get(self::A_MONTH_TOTAL);
-        return $result;
+        parent::set(self::A_MLM_ID_OWN, $data);
     }
 
-    /**
-     * @return int
-     */
-    public function getMonthUnq()
+    /** @param string $data */
+    public function setMlmIdParent($data)
     {
-        $result = parent::get(self::A_MONTH_UNQ);
-        return $result;
+        parent::set(self::A_MLM_ID_PARENT, $data);
     }
 
-    /** @param float $data */
-    public function setAmountIn($data)
+    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Pension $data */
+    public function setPension($data)
     {
-        parent::set(self::ATTR_AMOUNT_IN, $data);
+        parent::set(self::A_PENSION, $data);
     }
 
-    /** @param float $data */
-    public function setAmountPercent($data)
-    {
-        parent::set(self::ATTR_AMOUNT_PERCENT, $data);
-    }
-
-    /** @param float $data */
-    public function setAmountReturned($data)
-    {
-        parent::set(self::ATTR_AMOUNT_RETURNED, $data);
-    }
-
-    public function setBalanceClose($data)
-    {
-        parent::set(self::A_BALANCE_CLOSE, $data);
-    }
-
-    public function setBalanceOpen($data)
-    {
-        parent::set(self::A_BALANCE_OPEN, $data);
-    }
-
-    public function setMonthLeft($data)
-    {
-        parent::set(self::A_MONTH_LEFT, $data);
-    }
-
-    public function setMonthSince($data)
-    {
-        parent::set(self::A_MONTH_SINCE, $data);
-    }
-
-    public function setMonthTotal($data)
-    {
-        parent::set(self::A_MONTH_TOTAL, $data);
-    }
-
-    public function setMonthUnq($data)
-    {
-        parent::set(self::A_MONTH_UNQ, $data);
-    }
 }
