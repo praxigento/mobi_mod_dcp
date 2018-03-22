@@ -5,8 +5,8 @@
 
 namespace Praxigento\Dcp\Web\Report\Profile\A\Query;
 
-use Praxigento\Accounting\Repo\Entity\Data\Account as EAccount;
-use Praxigento\Accounting\Repo\Entity\Data\Type\Asset as ETypeAsset;
+use Praxigento\Accounting\Repo\Data\Account as EAccount;
+use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
 
 /**
  * Get current balances.

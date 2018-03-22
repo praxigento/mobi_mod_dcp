@@ -5,7 +5,7 @@
 
 namespace Praxigento\Dcp\Web\Report;
 
-use Praxigento\Accounting\Repo\Entity\Data\Account as EAccount;
+use Praxigento\Accounting\Repo\Data\Account as EAccount;
 use Praxigento\BonusHybrid\Repo\Entity\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Profile\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Profile\Response as AResponse;

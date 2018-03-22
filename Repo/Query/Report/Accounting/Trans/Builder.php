@@ -5,11 +5,11 @@
 
 namespace Praxigento\Dcp\Repo\Query\Report\Accounting\Trans;
 
-use Praxigento\Accounting\Repo\Entity\Data\Account as EAcc;
-use Praxigento\Accounting\Repo\Entity\Data\Operation as EOper;
-use Praxigento\Accounting\Repo\Entity\Data\Transaction as ETran;
-use Praxigento\Accounting\Repo\Entity\Data\Type\Asset as ETypeAsset;
-use Praxigento\Accounting\Repo\Entity\Data\Type\Operation as ETypeOper;
+use Praxigento\Accounting\Repo\Data\Account as EAcc;
+use Praxigento\Accounting\Repo\Data\Operation as EOper;
+use Praxigento\Accounting\Repo\Data\Transaction as ETran;
+use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
+use Praxigento\Accounting\Repo\Data\Type\Operation as ETypeOper;
 use Praxigento\BonusBase\Repo\Entity\Data\Log\Customers as ELogCust;
 use Praxigento\Downline\Repo\Entity\Data\Customer as EDwnlCust;
 
