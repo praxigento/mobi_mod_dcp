@@ -7,7 +7,7 @@ namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query;
 
 use Praxigento\Accounting\Repo\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Data\Transaction as ETrans;
-use Praxigento\BonusBase\Repo\Entity\Data\Log\Opers as ELogOper;
+use Praxigento\BonusBase\Repo\Data\Log\Opers as ELogOper;
 
 /**
  * Build query to get credit amount of the one-transaction-per-user operation (personal bonus, for example).

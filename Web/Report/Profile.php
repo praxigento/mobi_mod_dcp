@@ -30,12 +30,12 @@ class Profile
     private $repoDwnlCust;
     /** @var \Praxigento\PensionFund\Repo\Entity\Registry */
     private $repoPension;
-    /** @var \Praxigento\BonusBase\Repo\Entity\Rank */
+    /** @var \Praxigento\BonusBase\Repo\Dao\Rank */
     private $repoRank;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
-        \Praxigento\BonusBase\Repo\Entity\Rank $repoRank,
+        \Praxigento\BonusBase\Repo\Dao\Rank $repoRank,
         \Praxigento\BonusHybrid\Repo\Entity\Downline $repoBonDwnl,
         \Praxigento\Downline\Repo\Entity\Customer $repoDwnlCust,
         \Praxigento\PensionFund\Repo\Entity\Registry $repoPension,

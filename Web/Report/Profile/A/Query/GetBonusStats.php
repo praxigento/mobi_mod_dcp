@@ -5,9 +5,9 @@
 
 namespace Praxigento\Dcp\Web\Report\Profile\A\Query;
 
-use Praxigento\BonusBase\Repo\Entity\Data\Calculation as ECalc;
-use Praxigento\BonusBase\Repo\Entity\Data\Period as EPeriod;
-use Praxigento\BonusBase\Repo\Entity\Data\Type\Calc as ETypeCalc;
+use Praxigento\BonusBase\Repo\Data\Calculation as ECalc;
+use Praxigento\BonusBase\Repo\Data\Period as EPeriod;
+use Praxigento\BonusBase\Repo\Data\Type\Calc as ETypeCalc;
 use Praxigento\Dcp\Config as Cfg;
 
 /**
