@@ -61,9 +61,9 @@ class Query
         $tbl = $this->resource->getTableName(EDwnlCust::ENTITY_NAME);
         $as = $asDwnlCust;
         $cols = [
-            self::A_MLM_ID => EDwnlCust::ATTR_MLM_ID
+            self::A_MLM_ID => EDwnlCust::A_MLM_ID
         ];
-        $cond = "$as." . EDwnlCust::ATTR_CUSTOMER_ID . "=$asSnap." . EDwnlSnap::ATTR_CUSTOMER_ID;
+        $cond = "$as." . EDwnlCust::A_CUSTOMER_ID . "=$asSnap." . EDwnlSnap::A_CUSTOMER_ID;
         $result->join([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN customer_entity to get first/last names */
@@ -73,11 +73,11 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = "$as." . Cfg::E_CUSTOMER_A_ENTITY_ID . "=$asSnap." . EDwnlSnap::ATTR_CUSTOMER_ID;
+        $cond = "$as." . Cfg::E_CUSTOMER_A_ENTITY_ID . "=$asSnap." . EDwnlSnap::A_CUSTOMER_ID;
         $result->join([$as => $tbl], $cond, $cols);
 
         /* where */
-        $where = "$asDwnlCust." . EDwnlCust::ATTR_CUSTOMER_ID . '=:' . self::BND_CUST_ID;
+        $where = "$asDwnlCust." . EDwnlCust::A_CUSTOMER_ID . '=:' . self::BND_CUST_ID;
         $result->where($where);
 
         return $result;

@@ -21,7 +21,7 @@ class Response
      */
     public function getData()
     {
-        $result = parent::get(self::ATTR_DATA);
+        $result = parent::get(self::A_DATA);
         return $result;
     }
 
@@ -30,7 +30,7 @@ class Response
      */
     public function setData($data)
     {
-        parent::set(self::ATTR_DATA, $data);
+        parent::set(self::A_DATA, $data);
     }
 
 }

@@ -131,8 +131,8 @@ class QualLegs
     private function getQualData($calcId, $custId)
     {
         $ids = [
-            ELegs::ATTR_CALC_REF => $calcId,
-            ELegs::ATTR_CUST_REF => $custId
+            ELegs::A_CALC_REF => $calcId,
+            ELegs::A_CUST_REF => $custId
         ];
         /** @var ELegs $entity */
         $entity = $this->repoLegs->getById($ids);

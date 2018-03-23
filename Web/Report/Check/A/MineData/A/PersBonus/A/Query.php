@@ -54,8 +54,8 @@ class Query
         $tbl = $this->resource->getTableName(EPhase1Transfer::ENTITY_NAME);
         $as = $asTrn;
         $cols = [
-            self::A_CUST_ID => EPhase1Transfer::ATTR_CUST_FROM_REF,
-            self::A_PV => EPhase1Transfer::ATTR_PV
+            self::A_CUST_ID => EPhase1Transfer::A_CUST_FROM_REF,
+            self::A_PV => EPhase1Transfer::A_PV
         ];
         $result->from([$as => $tbl], $cols);
 
@@ -63,19 +63,19 @@ class Query
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asBonDwnl;
         $cols = [
-            self::A_DEPTH => EBonDwnl::ATTR_DEPTH
+            self::A_DEPTH => EBonDwnl::A_DEPTH
         ];
-        $cond = $as . '.' . EBonDwnl::ATTR_CUST_REF . '=' . $asTrn . '.' . EPhase1Transfer::ATTR_CUST_FROM_REF;
-        $cond .= ' AND ' . $as . '.' . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID_PV_WRITE_OFF;
+        $cond = $as . '.' . EBonDwnl::A_CUST_REF . '=' . $asTrn . '.' . EPhase1Transfer::A_CUST_FROM_REF;
+        $cond .= ' AND ' . $as . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_PV_WRITE_OFF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_dwnl_customer to get MLM ID */
         $tbl = $this->resource->getTableName(EDwnCust::ENTITY_NAME);
         $as = $asDwnlCust;
         $cols = [
-            self::A_MLM_ID => EDwnCust::ATTR_MLM_ID
+            self::A_MLM_ID => EDwnCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnCust::ATTR_CUSTOMER_ID . '=' . $asTrn . '.' . EPhase1Transfer::ATTR_CUST_FROM_REF;
+        $cond = $as . '.' . EDwnCust::A_CUSTOMER_ID . '=' . $asTrn . '.' . EPhase1Transfer::A_CUST_FROM_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN customer_entity to get name */
@@ -85,12 +85,12 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asTrn . '.' . EPhase1Transfer::ATTR_CUST_FROM_REF;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asTrn . '.' . EPhase1Transfer::A_CUST_FROM_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcCompress = "$asTrn." . EPhase1Transfer::ATTR_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS_PHASE1;
-        $byCustTo = "$asTrn." . EPhase1Transfer::ATTR_CUST_TO_REF . '=:' . self::BND_CUST_ID;
+        $byCalcCompress = "$asTrn." . EPhase1Transfer::A_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS_PHASE1;
+        $byCustTo = "$asTrn." . EPhase1Transfer::A_CUST_TO_REF . '=:' . self::BND_CUST_ID;
         $result->where("($byCalcCompress) AND ($byCustTo)");
 
         return $result;

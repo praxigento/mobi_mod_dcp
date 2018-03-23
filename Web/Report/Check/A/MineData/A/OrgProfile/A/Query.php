@@ -47,12 +47,12 @@ class Query
         /* FROM prxgt_bon_hyb_dwnl  */
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asDwnl;
-        $expCountSrc = 'COUNT(' . EBonDwnl::ATTR_CUST_REF . ')';
+        $expCountSrc = 'COUNT(' . EBonDwnl::A_CUST_REF . ')';
         $expCount = new \Praxigento\Core\App\Repo\Query\Expression($expCountSrc);
-        $expVolumeSrc = 'SUM(' . EBonDwnl::ATTR_PV . ')';
+        $expVolumeSrc = 'SUM(' . EBonDwnl::A_PV . ')';
         $expVolume = new \Praxigento\Core\App\Repo\Query\Expression($expVolumeSrc);
         $cols = [
-            self::A_DEPTH => EBonDwnl::ATTR_DEPTH,
+            self::A_DEPTH => EBonDwnl::A_DEPTH,
             self::A_COUNT => $expCount,
             self::A_VOLUME => $expVolume
         ];
@@ -61,22 +61,22 @@ class Query
         /* LEFT JOIN prxgt_bon_hyb_dwnl_qual */
         $tbl = $this->resource->getTableName(EBonQual::ENTITY_NAME);
         $as = $asQual;
-        $expMgrSrc = 'COUNT(' . self::AS_BON_DWNL_QUAL . '.' . EBonQual::ATTR_RANK_REF . ')';
+        $expMgrSrc = 'COUNT(' . self::AS_BON_DWNL_QUAL . '.' . EBonQual::A_RANK_REF . ')';
         $expMgr = new \Praxigento\Core\App\Repo\Query\Expression($expMgrSrc);
         $cols = [
             self::A_QUAL => $expMgr
         ];
-        $cond = $as . '.' . EBonQual::ATTR_TREE_ENTRY_REF . '=' . $asDwnl . '.' . EBonDwnl::ATTR_ID;
+        $cond = $as . '.' . EBonQual::A_TREE_ENTRY_REF . '=' . $asDwnl . '.' . EBonDwnl::A_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcId = "$asDwnl." . EBonDwnl::ATTR_CALC_REF . ' = :' . self::BND_CALC_ID;
-        $byPath = "$asDwnl." . EBonDwnl::ATTR_PATH . ' LIKE :' . self::BND_PATH;
-        $byPv = "$asDwnl." . EBonDwnl::ATTR_PV . ' > :' . self::BND_PV;
+        $byCalcId = "$asDwnl." . EBonDwnl::A_CALC_REF . ' = :' . self::BND_CALC_ID;
+        $byPath = "$asDwnl." . EBonDwnl::A_PATH . ' LIKE :' . self::BND_PATH;
+        $byPv = "$asDwnl." . EBonDwnl::A_PV . ' > :' . self::BND_PV;
         $result->where("($byCalcId) AND ($byPath) AND ($byPv)");
 
         /* group by */
-        $result->group($asDwnl . '.' . EBonDwnl::ATTR_DEPTH);
+        $result->group($asDwnl . '.' . EBonDwnl::A_DEPTH);
 
         return $result;
     }

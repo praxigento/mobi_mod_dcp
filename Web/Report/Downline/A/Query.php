@@ -57,14 +57,14 @@ class Query
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asBonDwnl;
         $cols = [
-            self::A_CUSTOMER_REF => EBonDwnl::ATTR_CUST_REF,
-            self::A_DEPTH => EBonDwnl::ATTR_DEPTH,
-            self::A_OV => EBonDwnl::ATTR_OV,
-            self::A_PARENT_REF => EBonDwnl::ATTR_PARENT_REF,
-            self::A_PATH => EBonDwnl::ATTR_PATH,
-            self::A_PV => EBonDwnl::ATTR_PV,
-            self::A_TV => EBonDwnl::ATTR_TV,
-            self::A_UNQ_MONTHS => EBonDwnl::ATTR_UNQ_MONTHS
+            self::A_CUSTOMER_REF => EBonDwnl::A_CUST_REF,
+            self::A_DEPTH => EBonDwnl::A_DEPTH,
+            self::A_OV => EBonDwnl::A_OV,
+            self::A_PARENT_REF => EBonDwnl::A_PARENT_REF,
+            self::A_PATH => EBonDwnl::A_PATH,
+            self::A_PV => EBonDwnl::A_PV,
+            self::A_TV => EBonDwnl::A_TV,
+            self::A_UNQ_MONTHS => EBonDwnl::A_UNQ_MONTHS
         ];
         $result->from([$as => $tbl], $cols);
 
@@ -72,10 +72,10 @@ class Query
         $tbl = $this->resource->getTableName(EDwnlCust::ENTITY_NAME);
         $as = $asDwnlCust;
         $cols = [
-            self::A_COUNTRY => EDwnlCust::ATTR_COUNTRY_CODE,
-            self::A_MLM_ID => EDwnlCust::ATTR_MLM_ID
+            self::A_COUNTRY => EDwnlCust::A_COUNTRY_CODE,
+            self::A_MLM_ID => EDwnlCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnlCust::ATTR_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_CUST_REF;
+        $cond = $as . '.' . EDwnlCust::A_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN customer_entity */
@@ -86,22 +86,22 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_CUST_REF;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_bon_base_rank */
         $tbl = $this->resource->getTableName(ERank::ENTITY_NAME);
         $as = $asRank;
         $cols = [
-            self::A_RANK_CODE => ERank::ATTR_CODE
+            self::A_RANK_CODE => ERank::A_CODE
         ];
-        $cond = $as . '.' . ERank::ATTR_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_RANK_REF;
+        $cond = $as . '.' . ERank::A_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_RANK_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcId = $asBonDwnl . '.' . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID;
-        $byPath = $asBonDwnl . '.' . EBonDwnl::ATTR_PATH . ' LIKE :' . self::BND_PATH;
-        $byCustId = $asBonDwnl . '.' . EBonDwnl::ATTR_CUST_REF . '=:' . self::BND_CUST_ID;
+        $byCalcId = $asBonDwnl . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID;
+        $byPath = $asBonDwnl . '.' . EBonDwnl::A_PATH . ' LIKE :' . self::BND_PATH;
+        $byCustId = $asBonDwnl . '.' . EBonDwnl::A_CUST_REF . '=:' . self::BND_CUST_ID;
         $result->where("$byCalcId AND ($byPath OR $byCustId)");
 
         return $result;

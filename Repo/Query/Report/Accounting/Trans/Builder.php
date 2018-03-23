@@ -66,20 +66,20 @@ class Builder
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
         $as = $asAcc;
         $cols = [];
-        $cond = $as . '.' . EAcc::ATTR_CUST_ID . '=' . $asDwnlCust . '.' . EDwnlCust::ATTR_CUSTOMER_ID;
+        $cond = $as . '.' . EAcc::A_CUST_ID . '=' . $asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_transaction */
         $tbl = $this->resource->getTableName(ETran::ENTITY_NAME);
         $as = $asTrans;
         $cols = [
-            self::A_ITEM_ID => ETran::ATTR_ID,
-            self::A_DATE => ETran::ATTR_DATE_APPLIED,
-            self::A_DETAILS => ETran::ATTR_NOTE,
-            self::A_VALUE => ETran::ATTR_VALUE
+            self::A_ITEM_ID => ETran::A_ID,
+            self::A_DATE => ETran::A_DATE_APPLIED,
+            self::A_DETAILS => ETran::A_NOTE,
+            self::A_VALUE => ETran::A_VALUE
         ];
-        $condDeb = $as . '.' . ETran::ATTR_DEBIT_ACC_ID . '=' . $asAcc . '.' . EAcc::ATTR_ID;
-        $condCred = $as . '.' . ETran::ATTR_CREDIT_ACC_ID . '=' . $asAcc . '.' . EAcc::ATTR_ID;
+        $condDeb = $as . '.' . ETran::A_DEBIT_ACC_ID . '=' . $asAcc . '.' . EAcc::A_ID;
+        $condCred = $as . '.' . ETran::A_CREDIT_ACC_ID . '=' . $asAcc . '.' . EAcc::A_ID;
         $cond = "($condDeb) OR ($condCred)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
@@ -87,43 +87,43 @@ class Builder
         $tbl = $this->resource->getTableName(EOper::ENTITY_NAME);
         $as = $asOper;
         $cols = [];
-        $cond = $as . '.' . EOper::ATTR_ID . '=' . $asTrans . '.' . ETran::ATTR_OPERATION_ID;
+        $cond = $as . '.' . EOper::A_ID . '=' . $asTrans . '.' . ETran::A_OPERATION_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_type_operation */
         $tbl = $this->resource->getTableName(ETypeOper::ENTITY_NAME);
         $as = $asOperType;
         $cols = [
-            self::A_TYPE => ETypeOper::ATTR_CODE
+            self::A_TYPE => ETypeOper::A_CODE
         ];
-        $cond = $as . '.' . ETypeOper::ATTR_ID . '=' . $asOper . '.' . EOper::ATTR_TYPE_ID;
+        $cond = $as . '.' . ETypeOper::A_ID . '=' . $asOper . '.' . EOper::A_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_type_asset */
         $tbl = $this->resource->getTableName(ETypeAsset::ENTITY_NAME);
         $as = $asAssType;
         $cols = [
-            self::A_ASSET => ETypeAsset::ATTR_CODE
+            self::A_ASSET => ETypeAsset::A_CODE
         ];
-        $cond = $as . '.' . ETypeAsset::ATTR_ID . '=' . $asAcc . '.' . EAcc::ATTR_ASSET_TYPE_ID;
+        $cond = $as . '.' . ETypeAsset::A_ID . '=' . $asAcc . '.' . EAcc::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_bon_base_log_cust */
         $tbl = $this->resource->getTableName(ELogCust::ENTITY_NAME);
         $as = $asLogCust;
         $cols = [
-            self::A_OTHER_CUST_ID => ELogCust::ATTR_CUSTOMER_ID
+            self::A_OTHER_CUST_ID => ELogCust::A_CUSTOMER_ID
         ];
-        $cond = $as . '.' . ELogCust::ATTR_TRANS_ID . '=' . $asTrans . '.' . ETran::ATTR_ID;
+        $cond = $as . '.' . ELogCust::A_TRANS_ID . '=' . $asTrans . '.' . ETran::A_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /**
          * Query tuning.
          */
         /* WHERE */
-        $result->where($asDwnlCust . '.' . EDwnlCust::ATTR_CUSTOMER_ID . '=:' . self::BND_CUST_ID);
-        $result->where($asTrans . '.' . ETran::ATTR_DATE_APPLIED . '>:' . self::BND_DATE_FROM);
-        $result->where($asTrans . '.' . ETran::ATTR_DATE_APPLIED . '<:' . self::BND_DATE_TO);
+        $result->where($asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_ID . '=:' . self::BND_CUST_ID);
+        $result->where($asTrans . '.' . ETran::A_DATE_APPLIED . '>:' . self::BND_DATE_FROM);
+        $result->where($asTrans . '.' . ETran::A_DATE_APPLIED . '<:' . self::BND_DATE_TO);
 
         /* ORDER */
         $result->order(self::A_ITEM_ID);

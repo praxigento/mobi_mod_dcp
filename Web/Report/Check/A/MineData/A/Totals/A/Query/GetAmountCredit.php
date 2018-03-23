@@ -51,21 +51,21 @@ class GetAmountCredit
         $tbl = $this->resource->getTableName(ETrans::ENTITY_NAME);
         $as = $asTrans;
         $cols = [
-            self::A_AMOUNT => ETrans::ATTR_VALUE
+            self::A_AMOUNT => ETrans::A_VALUE
         ];
-        $cond = $as . '.' . ETrans::ATTR_OPERATION_ID . '=' . $asLog . '.' . ELogOper::ATTR_OPER_ID;
+        $cond = $as . '.' . ETrans::A_OPERATION_ID . '=' . $asLog . '.' . ELogOper::A_OPER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_account to filter by customer id */
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
         $as = $asAcc;
         $cols = [];
-        $cond = $as . '.' . EAcc::ATTR_ID . '=' . $asTrans . '.' . ETrans::ATTR_CREDIT_ACC_ID;
+        $cond = $as . '.' . EAcc::A_ID . '=' . $asTrans . '.' . ETrans::A_CREDIT_ACC_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcId = "$asLog." . ELogOper::ATTR_CALC_ID . "=:" . self::BND_CALC_ID;
-        $byCustId = "$asAcc." . EAcc::ATTR_CUST_ID . "=:" . self::BND_CUST_ID;
+        $byCalcId = "$asLog." . ELogOper::A_CALC_ID . "=:" . self::BND_CALC_ID;
+        $byCustId = "$asAcc." . EAcc::A_CUST_ID . "=:" . self::BND_CUST_ID;
         $result->where("($byCalcId) AND ($byCustId)");
 
         return $result;

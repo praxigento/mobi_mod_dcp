@@ -53,9 +53,9 @@ class Query
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asBonDwnl;
         $cols = [
-            self::A_CUST_ID => EBonDwnl::ATTR_CUST_REF,
-            self::A_DEPTH => EBonDwnl::ATTR_DEPTH,
-            self::A_OV => EBonDwnl::ATTR_OV
+            self::A_CUST_ID => EBonDwnl::A_CUST_REF,
+            self::A_DEPTH => EBonDwnl::A_DEPTH,
+            self::A_OV => EBonDwnl::A_OV
         ];
         $result->from([$as => $tbl], $cols);
 
@@ -63,9 +63,9 @@ class Query
         $tbl = $this->resource->getTableName(EDwnCust::ENTITY_NAME);
         $as = $asDwnlCust;
         $cols = [
-            self::A_MLM_ID => EDwnCust::ATTR_MLM_ID
+            self::A_MLM_ID => EDwnCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnCust::ATTR_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_CUST_REF;
+        $cond = $as . '.' . EDwnCust::A_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN customer_entity to get name */
@@ -75,12 +75,12 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::ATTR_CUSTOMER_ID;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcId = "$asBonDwnl." . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID;
-        $byCustId = "$asBonDwnl." . EBonDwnl::ATTR_PARENT_REF . '=:' . self::BND_CUST_ID;
+        $byCalcId = "$asBonDwnl." . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID;
+        $byCustId = "$asBonDwnl." . EBonDwnl::A_PARENT_REF . '=:' . self::BND_CUST_ID;
         $result->where("($byCalcId) AND ($byCustId)");
 
         return $result;

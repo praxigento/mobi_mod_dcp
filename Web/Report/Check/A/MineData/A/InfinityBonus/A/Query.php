@@ -82,34 +82,34 @@ class Query
         $tbl = $this->resource->getTableName(ETrans::ENTITY_NAME);
         $as = $asTrans;
         $cols = [
-            self::A_AMOUNT => ETrans::ATTR_VALUE
+            self::A_AMOUNT => ETrans::A_VALUE
         ];
-        $cond = $as . '.' . ETrans::ATTR_OPERATION_ID . '=' . $asLogOper . '.' . ELogOper::ATTR_OPER_ID;
+        $cond = $as . '.' . ETrans::A_OPERATION_ID . '=' . $asLogOper . '.' . ELogOper::A_OPER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_acc_account to get link to the customer */
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
         $as = $asAcc;
         $cols = [];
-        $cond = $as . '.' . EAcc::ATTR_ID . '=' . $asTrans . '.' . ETrans::ATTR_CREDIT_ACC_ID;
+        $cond = $as . '.' . EAcc::A_ID . '=' . $asTrans . '.' . ETrans::A_CREDIT_ACC_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_bon_base_log_cust to get link to bonus donors */
         $tbl = $this->resource->getTableName(ELogCust::ENTITY_NAME);
         $as = $asLogCust;
         $cols = [
-            self::A_CUST_ID => ELogCust::ATTR_CUSTOMER_ID
+            self::A_CUST_ID => ELogCust::A_CUSTOMER_ID
         ];
-        $cond = $as . '.' . ELogCust::ATTR_TRANS_ID . '=' . $asTrans . '.' . ETrans::ATTR_ID;
+        $cond = $as . '.' . ELogCust::A_TRANS_ID . '=' . $asTrans . '.' . ETrans::A_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_dwnl_customer to get MLM IDs for donors */
         $tbl = $this->resource->getTableName(EDwnCust::ENTITY_NAME);
         $as = $asDwnlCust;
         $cols = [
-            self::A_MLM_ID => EDwnCust::ATTR_MLM_ID
+            self::A_MLM_ID => EDwnCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnCust::ATTR_CUSTOMER_ID . '=' . $asLogCust . '.' . ELogCust::ATTR_CUSTOMER_ID;
+        $cond = $as . '.' . EDwnCust::A_CUSTOMER_ID . '=' . $asLogCust . '.' . ELogCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN customer_entity to get name */
@@ -119,18 +119,18 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::ATTR_CUSTOMER_ID;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_bon_hyb_dwnl to get PV & depth for donors */
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asBonDwnl;
         $cols = [
-            self::A_DEPTH => EBonDwnl::ATTR_DEPTH,
-            self::A_PV => EBonDwnl::ATTR_PV
+            self::A_DEPTH => EBonDwnl::A_DEPTH,
+            self::A_PV => EBonDwnl::A_PV
         ];
-        $onCalcRef = $as . '.' . EBonDwnl::ATTR_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS;
-        $onCustId = $as . '.' . EBonDwnl::ATTR_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::ATTR_CUSTOMER_ID;
+        $onCalcRef = $as . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS;
+        $onCustId = $as . '.' . EBonDwnl::A_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
         $cond = "($onCalcRef) AND ($onCustId)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
@@ -138,14 +138,14 @@ class Query
         $tbl = $this->resource->getTableName(ERankCode::ENTITY_NAME);
         $as = $asRankCode;
         $cols = [
-            self::A_RANK_CODE => ERankCode::ATTR_CODE
+            self::A_RANK_CODE => ERankCode::A_CODE
         ];
-        $cond = $as . '.' . ERankCode::ATTR_ID . '=' . $asBonDwnl . '.' . EBonDwnl::ATTR_RANK_REF;
+        $cond = $as . '.' . ERankCode::A_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_RANK_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcBonus = "$asLogOper." . ELogOper::ATTR_CALC_ID . '=:' . self::BND_CALC_ID_BONUS;
-        $byCustId = "$asAcc." . EAcc::ATTR_CUST_ID . '=:' . self::BND_CUST_ID;
+        $byCalcBonus = "$asLogOper." . ELogOper::A_CALC_ID . '=:' . self::BND_CALC_ID_BONUS;
+        $byCustId = "$asAcc." . EAcc::A_CUST_ID . '=:' . self::BND_CUST_ID;
         $result->where("($byCalcBonus) AND ($byCustId)");
 
         return $result;

@@ -31,13 +31,13 @@ class Query
         $tbl = $this->resource->getTableName(ETypeAsset::ENTITY_NAME);
         $as = $asType;
         $cols = [
-            self::A_ASSET => ETypeAsset::ATTR_CODE
+            self::A_ASSET => ETypeAsset::A_CODE
         ];
-        $cond = $as . '.' . ETypeAsset::ATTR_ID . '=' . $asAcc . '.' . EAccount::ATTR_ASSET_TYPE_ID;
+        $cond = $as . '.' . ETypeAsset::A_ID . '=' . $asAcc . '.' . EAccount::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* add filter by customer */
-        $where = $asAcc . '.' . EAccount::ATTR_CUST_ID . '=:' . self::BND_CUST_ID;
+        $where = $asAcc . '.' . EAccount::A_CUST_ID . '=:' . self::BND_CUST_ID;
         $result->where($where);
 
         return $result;

@@ -40,7 +40,7 @@ class GetBalances
         $tbl = $this->resource->getTableName(self::E_ACC);
         $as = $asAcc;
         $cols = [
-            self::A_BALANCE => EAccount::ATTR_BALANCE
+            self::A_BALANCE => EAccount::A_BALANCE
         ];
         $result->from([$as => $tbl], $cols);
 
@@ -48,13 +48,13 @@ class GetBalances
         $tbl = $this->resource->getTableName(self::E_TYPE);
         $as = $asType;
         $cols = [
-            self::A_ASSET => ETypeAsset::ATTR_CODE
+            self::A_ASSET => ETypeAsset::A_CODE
         ];
-        $cond = "$as." . ETypeAsset::ATTR_ID . '=' . $asAcc . '.' . EAccount::ATTR_ASSET_TYPE_ID;
+        $cond = "$as." . ETypeAsset::A_ID . '=' . $asAcc . '.' . EAccount::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* add filters */
-        $byCust = "$asAcc." . EAccount::ATTR_CUST_ID . "=:" . self::BND_CUST_ID;
+        $byCust = "$asAcc." . EAccount::A_CUST_ID . "=:" . self::BND_CUST_ID;
         $result->where($byCust);
 
         return $result;

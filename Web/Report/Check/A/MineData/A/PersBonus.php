@@ -141,13 +141,13 @@ class PersBonus
      */
     private function getPv($calcId, $custId)
     {
-        $byCalcId = EBonDwnl::ATTR_CALC_REF . '=' . (int)$calcId;
-        $byCustId = EBonDwnl::ATTR_CUST_REF . '=' . (int)$custId;
+        $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
+        $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";
         $rs = $this->repoBonDwn->get($where);
         $row = reset($rs);
-        $pv = $row->get(EBonDwnl::ATTR_PV);
-//        $rankId = $row->get(EBonDwnl::ATTR_RANK_REF);
+        $pv = $row->get(EBonDwnl::A_PV);
+//        $rankId = $row->get(EBonDwnl::A_RANK_REF);
 //        return [$pv, $rankId];
         return $pv;
     }

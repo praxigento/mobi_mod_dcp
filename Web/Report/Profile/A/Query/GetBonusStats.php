@@ -48,28 +48,28 @@ class GetBonusStats
         $tbl = $this->resource->getTableName(self::E_PERIOD);
         $as = $asPeriod;
         $cols = [];
-        $cond = "$as." . EPeriod::ATTR_CALC_TYPE_ID . '=' . $asType . '.' . ETypeCalc::ATTR_ID;
+        $cond = "$as." . EPeriod::A_CALC_TYPE_ID . '=' . $asType . '.' . ETypeCalc::A_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_bon_base_calc */
         $tbl = $this->resource->getTableName(self::E_CALC);
         $as = $asCalc;
         $cols = [
-            self::A_CALC_ID => ECalc::ATTR_ID,
-            self::A_DATE_UPDATED => ECalc::ATTR_DATE_ENDED
+            self::A_CALC_ID => ECalc::A_ID,
+            self::A_DATE_UPDATED => ECalc::A_DATE_ENDED
         ];
-        $cond = "$as." . ECalc::ATTR_PERIOD_ID . '=' . $asPeriod . '.' . EPeriod::ATTR_ID;
+        $cond = "$as." . ECalc::A_PERIOD_ID . '=' . $asPeriod . '.' . EPeriod::A_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* add filters */
         $quoted = $this->conn->quote(Cfg::CODE_TYPE_CALC_FORECAST_PHASE1);
-        $byCalcCode = "$asType." . ETypeCalc::ATTR_CODE . "=$quoted";
+        $byCalcCode = "$asType." . ETypeCalc::A_CODE . "=$quoted";
         $quoted = $this->conn->quote(Cfg::CALC_STATE_COMPLETE);
-        $byState = "$asCalc." . ECalc::ATTR_STATE . "=$quoted";
+        $byState = "$asCalc." . ECalc::A_STATE . "=$quoted";
         $result->where("($byCalcCode) AND ($byState)");
 
         /* add order */
-        $result->order("$asPeriod." . EPeriod::ATTR_DSTAMP_END . ' DESC');
+        $result->order("$asPeriod." . EPeriod::A_DSTAMP_END . ' DESC');
 
         /* limit */
         $result->limit(1);

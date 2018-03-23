@@ -50,24 +50,24 @@ class GetSumCredit
         /* LEFT JOIN prxgt_acc_transaction to get link to accounts */
         $tbl = $this->resource->getTableName(ETrans::ENTITY_NAME);
         $as = $asTrans;
-        $source = 'SUM(' . ETrans::ATTR_VALUE . ')';
+        $source = 'SUM(' . ETrans::A_VALUE . ')';
         $exp = new \Praxigento\Core\App\Repo\Query\Expression($source);
         $cols = [
             self::A_AMOUNT => $exp
         ];
-        $cond = $as . '.' . ETrans::ATTR_OPERATION_ID . '=' . $asLog . '.' . ELogOper::ATTR_OPER_ID;
+        $cond = $as . '.' . ETrans::A_OPERATION_ID . '=' . $asLog . '.' . ELogOper::A_OPER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_account to filter by customer id */
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
         $as = $asAcc;
         $cols = [];
-        $cond = $as . '.' . EAcc::ATTR_ID . '=' . $asTrans . '.' . ETrans::ATTR_CREDIT_ACC_ID;
+        $cond = $as . '.' . EAcc::A_ID . '=' . $asTrans . '.' . ETrans::A_CREDIT_ACC_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
-        $byCalcId = "$asLog." . ELogOper::ATTR_CALC_ID . "=:" . self::BND_CALC_ID;
-        $byCustId = "$asAcc." . EAcc::ATTR_CUST_ID . "=:" . self::BND_CUST_ID;
+        $byCalcId = "$asLog." . ELogOper::A_CALC_ID . "=:" . self::BND_CALC_ID;
+        $byCustId = "$asAcc." . EAcc::A_CUST_ID . "=:" . self::BND_CUST_ID;
         $result->where("($byCalcId) AND ($byCustId)");
 
         return $result;

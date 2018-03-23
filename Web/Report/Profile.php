@@ -131,8 +131,8 @@ class Profile
             /* get PV/TV/OV/Rank */
             $pv = $tv = $ov = 0;
             $rankCode = Cfg::RANK_DISTRIBUTOR;
-            $byCalc = EBonDwnl::ATTR_CALC_REF . '=' . (int)$calcId;
-            $byCust = EBonDwnl::ATTR_CUST_REF . '=' . (int)$custId;
+            $byCalc = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
+            $byCust = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
             $rs = $this->repoBonDwnl->get("($byCalc) AND ($byCust)");
             if (count($rs)) {
                 /** @var EBonDwnl $entry */
