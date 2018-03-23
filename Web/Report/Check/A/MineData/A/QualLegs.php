@@ -25,7 +25,7 @@ class QualLegs
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs */
-    private $repoLegs;
+    private $daoLegs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
@@ -33,14 +33,14 @@ class QualLegs
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs $repoLegs,
+        \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs $daoLegs,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu
     )
     {
         $this->hlpPeriod = $hlpPeriod;
-        $this->repoLegs = $repoLegs;
+        $this->daoLegs = $daoLegs;
         $this->qbGetItems = $qbGetItems;
         $this->hlpGetCalcs = $hlpGetCalcs;
         $this->hlpIsSchemeEu = $hlpIsSchemeEu;
@@ -135,7 +135,7 @@ class QualLegs
             ELegs::A_CUST_REF => $custId
         ];
         /** @var ELegs $entity */
-        $entity = $this->repoLegs->getById($ids);
+        $entity = $this->daoLegs->getById($ids);
         $maxLegCust = $entity->getCustMaxRef();
         $maxLegOv = $entity->getLegMax();
         $maxLegQual = $entity->getPvQualMax();

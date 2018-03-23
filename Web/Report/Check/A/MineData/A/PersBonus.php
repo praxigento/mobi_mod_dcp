@@ -23,19 +23,19 @@ class PersBonus
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
-    private $repoBonDwn;
+    private $daoBonDwn;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\BonusHybrid\Repo\Dao\Downline $repoBonDwn,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwn,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus\A\Query $qbGetItems,
         HGetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
-        $this->repoBonDwn = $repoBonDwn;
+        $this->daoBonDwn = $daoBonDwn;
         $this->qbGetItems = $qbGetItems;
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
@@ -144,7 +144,7 @@ class PersBonus
         $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
         $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";
-        $rs = $this->repoBonDwn->get($where);
+        $rs = $this->daoBonDwn->get($where);
         $row = reset($rs);
         $pv = $row->get(EBonDwnl::A_PV);
 //        $rankId = $row->get(EBonDwnl::A_RANK_REF);

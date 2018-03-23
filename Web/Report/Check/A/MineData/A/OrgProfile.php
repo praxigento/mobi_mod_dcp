@@ -22,19 +22,19 @@ class OrgProfile
     /** @var QBGetGen */
     private $qbGetGen;
     /** @var RBonDwnl */
-    private $repoBonDwnl;
+    private $daoBonDwnl;
     /** @var HGetCalcs */
     private $hlpGetCalcs;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        RBonDwnl $repoBonDwnl,
+        RBonDwnl $daoBonDwnl,
         QBGetGen $qbGetGen,
         HGetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
-        $this->repoBonDwnl = $repoBonDwnl;
+        $this->daoBonDwnl = $daoBonDwnl;
         $this->qbGetGen = $qbGetGen;
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
@@ -158,7 +158,7 @@ class OrgProfile
      */
     private function getPathKey($calcId, $custId)
     {
-        $entry = $this->repoBonDwnl->getByKeyCalcCust($calcId, $custId);
+        $entry = $this->daoBonDwnl->getByKeyCalcCust($calcId, $custId);
         $depth = $entry->getDepth();
         $path = $entry->getPath();
         $pathKey = $path . $custId . Cfg::DTPS . '%';

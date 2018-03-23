@@ -25,28 +25,28 @@ class Profile
     /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats */
     private $qbGetBonusStats;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
-    private $repoBonDwnl;
+    private $daoBonDwnl;
     /** @var \Praxigento\Downline\Repo\Dao\Customer */
-    private $repoDwnlCust;
+    private $daoDwnlCust;
     /** @var \Praxigento\PensionFund\Repo\Dao\Registry */
-    private $repoPension;
+    private $daoPension;
     /** @var \Praxigento\BonusBase\Repo\Dao\Rank */
-    private $repoRank;
+    private $daoRank;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
-        \Praxigento\BonusBase\Repo\Dao\Rank $repoRank,
-        \Praxigento\BonusHybrid\Repo\Dao\Downline $repoBonDwnl,
-        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust,
-        \Praxigento\PensionFund\Repo\Dao\Registry $repoPension,
+        \Praxigento\BonusBase\Repo\Dao\Rank $daoRank,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwnl,
+        \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust,
+        \Praxigento\PensionFund\Repo\Dao\Registry $daoPension,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats $qbGetBonusStats
     ) {
         $this->authenticator = $authenticator;
-        $this->repoRank = $repoRank;
-        $this->repoBonDwnl = $repoBonDwnl;
-        $this->repoDwnlCust = $repoDwnlCust;
-        $this->repoPension = $repoPension;
+        $this->daoRank = $daoRank;
+        $this->daoBonDwnl = $daoBonDwnl;
+        $this->daoDwnlCust = $daoDwnlCust;
+        $this->daoPension = $daoPension;
         $this->qbGetBalances = $qbGetBalances;
         $this->qbGetBonusStats = $qbGetBonusStats;
     }
@@ -61,10 +61,10 @@ class Profile
         $custId = $this->authenticator->getCurrentUserId($request);
         if ($custId) {
             /* get downline props (data's root props) */
-            $dwnlCust = $this->repoDwnlCust->getById($custId);
+            $dwnlCust = $this->daoDwnlCust->getById($custId);
             $mlmIdOwn = $dwnlCust->getHumanRef();
             $parentId = $dwnlCust->getParentId();
-            $dwnlParen = $this->repoDwnlCust->getById($parentId);
+            $dwnlParen = $this->daoDwnlCust->getById($parentId);
             $mlmIdParent = $dwnlParen->getHumanRef();
 
             /* get nested composite parts */
@@ -133,7 +133,7 @@ class Profile
             $rankCode = Cfg::RANK_DISTRIBUTOR;
             $byCalc = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
             $byCust = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
-            $rs = $this->repoBonDwnl->get("($byCalc) AND ($byCust)");
+            $rs = $this->daoBonDwnl->get("($byCalc) AND ($byCust)");
             if (count($rs)) {
                 /** @var EBonDwnl $entry */
                 $entry = reset($rs);
@@ -141,7 +141,7 @@ class Profile
                 $tv = $entry->getTv();
                 $ov = $entry->getOv();
                 $rankId = $entry->getRankRef();
-                $rank = $this->repoRank->getById($rankId);
+                $rank = $this->daoRank->getById($rankId);
                 $rankCode = $rank->getCode();
             }
             $result->setRank($rankCode);
@@ -160,7 +160,7 @@ class Profile
     private function getPension($custId)
     {
         $result = new \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Pension();
-        $registry = $this->repoPension->getById($custId);
+        $registry = $this->daoPension->getById($custId);
         if ($registry) {
             /* get data from repo */
             $left = $registry->getMonthsLeft();

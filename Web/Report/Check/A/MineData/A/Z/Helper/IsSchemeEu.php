@@ -15,15 +15,15 @@ class IsSchemeEu
     /** @var \Praxigento\BonusHybrid\Helper\IScheme */
     private $hlpScheme;
     /** @var \Praxigento\Downline\Repo\Dao\Customer */
-    private $repoDwnlCust;
+    private $daoDwnlCust;
 
     public function __construct(
         \Praxigento\BonusHybrid\Helper\IScheme $hlpScheme,
-        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust
+        \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust
     )
     {
         $this->hlpScheme = $hlpScheme;
-        $this->repoDwnlCust = $repoDwnlCust;
+        $this->daoDwnlCust = $daoDwnlCust;
     }
 
     /**
@@ -34,7 +34,7 @@ class IsSchemeEu
      */
     public function exec($custId)
     {
-        $custData = $this->repoDwnlCust->getById($custId);
+        $custData = $this->daoDwnlCust->getById($custId);
         $scheme = $this->hlpScheme->getSchemeByCustomer($custData);
         $result = ($scheme == Cfg::SCHEMA_EU);
         return $result;

@@ -38,15 +38,15 @@ class Downline
     /** @var \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder */
     private $qbLastCalc;
     /** @var \Praxigento\Downline\Repo\Dao\Customer */
-    private $repoDwnlCust;
+    private $daoDwnlCust;
     /** @var \Praxigento\Downline\Repo\Dao\Snap */
-    private $repoSnap;
+    private $daoSnap;
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $manObj,
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
-        \Praxigento\Downline\Repo\Dao\Customer $repoDwnlCust,
-        \Praxigento\Downline\Repo\Dao\Snap $repoSnap,
+        \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust,
+        \Praxigento\Downline\Repo\Dao\Snap $daoSnap,
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
         \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod
@@ -54,8 +54,8 @@ class Downline
         /* don't pass query builder to the parent - we have 4 builders in the operation, not one */
         parent::__construct($manObj, null);
         $this->authenticator = $authenticator;
-        $this->repoDwnlCust = $repoDwnlCust;
-        $this->repoSnap = $repoSnap;
+        $this->daoDwnlCust = $daoDwnlCust;
+        $this->daoSnap = $daoSnap;
         $this->qbDownline = $qbDownline;
         $this->qbLastCalc = $qbLastCalc;
         $this->hlpPeriod = $hlpPeriod;
@@ -193,10 +193,10 @@ class Downline
         $rootCustId = $this->authenticator->getCurrentUserId($request);
 
         /** @var \Praxigento\Downline\Repo\Data\Snap $customerRoot */
-        $customerRoot = $this->repoSnap->getByCustomerIdOnDate($rootCustId, $period);
+        $customerRoot = $this->daoSnap->getByCustomerIdOnDate($rootCustId, $period);
         if ($customerRoot === false) {
             /* probably this is new customer that is not in Downline Snaps */
-            $customerRoot = $this->repoDwnlCust->getById($rootCustId);
+            $customerRoot = $this->daoDwnlCust->getById($rootCustId);
         }
         $path = $customerRoot->getPath();
         $depth = $customerRoot->getDepth();
