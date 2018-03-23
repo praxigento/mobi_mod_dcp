@@ -29,6 +29,8 @@ class Builder
     const AS_TRAN = 'trn';
 
     /** Columns/expressions aliases for external usage ('camelCase' naming) */
+    const A_ACC_DEBIT = 'accDebit';
+    const A_ACC_OWN = 'accOwn';
     const A_ASSET = 'asset';
     const A_DATE = 'date';
     const A_DETAILS = 'details';
@@ -65,7 +67,9 @@ class Builder
         /* LEFT JOIN prxgt_acc_account */
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
         $as = $asAcc;
-        $cols = [];
+        $cols = [
+            self::A_ACC_OWN => EAcc::A_ID
+        ];
         $cond = $as . '.' . EAcc::A_CUST_ID . '=' . $asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
@@ -73,6 +77,7 @@ class Builder
         $tbl = $this->resource->getTableName(ETran::ENTITY_NAME);
         $as = $asTrans;
         $cols = [
+            self::A_ACC_DEBIT => ETran::A_DEBIT_ACC_ID,
             self::A_ITEM_ID => ETran::A_ID,
             self::A_DATE => ETran::A_DATE_APPLIED,
             self::A_DETAILS => ETran::A_NOTE,

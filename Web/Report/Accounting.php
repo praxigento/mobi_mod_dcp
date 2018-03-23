@@ -247,6 +247,8 @@ class Accounting
         $rs = $ctx->get(self::CTX_RESULT);
         foreach ($rs as $tran) {
             /* parse query entry */
+            $accOwn = $tran[QBAccTrans::A_ACC_OWN];
+            $accDebit = $tran[QBAccTrans::A_ACC_DEBIT];
             $asset = $tran[QBAccTrans::A_ASSET];
             $date = $tran[QBAccTrans::A_DATE];
             $details = $tran[QBAccTrans::A_DETAILS];
@@ -254,6 +256,10 @@ class Accounting
             $otherCustId = $tran[QBAccTrans::A_OTHER_CUST_ID];
             $type = $tran[QBAccTrans::A_TYPE];
             $value = $tran[QBAccTrans::A_VALUE];
+
+            /* pre-process data */
+            if ($accOwn == $accDebit) $value = -$value;
+
             /* compose API entry */
             $item = new DRespTrans();
             $item->setAsset($asset);
