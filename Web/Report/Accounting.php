@@ -8,187 +8,198 @@ namespace Praxigento\Dcp\Web\Report;
 use Praxigento\Core\Api\Helper\Period as HPeriod;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response as AResponse;
-use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data as DRespData;
+use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data as AData;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance as DRespBalance;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer as DRespCust;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans as DRespTrans;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder as QBAccTrans;
 use Praxigento\Dcp\Web\Report\Accounting\A\Query as QBBal;
 use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 
 class Accounting
-    extends \Praxigento\Core\App\Web\Processor\WithQuery
     implements \Praxigento\Dcp\Api\Web\Report\AccountingInterface
 {
-    /**
-     * Parameter names for local customizations of the queries.
-     */
-    const BND_CUST_ID = 'custId'; // to get asset balances
-    const CTX_QUERY_BAL = 'queryBalance';
-    const CTX_QUERY_CUST = 'queryCustomer';
-    /**
-     * Name of the local context variables.
-     */
-    const VAR_CUST_ID = 'custId';
-    /** @deprecated remove it if not used */
-    const VAR_CUST_PATH = 'path';
-    const VAR_DATE_CLOSE = 'dateClose';
-    const VAR_DATE_FROM = 'dateTo'; // date before period start
-    const VAR_DATE_OPEN = 'dateOpen'; // the last date for period
-    const VAR_DATE_TO = 'dateFrom';
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
+    /** @var \Praxigento\Core\App\Web\Processor\WithQuery\Conditions */
+    private $procQuery;
     /** @var \Praxigento\Dcp\Web\Report\Accounting\A\Query */
     private $qbBalance;
     /** @var \Praxigento\Downline\Repo\Query\Customer\Get */
     private $qbCust;
+    /** @var \Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder */
+    private $qbDcpTrans;
 
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $manObj,
-        \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
+        \Praxigento\Core\App\Web\Processor\WithQuery\Conditions $procQuery,
+        \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder $qbDcpTrans,
         \Praxigento\Dcp\Web\Report\Accounting\A\Query $qbBalance,
         \Praxigento\Downline\Repo\Query\Customer\Get $qbCust
     ) {
-        parent::__construct($manObj, $qbDcpTrans);
         $this->authenticator = $authenticator;
+        $this->procQuery = $procQuery;
         $this->hlpPeriod = $hlpPeriod;
+        $this->qbDcpTrans = $qbDcpTrans;
         $this->qbBalance = $qbBalance;
         $this->qbCust = $qbCust;
-    }
-
-    protected function authorize(\Praxigento\Core\Data $ctx) {
-        /* do nothing - in Production Mode current customer's ID is used as root customer ID */
-    }
-
-    protected function createQuerySelect(\Praxigento\Core\Data $ctx) {
-        parent::createQuerySelect($ctx);
-        /* add more query builders */
-        $query = $this->qbBalance->build();
-        $ctx->set(self::CTX_QUERY_BAL, $query);
-        $query = $this->qbCust->build();
-        $ctx->set(self::CTX_QUERY_CUST, $query);
-
     }
 
     public function exec($request)
     {
         assert($request instanceof ARequest);
-        $data = parent::process($request);
-        $result = new AResponse($data);
-        /* conveyors are bad for debug */
-        if ($result->getData()->getCustomer()) {
-            $result->getResult()->setCode(AResponse::CODE_SUCCESS);
-        } else {
-            $result->getResult()->setCode(AResponse::CODE_NO_DATA);
-        }
-        return $result;
-    }
-
-    protected function performQuery(\Praxigento\Core\Data $ctx) {
-        /* get working vars from context */
-        $var = $ctx->get(self::CTX_VARS);
-        $custId = $var->get(self::VAR_CUST_ID);
-        $dsOpen = $var->get(self::VAR_DATE_OPEN);
-        $dsClose = $var->get(self::VAR_DATE_CLOSE);
-
-        /* get transactions as primary query (sorted, filtered, etc.)*/
-        $trans = $this->queryTrans($ctx);
-
-        /** get balances */
-        /** @var \Magento\Framework\DB\Select $queryBal */
-        $queryBal = $ctx->get(self::CTX_QUERY_BAL);
-        $bindBal = [
-            QBBal::BIND_MAX_DATE => $dsOpen,
-            self::BND_CUST_ID => $custId
-        ];
-        $balOpen = $this->queryBalances($queryBal, $bindBal);
-        $bindBal [QBBal::BIND_MAX_DATE] = $dsClose;
-        $balClose = $this->queryBalances($queryBal, $bindBal);
-
-        /** @var \Magento\Framework\DB\Select $queryCust */
-        $queryCust = $ctx->get(self::CTX_QUERY_CUST);
-        $bindCust = [
-            self::BND_CUST_ID => $custId
-        ];
-        $cust = $this->queryCustomer($queryCust, $bindCust);
-
-        /* re-assemble result data (there are more than 1 query in operation) */
-        $result = new DRespData();
-        $result->setTrans($trans);
-        $result->setBalanceOpen($balOpen);
-        $result->setBalanceClose($balClose);
-        $result->setCustomer($cust);
-
-        $ctx->set(self::CTX_RESULT, $result);
-    }
-
-    protected function populateQuery(\Praxigento\Core\Data $ctx) {
-        /* get working vars from context */
-        /** @var \Praxigento\Core\Data $bind */
-        $bind = $ctx->get(self::CTX_BIND);
-        /** @var \Praxigento\Core\Data $vars */
-        $vars = $ctx->get(self::CTX_VARS);
-
-        /* get working vars */
-        $custId = $vars->get(self::VAR_CUST_ID);
-        $dateFrom = $vars->get(self::VAR_DATE_FROM);
-        $dateTo = $vars->get(self::VAR_DATE_TO);
-
-        /* bind values for query parameters */
-        $bind->set(QBAccTrans::BND_CUST_ID, $custId);
-        $bind->set(QBAccTrans::BND_DATE_FROM, $dateFrom);
-        $bind->set(QBAccTrans::BND_DATE_TO, $dateTo);
-
-    }
-
-    protected function prepareQueryParameters(\Praxigento\Core\Data $ctx) {
-        /* get working vars from context */
-        /** @var \Praxigento\Core\Data $vars */
-        $vars = $ctx->get(self::CTX_VARS);
-        /** @var \Praxigento\Dcp\Api\Web\Report\Accounting\Request $req */
-        $req = $ctx->get(self::CTX_REQ);
-        $reqData = $req->getData();
-        $reqDev = $req->getDev();
-
-        /* extract HTTP request parameters */
+        /** define local working data */
+        $reqData = $request->getData();
         $period = $reqData->getPeriod();
-        $devCustId = $reqDev->getCustId();
+        $cond = $request->getConditions();
 
-        /**
-         * Define period.
-         */
+        $result = new AResponse();
+        $respRes = $result->getResult();
+
+        /** perform processing */
+        $custId = $this->authenticator->getCurrentUserId($request);
         if (!$period) {
             $period = $this->hlpPeriod->getPeriodCurrent(null, 0, HPeriod::TYPE_MONTH);
         }
-        /* apply dates for transactions */
-        $dateFrom = $this->hlpPeriod->getTimestampFrom($period, HPeriod::TYPE_MONTH);
-        $dateTo = $this->hlpPeriod->getTimestampTo($period, HPeriod::TYPE_MONTH);
+        if ($custId) {
+            /* get nested composite parts */
+            list($balOpen, $balClose) = $this->getBalances($custId, $period);
+            $customer = $this->getCustomer($custId);
+            $trans = $this->getTransactions($custId, $period, $cond);
+
+            /* compose API object */
+            $data = new AData();
+            $data->setBalanceOpen($balOpen);
+            $data->setBalanceClose($balClose);
+            $data->setCustomer($customer);
+            $data->setTrans($trans);
+            $result->setData($data);
+
+            $respRes->setCode(AResponse::CODE_SUCCESS);
+        } else {
+            $respRes->setCode(AResponse::CODE_NO_DATA);
+        }
+
+        /** compose result */
+        return $result;
+    }
+
+    /**
+     * Get balances for given customer for given period.
+     *
+     * @param $custId
+     * @param $period
+     * @return array [$balOpen, $balClose]
+     */
+    private function getBalances($custId, $period)
+    {
         /* dates for balances */
         $dateFirst = $this->hlpPeriod->getPeriodFirstDate($period, HPeriod::TYPE_MONTH);
         $dsOpen = $this->hlpPeriod->getPeriodPrev($dateFirst);
         $dsClose = $this->hlpPeriod->getPeriodLastDate($period, HPeriod::TYPE_MONTH);
 
+        /** @var \Magento\Framework\DB\Select $queryBal */
+        $queryBal = $this->qbBalance->build();
+        $bindBal = [
+            QBBal::BIND_MAX_DATE => $dsOpen,
+            QBBal::BND_CUST_ID => $custId
+        ];
+        $balOpen = $this->queryBalances($queryBal, $bindBal);
+        $bindBal [QBBal::BIND_MAX_DATE] = $dsClose;
+        $balClose = $this->queryBalances($queryBal, $bindBal);
 
-        /**
-         * Define root customer & path to the root customer on the date.
-         */
-        /* TODO: add authorization */
-        $request = new \Praxigento\Core\Api\App\Web\Request();
-        $dev = new \Praxigento\Core\Api\App\Web\Request\Dev();
-        $dev->setCustId($devCustId);
-        $request->setDev($dev);
-        $custId = $this->authenticator->getCurrentUserId($request);
+        return [$balOpen, $balClose];
+    }
 
-        /* save working variables into execution context */
-        $vars->set(self::VAR_CUST_ID, $custId);
-        $vars->set(self::VAR_DATE_FROM, $dateFrom);
-        $vars->set(self::VAR_DATE_TO, $dateTo);
-        $vars->set(self::VAR_DATE_OPEN, $dsOpen);
-        $vars->set(self::VAR_DATE_CLOSE, $dsClose);
+    /**
+     * @param $custId
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer
+     * @throws \Exception
+     */
+    private function getCustomer($custId)
+    {
+        /** @var \Magento\Framework\DB\Select $query */
+        $query = $this->qbCust->build();
+        $bind = [
+            QBCust::BND_CUST_ID => $custId
+        ];
+        /* perform query and collect data */
+        $conn = $query->getConnection();
+        $rs = $conn->fetchRow($query, $bind);
+        $id = $rs[QBCust::A_ID];
+        $mlmId = $rs[QBCust::A_MLM_ID];
+        $nameFirst = $rs[QBCust::A_NAME_FIRST];
+        $nameLast = $rs[QBCust::A_NAME_LAST];
+
+        /** compose result */
+        $result = new DRespCust();
+        $result->setId($id);
+        $result->setMlmId($mlmId);
+        $result->setNameFirst($nameFirst);
+        $result->setNameLast($nameLast);
+        return $result;
+    }
+
+    /**
+     * @param int $custId
+     * @param string $period YYYYMM or YYYYMMDD
+     * @param \Praxigento\Core\Api\App\Web\Request\Conditions $cond
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[]
+     */
+    private function getTransactions($custId, $period, $cond)
+    {
+        $result = [];
+        $query = $this->qbDcpTrans->build();
+
+        /* apply dates for transactions */
+        $dateFrom = $this->hlpPeriod->getTimestampFrom($period, HPeriod::TYPE_MONTH);
+        $dateTo = $this->hlpPeriod->getTimestampTo($period, HPeriod::TYPE_MONTH);
+        $bind = [
+            QBAccTrans::BND_CUST_ID => $custId,
+            QBAccTrans::BND_DATE_FROM => $dateFrom,
+            QBAccTrans::BND_DATE_TO => $dateTo
+        ];
+
+        /* TODO: use regular arguments, don't use context here */
+        $ctx = new \Praxigento\Core\App\Web\Processor\WithQuery\Conditions\Context();
+        $ctx->setQuery($query);
+        $ctx->setConditions($cond);
+        $this->procQuery->exec($ctx);
+        $query = $ctx->getQuery();
+        $conn = $query->getConnection();
+        $rs = $conn->fetchAll($query, $bind);
+        foreach ($rs as $tran) {
+            /* parse query entry */
+            $accOwn = $tran[QBAccTrans::A_ACC_OWN];
+            $accDebit = $tran[QBAccTrans::A_ACC_DEBIT];
+            $asset = $tran[QBAccTrans::A_ASSET];
+            $date = $tran[QBAccTrans::A_DATE];
+            $details = $tran[QBAccTrans::A_DETAILS];
+            $itemId = $tran[QBAccTrans::A_ITEM_ID];
+            $otherCustId = $tran[QBAccTrans::A_OTHER_CUST_ID];
+            $type = $tran[QBAccTrans::A_TYPE];
+            $value = $tran[QBAccTrans::A_VALUE];
+
+            /* pre-process data */
+            if ($accOwn == $accDebit) $value = -$value;
+            if (is_null($otherCustId)) $otherCustId = Cfg::CUST_SYS_NAME;
+
+            /* compose API entry */
+            $item = new DRespTrans();
+            $item->setAsset($asset);
+            $item->setCustomerId($otherCustId);
+            $item->setDate($date);
+            $item->setDetails($details);
+            $item->setTransId($itemId);
+            $item->setType($type);
+            $item->setValue($value);
+            $result[] = $item;
+        }
+        return $result;
     }
 
     /**
@@ -207,67 +218,6 @@ class Accounting
             $value = $one[QBBal::A_BALANCE];
             $item = new DRespBalance();
             $item->setAsset($asset);
-            $item->setValue($value);
-            $result[] = $item;
-        }
-        return $result;
-    }
-
-    /**
-     * @param \Magento\Framework\DB\Select $query
-     * @param $bind
-     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer
-     */
-    private function queryCustomer(\Magento\Framework\DB\Select $query, $bind) {
-        /* perform query and collect data */
-        $conn = $query->getConnection();
-        $rs = $conn->fetchRow($query, $bind);
-        $id = $rs[QBCust::A_ID];
-        $mlmId = $rs[QBCust::A_MLM_ID];
-        $nameFirst = $rs[QBCust::A_NAME_FIRST];
-        $nameLast = $rs[QBCust::A_NAME_LAST];
-
-        /* assemble result */
-        $result = new DRespCust();
-        $result->setId($id);
-        $result->setMlmId($mlmId);
-        $result->setNameFirst($nameFirst);
-        $result->setNameLast($nameLast);
-        return $result;
-    }
-
-    /**
-     * @param \Praxigento\Core\Data $ctx
-     * @return DRespTrans[]
-     */
-    private function queryTrans(\Praxigento\Core\Data $ctx) {
-        $result = [];
-        /* get transactions details */
-        parent::performQuery($ctx);
-        $rs = $ctx->get(self::CTX_RESULT);
-        foreach ($rs as $tran) {
-            /* parse query entry */
-            $accOwn = $tran[QBAccTrans::A_ACC_OWN];
-            $accDebit = $tran[QBAccTrans::A_ACC_DEBIT];
-            $asset = $tran[QBAccTrans::A_ASSET];
-            $date = $tran[QBAccTrans::A_DATE];
-            $details = $tran[QBAccTrans::A_DETAILS];
-            $itemId = $tran[QBAccTrans::A_ITEM_ID];
-            $otherCustId = $tran[QBAccTrans::A_OTHER_CUST_ID];
-            $type = $tran[QBAccTrans::A_TYPE];
-            $value = $tran[QBAccTrans::A_VALUE];
-
-            /* pre-process data */
-            if ($accOwn == $accDebit) $value = -$value;
-
-            /* compose API entry */
-            $item = new DRespTrans();
-            $item->setAsset($asset);
-            $item->setCustomerId($otherCustId);
-            $item->setDate($date);
-            $item->setDetails($details);
-            $item->setTransId($itemId);
-            $item->setType($type);
             $item->setValue($value);
             $result[] = $item;
         }

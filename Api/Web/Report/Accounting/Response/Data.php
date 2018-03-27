@@ -16,7 +16,7 @@ namespace Praxigento\Dcp\Api\Web\Report\Accounting\Response;
  * @method void setBalanceOpen(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data)
  * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] getTrans()
  * @method void setTrans(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] $data)
- * * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer getCustomer()
+ * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer getCustomer()
  * @method void setCustomer(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer $data)
  */
 class Data
