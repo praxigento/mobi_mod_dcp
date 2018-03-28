@@ -32,6 +32,8 @@ class Profile
     private $daoPension;
     /** @var \Praxigento\BonusBase\Repo\Dao\Rank */
     private $daoRank;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
@@ -39,6 +41,7 @@ class Profile
         \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwnl,
         \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust,
         \Praxigento\PensionFund\Repo\Dao\Registry $daoPension,
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats $qbGetBonusStats
     ) {
@@ -47,6 +50,7 @@ class Profile
         $this->daoBonDwnl = $daoBonDwnl;
         $this->daoDwnlCust = $daoDwnlCust;
         $this->daoPension = $daoPension;
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->qbGetBalances = $qbGetBalances;
         $this->qbGetBonusStats = $qbGetBonusStats;
     }
@@ -62,10 +66,10 @@ class Profile
         if ($custId) {
             /* get downline props (data's root props) */
             $dwnlCust = $this->daoDwnlCust->getById($custId);
-            $mlmIdOwn = $dwnlCust->getHumanRef();
+            $mlmIdOwn = $dwnlCust->getMlmId();
             $parentId = $dwnlCust->getParentId();
             $dwnlParen = $this->daoDwnlCust->getById($parentId);
-            $mlmIdParent = $dwnlParen->getHumanRef();
+            $mlmIdParent = $dwnlParen->getMlmId();
 
             /* get nested composite parts */
             $balances = $this->getBalances($custId);
@@ -101,11 +105,25 @@ class Profile
         if (is_array($rs)) {
             /** @var EAccount $one */
             foreach ($rs as $one) {
+                /* parse DB data */
                 $asset = $one[QBGetBalances::A_ASSET];
-                $balance = $one[QBGetBalances::A_BALANCE];
+                $currency = $one[QBGetBalances::A_ASSET_CURR];
+                $value = $one[QBGetBalances::A_BALANCE];
+                /* trash code :( */
+                if ($currency) {
+                    /**
+                     * Currency is null for not-money-assets (PV),
+                     * convert asset value from asset currency to customer currency
+                     */
+                    $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+                    $currency = $this->hlpCustCurrency->getCurrency($custId);
+                }
+
+                /* compose API data */
                 $item = new DBalanceItem();
                 $item->setAsset($asset);
-                $item->setValue($balance);
+                $item->setCurrency($currency);
+                $item->setValue($value);
                 $result[] = $item;
             }
         }

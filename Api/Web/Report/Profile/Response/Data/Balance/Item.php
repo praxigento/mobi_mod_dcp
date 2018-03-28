@@ -15,12 +15,20 @@ class Item
     extends \Praxigento\Core\Data
 {
     const A_ASSET = 'asset';
+    const A_CURRENCY = 'currency';
     const A_VALUE = 'value';
 
     /** @return string */
     public function getAsset()
     {
         $result = parent::get(self::A_ASSET);
+        return $result;
+    }
+
+    /** @return string|null */
+    public function getCurrency()
+    {
+        $result = parent::get(self::A_CURRENCY);
         return $result;
     }
 
@@ -35,6 +43,12 @@ class Item
     public function setAsset($data)
     {
         parent::set(self::A_ASSET, $data);
+    }
+
+    /** @param string $data */
+    public function setCurrency($data)
+    {
+        parent::set(self::A_CURRENCY, $data);
     }
 
     /** @param float $data */

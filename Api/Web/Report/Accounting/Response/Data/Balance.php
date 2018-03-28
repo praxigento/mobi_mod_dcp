@@ -12,6 +12,8 @@ namespace Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data;
  *
  * @method string getAsset()
  * @method void setAsset(string $data)
+ * @method string|null getCurrency()
+ * @method void setCurrency(string $data)
  * @method float getValue()
  * @method void setValue(float $data)
  */
@@ -19,6 +21,7 @@ class Balance
     extends \Praxigento\Core\Data
 {
     const A_ASSET = 'asset';
+    const A_CURRENCY = 'currency';
     const A_VALUE = 'value';
 
 }

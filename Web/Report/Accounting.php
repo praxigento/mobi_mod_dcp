@@ -231,6 +231,7 @@ class Accounting
         $conn = $query->getConnection();
         $rs = $conn->fetchAll($query, $bind);
         foreach ($rs as $one) {
+            /* parse DB data */
             $asset = $one[QBBal::A_ASSET];
             $value = $one[QBBal::A_BALANCE];
             $currency = $one[QBBal::A_CURRENCY];
@@ -241,9 +242,13 @@ class Accounting
                  * convert asset value from asset currency to customer currency
                  */
                 $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+                $currency = $this->hlpCustCurrency->getCurrency($custId);
             }
+
+            /* compose API data */
             $item = new DRespBalance();
             $item->setAsset($asset);
+            $item->setCurrency($currency);
             $item->setValue($value);
             $result[] = $item;
         }
