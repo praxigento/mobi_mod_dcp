@@ -8,10 +8,10 @@ namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\InfBonus as DInfBonus;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\InfBonus\Item as DItem;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
-use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Infinity Bonus" section of the DCP's "Check" report.
@@ -20,6 +20,8 @@ class InfinityBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
@@ -28,12 +30,14 @@ class InfinityBonus
     private $hlpIsSchemeEu;
 
     public function __construct(
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu
     )
     {
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetItems = $qbGetItems;
         $this->hlpGetCalcs = $hlpGetCalcs;
@@ -101,7 +105,7 @@ class InfinityBonus
         foreach ($rs as $one) {
             /* get DB data */
             $amount = $one[QBGetItems::A_AMOUNT];
-            $custId = $one[QBGetItems::A_CUST_ID];
+            $custIdFrom = $one[QBGetItems::A_CUST_ID];
             $depth = $one[QBGetItems::A_DEPTH];
             $mlmId = $one[QBGetItems::A_MLM_ID];
             $nameFirst = $one[QBGetItems::A_NAME_FIRST];
@@ -113,10 +117,11 @@ class InfinityBonus
             $name = "$nameFirst $nameLast";
             $percent = $amount / $pv;
             $percent = round($percent, 2);
+            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
 
             /* compose API data */
             $customer = new DCustomer();
-            $customer->setId($custId);
+            $customer->setId($custIdFrom);
             $customer->setLevel($depth);
             $customer->setMlmId($mlmId);
             $customer->setName($name);

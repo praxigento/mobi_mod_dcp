@@ -6,12 +6,12 @@
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\Totals as DTotals;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit as QBGetAmntCredit;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit as QBGetAmntDebit;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetSumCredit as QBGetSumCredit;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
-use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Totals" section of the DCP's "Check" report.
@@ -20,6 +20,8 @@ class Totals
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetAmountCredit */
     private $qbGetAmntCredit;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals\A\Query\GetAmountDebit */
@@ -32,6 +34,7 @@ class Totals
     private $hlpIsSchemeEu;
 
     public function __construct(
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetAmntCredit $qbGetAmntCredit,
         QBGetAmntDebit $qbGetAmntDebit,
@@ -40,6 +43,7 @@ class Totals
         HIsSchemeEu $hlpIsSchemeEu
     )
     {
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetAmntCredit = $qbGetAmntCredit;
         $this->qbGetAmntDebit = $qbGetAmntDebit;
@@ -94,6 +98,14 @@ class Totals
             $amntOver = $this->getSumCredit($idBonOver, $custId);
             $amntInf = $this->getSumCredit($idBonInf, $custId);
             $amntFee = $this->getAmountDebit($idProcFee, $custId);
+
+            $amntPers = $this->hlpCustCurrency->convertFromBase($amntPers, $custId);
+            $amntTeam = $this->hlpCustCurrency->convertFromBase($amntTeam, $custId);
+            $amntCourt = $this->hlpCustCurrency->convertFromBase($amntCourt, $custId);
+            $amntOver = $this->hlpCustCurrency->convertFromBase($amntOver, $custId);
+            $amntInf = $this->hlpCustCurrency->convertFromBase($amntInf, $custId);
+            $amntFee = $this->hlpCustCurrency->convertFromBase($amntFee, $custId);
+
             $amntTotal = $amntPers + $amntTeam + $amntCourt + $amntOver + $amntInf;
             $amntNet = $amntTotal - $amntFee;
         }

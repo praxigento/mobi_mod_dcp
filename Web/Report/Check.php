@@ -13,6 +13,8 @@ class Check
     implements \Praxigento\Dcp\Api\Web\Report\CheckInterface
 {
 
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\Authorize */
     private $procAuthorize;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\ComposeResponse */
@@ -23,12 +25,14 @@ class Check
     private $procParseRequest;
 
     public function __construct(
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Dcp\Web\Report\Check\A\Authorize $procAuthorize,
         \Praxigento\Dcp\Web\Report\Check\A\ComposeResponse $procComposeResp,
         \Praxigento\Dcp\Web\Report\Check\A\MineData $procMineData,
         \Praxigento\Dcp\Web\Report\Check\A\ParseRequest $procParseRequest
     )
     {
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->procAuthorize = $procAuthorize;
         $this->procComposeResp = $procComposeResp;
         $this->procMineData = $procMineData;
@@ -37,6 +41,7 @@ class Check
 
     public function exec($request)
     {
+        /* DON"T USE THIS CODE AS TEMPLATE FOR OTHER SERVICES (old stylish) */
         assert($request instanceof ARequest);
         /* prepare processing context */
         $ctx = new AContext();
@@ -49,12 +54,16 @@ class Check
         $this->procAuthorize->exec($ctx);
         $this->procMineData->exec($ctx);
         $this->procComposeResp->exec($ctx);
+        $custId = $ctx->getCustomerId();
+        $currency = $this->hlpCustCurrency->getCurrency($custId);
 
         /* get result from context */
         $result = $ctx->getWebResponse();
         $respRes = $result->getResult();
         $data = $result->getData();
         $cust = $data->getCustomer();
+        $data->setCurrency($currency);
+
         if (is_null($cust)) {
             $respRes->setCode(AResponse::CODE_NO_DATA);
             $result->setData(null);
