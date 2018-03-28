@@ -13,8 +13,8 @@ use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance as DRespBalan
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer as DRespCust;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans as DRespTrans;
 use Praxigento\Dcp\Config as Cfg;
-use Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder as QBAccTrans;
-use Praxigento\Dcp\Web\Report\Accounting\A\Query as QBBal;
+use Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans as QBAccTrans;
+use Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance as QBBal;
 use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 
 class Accounting
@@ -26,19 +26,19 @@ class Accounting
     private $hlpPeriod;
     /** @var \Praxigento\Core\App\Web\Processor\WithQuery\Conditions */
     private $procQuery;
-    /** @var \Praxigento\Dcp\Web\Report\Accounting\A\Query */
+    /** @var \Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance */
     private $qbBalance;
     /** @var \Praxigento\Downline\Repo\Query\Customer\Get */
     private $qbCust;
-    /** @var \Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder */
+    /** @var \Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans */
     private $qbDcpTrans;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\Core\App\Web\Processor\WithQuery\Conditions $procQuery,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\Dcp\Repo\Query\Report\Accounting\Trans\Builder $qbDcpTrans,
-        \Praxigento\Dcp\Web\Report\Accounting\A\Query $qbBalance,
+        \Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans $qbDcpTrans,
+        \Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance $qbBalance,
         \Praxigento\Downline\Repo\Query\Customer\Get $qbCust
     ) {
         $this->authenticator = $authenticator;
@@ -180,7 +180,7 @@ class Accounting
             $date = $tran[QBAccTrans::A_DATE];
             $details = $tran[QBAccTrans::A_DETAILS];
             $itemId = $tran[QBAccTrans::A_ITEM_ID];
-            $otherCustId = $tran[QBAccTrans::A_OTHER_CUST_ID];
+            $otherCustId = $tran[QBAccTrans::A_OTHER_CUST];
             $type = $tran[QBAccTrans::A_TYPE];
             $value = $tran[QBAccTrans::A_VALUE];
 

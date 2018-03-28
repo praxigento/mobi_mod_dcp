@@ -3,27 +3,27 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Repo\Query\Report\Accounting\Trans;
+namespace Praxigento\Dcp\Web\Report\Accounting\A\Query;
 
 use Praxigento\Accounting\Repo\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Data\Operation as EOper;
 use Praxigento\Accounting\Repo\Data\Transaction as ETran;
 use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
 use Praxigento\Accounting\Repo\Data\Type\Operation as ETypeOper;
-use Praxigento\BonusBase\Repo\Data\Log\Customers as ELogCust;
 use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 
 /**
  * Build query to get transactions data for DCP Accounting Report.
  */
-class Builder
+class Trans
     extends \Praxigento\Core\App\Repo\Query\Builder
 {
     /** Tables aliases for external usage ('camelCase' naming) */
-    const AS_ACC = 'acc';
+    const AS_ACC_CUST = 'acc';
+    const AS_ACC_OTHER = 'accOther';
     const AS_ASSET_TYPE = 'assType';
     const AS_DWNL_CUST = 'dwnlCust';
-    const AS_LOG_CUST = 'logCust';
+    const AS_DWNL_OTHER = 'dwnlOther';
     const AS_OPER = 'opr';
     const AS_OPER_TYPE = 'oprType';
     const AS_TRAN = 'trn';
@@ -35,7 +35,7 @@ class Builder
     const A_DATE = 'date';
     const A_DETAILS = 'details';
     const A_ITEM_ID = 'itemId';
-    const A_OTHER_CUST_ID = 'otherCustId';
+    const A_OTHER_CUST = 'otherCust';
     const A_TYPE = 'type';
     const A_VALUE = 'value';
 
@@ -50,10 +50,11 @@ class Builder
         $result = $this->conn->select();
 
         /* define tables aliases for internal usage (in this method) */
-        $asAcc = self::AS_ACC;
+        $asAccCust = self::AS_ACC_CUST;
+        $asAccOther = self::AS_ACC_OTHER;
         $asAssType = self::AS_ASSET_TYPE;
         $asDwnlCust = self::AS_DWNL_CUST;
-        $asLogCust = self::AS_LOG_CUST;
+        $asDwnlOther = self::AS_DWNL_OTHER;
         $asOper = self::AS_OPER;
         $asOperType = self::AS_OPER_TYPE;
         $asTrans = self::AS_TRAN;
@@ -66,11 +67,11 @@ class Builder
 
         /* LEFT JOIN prxgt_acc_account */
         $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
-        $as = $asAcc;
+        $as = $asAccCust;
         $cols = [
             self::A_ACC_OWN => EAcc::A_ID
         ];
-        $cond = $as . '.' . EAcc::A_CUST_ID . '=' . $asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_ID;
+        $cond = "$as." . EAcc::A_CUST_ID . "=$asDwnlCust." . EDwnlCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_transaction */
@@ -83,16 +84,35 @@ class Builder
             self::A_DETAILS => ETran::A_NOTE,
             self::A_VALUE => ETran::A_VALUE
         ];
-        $condDeb = $as . '.' . ETran::A_DEBIT_ACC_ID . '=' . $asAcc . '.' . EAcc::A_ID;
-        $condCred = $as . '.' . ETran::A_CREDIT_ACC_ID . '=' . $asAcc . '.' . EAcc::A_ID;
+        $condDeb = "$as." . ETran::A_DEBIT_ACC_ID . "=$asAccCust." . EAcc::A_ID;
+        $condCred = "$as." . ETran::A_CREDIT_ACC_ID . "=$asAccCust." . EAcc::A_ID;
         $cond = "($condDeb) OR ($condCred)";
+        $result->joinLeft([$as => $tbl], $cond, $cols);
+
+        /* LEFT JOIN prxgt_acc_account as accOther */
+        $tbl = $this->resource->getTableName(EAcc::ENTITY_NAME);
+        $as = $asAccOther;
+        $cols = [];
+        $byDebit = "$as." . EAcc::A_ID . "=$asTrans." . ETran::A_DEBIT_ACC_ID;
+        $byCredit = "$as." . EAcc::A_ID . "=$asTrans." . ETran::A_CREDIT_ACC_ID;
+        $byNotCust = "$as." . EAcc::A_CUST_ID . "!=$asAccCust." . EAcc::A_CUST_ID;
+        $cond = "(($byDebit) OR ($byCredit)) AND ($byNotCust)";
+        $result->joinLeft([$as => $tbl], $cond, $cols);
+
+        /* LEFT JOIN prxgt_dwnl_customer as dwnlOther */
+        $tbl = $this->resource->getTableName(EDwnlCust::ENTITY_NAME);
+        $as = $asDwnlOther;
+        $cols = [
+            self::A_OTHER_CUST => EDwnlCust::A_MLM_ID
+        ];
+        $cond = "$as." . EDwnlCust::A_CUSTOMER_ID . "=$asAccOther." . EAcc::A_CUST_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_operation */
         $tbl = $this->resource->getTableName(EOper::ENTITY_NAME);
         $as = $asOper;
         $cols = [];
-        $cond = $as . '.' . EOper::A_ID . '=' . $asTrans . '.' . ETran::A_OPERATION_ID;
+        $cond = "$as." . EOper::A_ID . "=$asTrans." . ETran::A_OPERATION_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_type_operation */
@@ -101,7 +121,7 @@ class Builder
         $cols = [
             self::A_TYPE => ETypeOper::A_CODE
         ];
-        $cond = $as . '.' . ETypeOper::A_ID . '=' . $asOper . '.' . EOper::A_TYPE_ID;
+        $cond = "$as." . ETypeOper::A_ID . "=$asOper." . EOper::A_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_type_asset */
@@ -110,17 +130,9 @@ class Builder
         $cols = [
             self::A_ASSET => ETypeAsset::A_CODE
         ];
-        $cond = $as . '.' . ETypeAsset::A_ID . '=' . $asAcc . '.' . EAcc::A_ASSET_TYPE_ID;
+        $cond = "$as." . ETypeAsset::A_ID . "=$asAccCust." . EAcc::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
-        /* LEFT JOIN prxgt_bon_base_log_cust */
-        $tbl = $this->resource->getTableName(ELogCust::ENTITY_NAME);
-        $as = $asLogCust;
-        $cols = [
-            self::A_OTHER_CUST_ID => ELogCust::A_CUSTOMER_ID
-        ];
-        $cond = $as . '.' . ELogCust::A_TRANS_ID . '=' . $asTrans . '.' . ETran::A_ID;
-        $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /**
          * Query tuning.

@@ -12,8 +12,8 @@ namespace Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data;
  *
  * @method string getAsset()
  * @method void setAsset(string $data)
- * @method int getCustomerId()
- * @method void setCustomerId(int $data)
+ * @method string getCustomerId()
+ * @method void setCustomerId(string $data)
  * @method string getDate()
  * @method void setDate(string $data)
  * @method string getDetails()
