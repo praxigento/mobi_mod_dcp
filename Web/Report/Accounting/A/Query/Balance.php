@@ -16,6 +16,7 @@ class Balance
 
     /** Columns/expressions aliases for external usage ('camelCase' naming) */
     const A_ASSET = 'asset';
+    const A_CURRENCY = 'currency';
 
     /** Bound variables names ('camelCase' naming) */
     const BND_CUST_ID = 'custId'; // to get asset balances
@@ -31,7 +32,8 @@ class Balance
         $tbl = $this->resource->getTableName(ETypeAsset::ENTITY_NAME);
         $as = $asType;
         $cols = [
-            self::A_ASSET => ETypeAsset::A_CODE
+            self::A_ASSET => ETypeAsset::A_CODE,
+            self::A_CURRENCY => ETypeAsset::A_CURRENCY
         ];
         $cond = $as . '.' . ETypeAsset::A_ID . '=' . $asAcc . '.' . EAccount::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);

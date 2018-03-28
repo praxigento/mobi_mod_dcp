@@ -13,8 +13,8 @@ use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance as DRespBalan
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer as DRespCust;
 use Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans as DRespTrans;
 use Praxigento\Dcp\Config as Cfg;
-use Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans as QBAccTrans;
 use Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance as QBBal;
+use Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans as QBAccTrans;
 use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 
 class Accounting
@@ -22,6 +22,8 @@ class Accounting
 {
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Core\App\Web\Processor\WithQuery\Conditions */
@@ -36,6 +38,7 @@ class Accounting
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\Core\App\Web\Processor\WithQuery\Conditions $procQuery,
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans $qbDcpTrans,
         \Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance $qbBalance,
@@ -43,6 +46,7 @@ class Accounting
     ) {
         $this->authenticator = $authenticator;
         $this->procQuery = $procQuery;
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->qbDcpTrans = $qbDcpTrans;
         $this->qbBalance = $qbBalance;
@@ -67,12 +71,14 @@ class Accounting
         }
         if ($custId) {
             /* get nested composite parts */
+            $currency = $this->hlpCustCurrency->getCurrency($custId);
             list($balOpen, $balClose) = $this->getBalances($custId, $period);
             $customer = $this->getCustomer($custId);
             $trans = $this->getTransactions($custId, $period, $cond);
 
             /* compose API object */
             $data = new AData();
+            $data->setCurrency($currency);
             $data->setBalanceOpen($balOpen);
             $data->setBalanceClose($balClose);
             $data->setCustomer($customer);
@@ -108,9 +114,9 @@ class Accounting
             QBBal::BIND_MAX_DATE => $dsOpen,
             QBBal::BND_CUST_ID => $custId
         ];
-        $balOpen = $this->queryBalances($queryBal, $bindBal);
+        $balOpen = $this->queryBalances($queryBal, $bindBal, $custId);
         $bindBal [QBBal::BIND_MAX_DATE] = $dsClose;
-        $balClose = $this->queryBalances($queryBal, $bindBal);
+        $balClose = $this->queryBalances($queryBal, $bindBal, $custId);
 
         return [$balOpen, $balClose];
     }
@@ -177,6 +183,7 @@ class Accounting
             $accOwn = $tran[QBAccTrans::A_ACC_OWN];
             $accDebit = $tran[QBAccTrans::A_ACC_DEBIT];
             $asset = $tran[QBAccTrans::A_ASSET];
+            $currency = $tran[QBAccTrans::A_ASSET_CUR];
             $date = $tran[QBAccTrans::A_DATE];
             $details = $tran[QBAccTrans::A_DETAILS];
             $itemId = $tran[QBAccTrans::A_ITEM_ID];
@@ -187,6 +194,14 @@ class Accounting
             /* pre-process data */
             if ($accOwn == $accDebit) $value = -$value;
             if (is_null($otherCustId)) $otherCustId = Cfg::CUST_SYS_NAME;
+            /* trash code :( */
+            if ($currency) {
+                /**
+                 * Currency is null for not-money-assets (PV),
+                 * convert asset value from asset currency to customer currency
+                 */
+                $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+            }
 
             /* compose API entry */
             $item = new DRespTrans();
@@ -208,14 +223,25 @@ class Accounting
      * @param \Magento\Framework\DB\Select $query
      * @param $bind
      * @return DRespBalance[]
+     * @throws \Exception
      */
-    private function queryBalances(\Magento\Framework\DB\Select $query, $bind) {
+    private function queryBalances(\Magento\Framework\DB\Select $query, $bind, $custId)
+    {
         $result = [];
         $conn = $query->getConnection();
         $rs = $conn->fetchAll($query, $bind);
         foreach ($rs as $one) {
             $asset = $one[QBBal::A_ASSET];
             $value = $one[QBBal::A_BALANCE];
+            $currency = $one[QBBal::A_CURRENCY];
+            /* trash code :( */
+            if ($currency) {
+                /**
+                 * Currency is null for not-money-assets (PV),
+                 * convert asset value from asset currency to customer currency
+                 */
+                $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+            }
             $item = new DRespBalance();
             $item->setAsset($asset);
             $item->setValue($value);

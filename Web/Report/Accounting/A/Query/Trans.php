@@ -32,6 +32,7 @@ class Trans
     const A_ACC_DEBIT = 'accDebit';
     const A_ACC_OWN = 'accOwn';
     const A_ASSET = 'asset';
+    const A_ASSET_CUR = 'assetCur';
     const A_DATE = 'date';
     const A_DETAILS = 'details';
     const A_ITEM_ID = 'itemId';
@@ -128,7 +129,8 @@ class Trans
         $tbl = $this->resource->getTableName(ETypeAsset::ENTITY_NAME);
         $as = $asAssType;
         $cols = [
-            self::A_ASSET => ETypeAsset::A_CODE
+            self::A_ASSET => ETypeAsset::A_CODE,
+            self::A_ASSET_CUR => ETypeAsset::A_CURRENCY
         ];
         $cond = "$as." . ETypeAsset::A_ID . "=$asAccCust." . EAcc::A_ASSET_TYPE_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
