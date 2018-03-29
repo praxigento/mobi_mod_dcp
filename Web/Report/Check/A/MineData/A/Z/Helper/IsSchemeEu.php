@@ -12,13 +12,13 @@ use Praxigento\Dcp\Config as Cfg;
  */
 class IsSchemeEu
 {
-    /** @var \Praxigento\BonusHybrid\Helper\IScheme */
+    /** @var \Praxigento\BonusHybrid\Api\Helper\Scheme */
     private $hlpScheme;
     /** @var \Praxigento\Downline\Repo\Dao\Customer */
     private $daoDwnlCust;
 
     public function __construct(
-        \Praxigento\BonusHybrid\Helper\IScheme $hlpScheme,
+        \Praxigento\BonusHybrid\Api\Helper\Scheme $hlpScheme,
         \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust
     )
     {
