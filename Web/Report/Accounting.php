@@ -100,6 +100,7 @@ class Accounting
      * @param $custId
      * @param $period
      * @return array [$balOpen, $balClose]
+     * @throws \Exception
      */
     private function getBalances($custId, $period)
     {
@@ -155,6 +156,7 @@ class Accounting
      * @param string $period YYYYMM or YYYYMMDD
      * @param \Praxigento\Core\Api\App\Web\Request\Conditions $cond
      * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[]
+     * @throws \Exception
      */
     private function getTransactions($custId, $period, $cond)
     {
@@ -170,12 +172,7 @@ class Accounting
             QBAccTrans::BND_DATE_TO => $dateTo
         ];
 
-        /* TODO: use regular arguments, don't use context here */
-        $ctx = new \Praxigento\Core\App\Web\Processor\WithQuery\Conditions\Context();
-        $ctx->setQuery($query);
-        $ctx->setConditions($cond);
-        $this->procQuery->exec($ctx);
-        $query = $ctx->getQuery();
+        $query = $this->procQuery->exec($query, $cond);
         $conn = $query->getConnection();
         $rs = $conn->fetchAll($query, $bind);
         foreach ($rs as $tran) {
