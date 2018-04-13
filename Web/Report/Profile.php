@@ -149,6 +149,7 @@ class Profile
         if ($rs) {
             $calcId = $rs[QBGetBonusStats::A_CALC_ID];
             $updated = $rs[QBGetBonusStats::A_DATE_UPDATED];
+            $updated .= ' UTC'; // see \Praxigento\BonusBase\Repo\Dao\Calculation::markComplete
             $result->setDateUpdated($updated);
             /* get PV/TV/OV/Rank */
             $pv = $tv = $ov = 0;
