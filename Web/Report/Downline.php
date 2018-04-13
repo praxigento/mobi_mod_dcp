@@ -6,9 +6,9 @@
 namespace Praxigento\Dcp\Web\Report;
 
 use Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder as QBLastCalc;
-use Praxigento\Core\Api\Helper\Period as HPeriod;
 use Praxigento\Dcp\Api\Web\Report\Downline\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response as AResponse;
+use Praxigento\Dcp\Api\Web\Report\Downline\Response\Entry as ARespEntry;
 use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Downline\A\Query as QBDownline;
 
@@ -31,16 +31,18 @@ class Downline
 
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
+    /** @var \Praxigento\Downline\Repo\Dao\Customer */
+    private $daoDwnlCust;
+    /** @var \Praxigento\Downline\Repo\Dao\Snap */
+    private $daoSnap;
+    /** @var \Praxigento\Dcp\Api\Helper\Map */
+    private $hlpDcpMap;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Downline\A\Query */
     private $qbDownline;
     /** @var \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder */
     private $qbLastCalc;
-    /** @var \Praxigento\Downline\Repo\Dao\Customer */
-    private $daoDwnlCust;
-    /** @var \Praxigento\Downline\Repo\Dao\Snap */
-    private $daoSnap;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
@@ -48,7 +50,8 @@ class Downline
         \Praxigento\Downline\Repo\Dao\Snap $daoSnap,
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
         \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
-        \Praxigento\Core\Api\Helper\Period $hlpPeriod
+        \Praxigento\Core\Api\Helper\Period $hlpPeriod,
+        \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap
     ) {
         /* don't pass query builder to the parent - we have 4 builders in the operation, not one */
         $this->authenticator = $authenticator;
@@ -57,17 +60,7 @@ class Downline
         $this->qbDownline = $qbDownline;
         $this->qbLastCalc = $qbLastCalc;
         $this->hlpPeriod = $hlpPeriod;
-    }
-
-    protected function authorize(\Praxigento\Core\Data $ctx)
-    {
-        /* do nothing - in Production Mode current customer's ID is used as root customer ID */
-    }
-
-    protected function createQuerySelect(\Praxigento\Core\Data $ctx)
-    {
-        $query = $this->qbDownline->build();
-        $ctx->set(self::CTX_QUERY, $query);
+        $this->hlpDcpMap = $hlpDcpMap;
     }
 
     public function exec($request)
@@ -84,20 +77,19 @@ class Downline
 
         /** perform processing */
         $custId = $this->authenticator->getCurrentUserId($request);
-        if (!$period) {
-            $period = $this->hlpPeriod->getPeriodCurrent(null, 0, HPeriod::TYPE_MONTH);
-        }
-        if (!$type) {
-            $period = $this->hlpPeriod->getPeriodCurrent(null, 0, HPeriod::TYPE_MONTH);
-        }
         if ($custId) {
+            $period = $this->validatePeriod($period);
+            $type = $this->validateReportType($type);
             $calcId = $this->getCalculationId($period, $type);
+            list($path, $depth) = $this->getPath($custId, $period);
+            $downline = $this->loadDownline($calcId, $custId, $path);
+            $respData = $this->prepareDownline($downline, $custId, $path, $depth);
 
+            $result->setData($respData);
             $respRes->setCode(AResponse::CODE_SUCCESS);
         } else {
             $respRes->setCode(AResponse::CODE_NO_DATA);
         }
-//        $data = parent::process($request);
 
         /** compose result */
         return $result;
@@ -124,6 +116,76 @@ class Downline
         $rs = $conn->fetchRow($query, $bind);
         $result = $rs[QBLastCalc::A_CALC_ID];
         return $result;
+    }
+
+    /**
+     * Get calculation ID according to given $period & $type to load downline tree.
+     *
+     * @param string $period 'YYMM'
+     * @param string $type
+     * @return int
+     */
+    private function getCalculationId($period, $type)
+    {
+        $calcTypeCode = null;
+        $onDate = $this->hlpPeriod->getPeriodLastDate($period);
+        $current = $this->hlpPeriod->getPeriodCurrent();
+        if ($onDate >= $current) {
+            /* use forecast downlines */
+            $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PLAIN;
+            if ($type == self::REPORT_TYPE_COMPRESSED) {
+                $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PHASE1;
+            }
+        } else {
+            /* use historical downlines */
+            $calcTypeCode = Cfg::CODE_TYPE_CALC_PV_WRITE_OFF;
+            if ($type == self::REPORT_TYPE_COMPRESSED) {
+                $calcTypeCode = Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1;
+            }
+        }
+        $result = $this->getCalcId($calcTypeCode, $onDate);
+        return $result;
+    }
+
+    /**
+     * Define root customer & path to the root customer on the date.
+     *
+     * @param int $custId
+     * @param string $period YYYYMMDD
+     * @return array
+     */
+    private function getPath($custId, $period)
+    {
+        /** @var \Praxigento\Downline\Repo\Data\Snap $customerRoot */
+        $customerRoot = $this->daoSnap->getByCustomerIdOnDate($custId, $period);
+        if ($customerRoot === false) {
+            /* probably this is new customer that is not in Downline Snaps */
+            $customerRoot = $this->daoDwnlCust->getById($custId);
+        }
+        $path = $customerRoot->getPath();
+        $depth = $customerRoot->getDepth();
+        return [$path, $depth];
+    }
+
+    /**
+     * Perform query & load downline data from DB.
+     *
+     * @param int $calcId
+     * @param int $custId
+     * @param string $path
+     * @return array
+     */
+    private function loadDownline($calcId, $custId, $path)
+    {
+        $query = $this->qbDownline->build();
+        $bind = [
+            QBDownline::BND_CALC_ID => $calcId,
+            QBDownline::BND_CUST_ID => $custId,
+            QBDownline::BND_PATH => $path . '%',
+        ];
+        $conn = $query->getConnection();
+        $rs = $conn->fetchAll($query, $bind);
+        return $rs;
     }
 
     protected function performQuery(\Praxigento\Core\Data $ctx)
@@ -173,6 +235,32 @@ class Downline
         $bind->set(QBDownline::BND_CALC_ID, $calcRef);
         $bind->set(QBDownline::BND_PATH, $path);
         $bind->set(QBDownline::BND_CUST_ID, $rootCustId);
+    }
+
+    private function prepareDownline($downline, $rootId, $rootPath, $rootDepth)
+    {
+        $result = [];
+        foreach ($downline as $one) {
+            $custId = $one[QBDownline::A_CUSTOMER_REF];
+
+            $parentId = ($custId == $rootId) ? $custId : $one[QBDownline::A_PARENT_REF];
+            $one[QBDownline::A_PARENT_REF] = $parentId;
+            /* shrink path */
+            $path = $one[QBDownline::A_PATH];
+            $path = str_replace($rootPath, '', $path);
+            $one[QBDownline::A_PATH] = $path;
+            /* decrease depth */
+            $depth = $one[QBDownline::A_DEPTH] - $rootDepth;
+            $one[QBDownline::A_DEPTH] = $depth;
+            /* change rank code to UI value */
+            $rankCode = $one[QBDownline::A_RANK_CODE];
+            $rankUi = $this->hlpDcpMap->rankCodeToUi($rankCode);
+            $one[QBDownline::A_RANK_CODE] = $rankUi;
+            /* place into result set */
+//            $entry = new ARespEntry($one);
+            $result[] = $one;
+        }
+        return $result;
     }
 
     protected function prepareQueryParameters(\Praxigento\Core\Data $ctx)
@@ -247,31 +335,35 @@ class Downline
     }
 
     /**
-     * Get calculation ID according to given $period & $type to load downline tree.
+     * Validate & normalize given period.
      *
-     * @param string $period 'YYMM'
-     * @param string $type
-     * @return int
+     * @param string $period YYYY, YYYYMM, YYYYMMDD
+     * @return string YYYYMMDD
      */
-    private function getCalculationId($period, $type)
+    private function validatePeriod($period)
     {
-        $calcTypeCode = null;
-        $onDate = $this->hlpPeriod->getPeriodLastDate($period);
-        $current = $this->hlpPeriod->getPeriodCurrent();
-        if ($onDate >= $current) {
-            /* use forecast downlines */
-            $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PLAIN;
-            if ($type == self::REPORT_TYPE_COMPRESSED) {
-                $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PHASE1;
-            }
-        } else {
-            /* use historical downlines */
-            $calcTypeCode = Cfg::CODE_TYPE_CALC_PV_WRITE_OFF;
-            if ($type == self::REPORT_TYPE_COMPRESSED) {
-                $calcTypeCode = Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1;
-            }
+        if (!$period) {
+            $period = $this->hlpPeriod->getPeriodCurrent(null, 0, HPeriod::TYPE_MONTH);
         }
-        $result = $this->getCalcId($calcTypeCode, $onDate);
+        /* YYYYMMDD => YYYYMM */
+        if (strlen($period) > 6) {
+            $period = substr($period, 0, 6);
+        }
+        $result = $this->hlpPeriod->getPeriodLastDate($period);
         return $result;
+    }
+
+    /**
+     * Set default type 'compressed'.
+     *
+     * @param string $type
+     * @return string
+     */
+    private function validateReportType($type)
+    {
+        if ($type != self::REPORT_TYPE_COMPLETE) {
+            $type = self::REPORT_TYPE_COMPRESSED;
+        }
+        return $type;
     }
 }

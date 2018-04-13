@@ -23,7 +23,7 @@ namespace Praxigento\Dcp\Api\Web\Report\Downline\Response;
  * @method string getNameFirst()
  * @method void setNameFirst(string $data)
  * @method string getNameLast()
- * @method void setNameLastId(string $data)
+ * @method void setNameLast(string $data)
  * @method float getOv()
  * @method void setOv(float $data)
  * @method int getParentRef()
