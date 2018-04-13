@@ -13,7 +13,7 @@ class Index
         $type = \Magento\Framework\Controller\ResultFactory::TYPE_PAGE;
         /** @var \Magento\Framework\View\Result\Page $resultPage */
         $resultPage = $this->resultFactory->create($type);
-        $resultPage->getConfig()->getTitle()->set(__('Downline Control Panel'));
+        $resultPage->getConfig()->getTitle()->set(__('My Santegra'));
         return $resultPage;
     }
 

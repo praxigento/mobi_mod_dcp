@@ -7,7 +7,7 @@
                    name="customer-account-navigation-dcp-downline">
                 <arguments>
                     <argument name="path" xsi:type="string">dcp/index/#/downline</argument>
-                    <argument name="label" xsi:type="string" translate="true">My Downline</argument>
+                    <argument name="label" xsi:type="string" translate="true">My Santegra</argument>
                 </arguments>
             </block>
         </referenceBlock>

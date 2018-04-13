@@ -20,10 +20,6 @@ class Profile
 {
     /** @var \Praxigento\Core\Api\App\Web\Authenticator\Front */
     private $authenticator;
-    /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances */
-    private $qbGetBalances;
-    /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats */
-    private $qbGetBonusStats;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $daoBonDwnl;
     /** @var \Praxigento\Downline\Repo\Dao\Customer */
@@ -34,6 +30,12 @@ class Profile
     private $daoRank;
     /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
     private $hlpCustCurrency;
+    /** @var \Praxigento\Dcp\Api\Helper\Map */
+    private $hlpDcpMap;
+    /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances */
+    private $qbGetBalances;
+    /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats */
+    private $qbGetBonusStats;
 
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
@@ -42,6 +44,7 @@ class Profile
         \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust,
         \Praxigento\PensionFund\Repo\Dao\Registry $daoPension,
         \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
+        \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats $qbGetBonusStats
     ) {
@@ -51,6 +54,7 @@ class Profile
         $this->daoDwnlCust = $daoDwnlCust;
         $this->daoPension = $daoPension;
         $this->hlpCustCurrency = $hlpCustCurrency;
+        $this->hlpDcpMap = $hlpDcpMap;
         $this->qbGetBalances = $qbGetBalances;
         $this->qbGetBonusStats = $qbGetBonusStats;
     }
@@ -161,8 +165,10 @@ class Profile
                 $rankId = $entry->getRankRef();
                 $rank = $this->daoRank->getById($rankId);
                 $rankCode = $rank->getCode();
+
             }
-            $result->setRank($rankCode);
+            $rankUiCode = $this->hlpDcpMap->rankCodeToUi($rankCode);
+            $result->setRank($rankUiCode);
             $result->setPv($pv);
             $result->setTv($tv);
             $result->setOv($ov);
