@@ -24,6 +24,8 @@ class Accounting
     private $authenticator;
     /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
     private $hlpCustCurrency;
+    /** @var \Praxigento\Core\Api\Helper\Format */
+    private $hlpFormat;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Core\App\Web\Processor\WithQuery\Conditions */
@@ -40,6 +42,7 @@ class Accounting
         \Praxigento\Core\App\Web\Processor\WithQuery\Conditions $procQuery,
         \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
+        \Praxigento\Core\Api\Helper\Format $hlpFormat,
         \Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans $qbDcpTrans,
         \Praxigento\Dcp\Web\Report\Accounting\A\Query\Balance $qbBalance,
         \Praxigento\Downline\Repo\Query\Customer\Get $qbCust
@@ -48,6 +51,7 @@ class Accounting
         $this->procQuery = $procQuery;
         $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
+        $this->hlpFormat = $hlpFormat;
         $this->qbDcpTrans = $qbDcpTrans;
         $this->qbBalance = $qbBalance;
         $this->qbCust = $qbCust;
@@ -186,7 +190,7 @@ class Accounting
             $itemId = $tran[QBAccTrans::A_ITEM_ID];
             $otherCustId = $tran[QBAccTrans::A_OTHER_CUST];
             $type = $tran[QBAccTrans::A_TYPE];
-            $value = $tran[QBAccTrans::A_VALUE];
+            $value = $this->hlpFormat->toNumber($tran[QBAccTrans::A_VALUE]);
 
             /* pre-process data */
             if ($accOwn == $accDebit) $value = -$value;
@@ -240,8 +244,9 @@ class Accounting
                  */
                 $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
                 $currency = $this->hlpCustCurrency->getCurrency($custId);
+            } else {
+                $value = $this->hlpFormat->toNumber($value);
             }
-
             /* compose API data */
             $item = new DRespBalance();
             $item->setAsset($asset);

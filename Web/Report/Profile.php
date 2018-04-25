@@ -32,6 +32,8 @@ class Profile
     private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Api\Helper\Map */
     private $hlpDcpMap;
+    /** @var \Praxigento\Core\Api\Helper\Format */
+    private $hlpFormat;
     /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances */
     private $qbGetBalances;
     /** @var \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats */
@@ -45,6 +47,7 @@ class Profile
         \Praxigento\PensionFund\Repo\Dao\Registry $daoPension,
         \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap,
+        \Praxigento\Core\Api\Helper\Format $hlpFormat,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBalances $qbGetBalances,
         \Praxigento\Dcp\Web\Report\Profile\A\Query\GetBonusStats $qbGetBonusStats
     ) {
@@ -55,6 +58,7 @@ class Profile
         $this->daoPension = $daoPension;
         $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpDcpMap = $hlpDcpMap;
+        $this->hlpFormat = $hlpFormat;
         $this->qbGetBalances = $qbGetBalances;
         $this->qbGetBonusStats = $qbGetBonusStats;
     }
@@ -121,6 +125,8 @@ class Profile
                      */
                     $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
                     $currency = $this->hlpCustCurrency->getCurrency($custId);
+                } else {
+                    $value = $this->hlpFormat->toNumber($value);
                 }
 
                 /* compose API data */
