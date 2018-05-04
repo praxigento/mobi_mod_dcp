@@ -61,6 +61,7 @@ class Query
         /* LEFT JOIN prxgt_bon_hyb_dwnl_qual */
         $tbl = $this->resource->getTableName(EBonQual::ENTITY_NAME);
         $as = $asQual;
+        /* TODO: do we really need this entity? See \Praxigento\BonusHybrid\Repo\Data\Downline::A_RANK_REF */
         $expMgrSrc = 'COUNT(' . self::AS_BON_DWNL_QUAL . '.' . EBonQual::A_RANK_REF . ')';
         $expMgr = new \Praxigento\Core\App\Repo\Query\Expression($expMgrSrc);
         $cols = [
