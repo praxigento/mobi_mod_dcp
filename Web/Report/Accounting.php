@@ -116,11 +116,11 @@ class Accounting
         /** @var \Magento\Framework\DB\Select $queryBal */
         $queryBal = $this->qbBalance->build();
         $bindBal = [
-            QBBal::BIND_MAX_DATE => $dsOpen,
+            QBBal::BND_MAX_DATE => $dsOpen,
             QBBal::BND_CUST_ID => $custId
         ];
         $balOpen = $this->queryBalances($queryBal, $bindBal, $custId);
-        $bindBal [QBBal::BIND_MAX_DATE] = $dsClose;
+        $bindBal [QBBal::BND_MAX_DATE] = $dsClose;
         $balClose = $this->queryBalances($queryBal, $bindBal, $custId);
 
         return [$balOpen, $balClose];
