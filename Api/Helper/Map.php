@@ -16,4 +16,12 @@ interface Map
      * @return string
      */
     public function rankCodeToUi(string $code);
+
+    /**
+     * Convert rank's ID to UI representation.
+     * @param int $id
+     * @return string
+     */
+    public function rankIdToUi(int $id);
+
 }
