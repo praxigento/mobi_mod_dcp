@@ -173,10 +173,11 @@ class Downline
     private function loadDownline($calcId, $custId, $path, $cond)
     {
         $query = $this->qbDownline->build();
+        $bndPath = $path . $custId . Cfg::DTPS . '%';
         $bind = [
             QBDownline::BND_CALC_ID => $calcId,
             QBDownline::BND_CUST_ID => $custId,
-            QBDownline::BND_PATH => $path . '%',
+            QBDownline::BND_PATH => $bndPath,
         ];
         $query = $this->procQuery->exec($query, $cond);
         $conn = $query->getConnection();
