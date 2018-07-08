@@ -10,7 +10,6 @@ class PersonalBonus
     extends \Praxigento\Core\Data
 {
     const A_COMPRESSED_VOLUME = 'compressed_volume';
-    const A_ITEMS = 'items';
     const A_OWN_VOLUME = 'own_volume';
     const A_PERCENT = 'percent';
 
@@ -20,15 +19,6 @@ class PersonalBonus
     public function getCompressedVolume(): float
     {
         $result = parent::get(self::A_COMPRESSED_VOLUME);
-        return $result;
-    }
-
-    /**
-     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus\Item[]
-     */
-    public function getItems()
-    {
-        $result = parent::get(self::A_ITEMS);
         return $result;
     }
 
@@ -53,11 +43,6 @@ class PersonalBonus
     public function setCompressedVolume($data)
     {
         parent::set(self::A_COMPRESSED_VOLUME, $data);
-    }
-
-    public function setItems($data)
-    {
-        parent::set(self::A_ITEMS, $data);
     }
 
     public function setOwnVolume($data)
