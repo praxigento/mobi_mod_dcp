@@ -20,8 +20,6 @@ class InfinityBonus
 {
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
-    private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus\A\Query */
     private $qbGetItems;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
@@ -30,14 +28,12 @@ class InfinityBonus
     private $hlpIsSchemeEu;
 
     public function __construct(
-        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu
     )
     {
-        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetItems = $qbGetItems;
         $this->hlpGetCalcs = $hlpGetCalcs;
@@ -117,7 +113,6 @@ class InfinityBonus
             $name = "$nameFirst $nameLast";
             $percent = $amount / $pv;
             $percent = round($percent, 2);
-            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
 
             /* compose API data */
             $customer = new DCustomer();
