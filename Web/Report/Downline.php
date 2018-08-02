@@ -108,7 +108,16 @@ class Downline
         /* fetch & parse data */
         $conn = $query->getConnection();
         $rs = $conn->fetchRow($query, $bind);
-        $result = $rs[QBLastCalc::A_CALC_ID];
+        $dstampEnd = $rs[QBLastCalc::A_DS_END];
+        if (
+            ($dateEnd == $dstampEnd) ||
+            ($calcTypeCode == Cfg::CODE_TYPE_CALC_FORECAST_PLAIN) ||
+            ($calcTypeCode == Cfg::CODE_TYPE_CALC_FORECAST_PHASE1)
+        ) {
+            $result = $rs[QBLastCalc::A_CALC_ID];
+        } else {
+            $result = null;
+        }
         return $result;
     }
 
@@ -123,21 +132,22 @@ class Downline
     {
         $calcTypeCode = null;
         $onDate = $this->hlpPeriod->getPeriodLastDate($period);
-        $current = $this->hlpPeriod->getPeriodCurrent();
-        if ($onDate >= $current) {
+
+        /* use historical downlines */
+        $calcTypeCode = Cfg::CODE_TYPE_CALC_PV_WRITE_OFF;
+        if ($type == self::REPORT_TYPE_COMPRESSED) {
+            $calcTypeCode = Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1;
+        }
+        $result = $this->getCalcId($calcTypeCode, $onDate);
+        if (!$result) {
             /* use forecast downlines */
             $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PLAIN;
             if ($type == self::REPORT_TYPE_COMPRESSED) {
                 $calcTypeCode = Cfg::CODE_TYPE_CALC_FORECAST_PHASE1;
             }
-        } else {
-            /* use historical downlines */
-            $calcTypeCode = Cfg::CODE_TYPE_CALC_PV_WRITE_OFF;
-            if ($type == self::REPORT_TYPE_COMPRESSED) {
-                $calcTypeCode = Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1;
-            }
+            $result = $this->getCalcId($calcTypeCode, $onDate);
         }
-        $result = $this->getCalcId($calcTypeCode, $onDate);
+
         return $result;
     }
 
