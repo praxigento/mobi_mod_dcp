@@ -123,6 +123,32 @@ class Accounting
         $bindBal [QBBal::BND_MAX_DATE] = $dsClose;
         $balClose = $this->queryBalances($queryBal, $bindBal, $custId);
 
+        /* MOBI-1599: filter assets and decrease opening & closing balance for PV */
+        $amntOpen = 0;
+        /**
+         * @var int $key
+         * @var DRespBalance $one
+         */
+        foreach ($balOpen as $key => $one) {
+            $asset = $one->getAsset();
+            if ($asset == Cfg::CODE_TYPE_ASSET_PV) {
+                $amntOpen = $one->getValue();
+                $one->setValue(0);
+                $balOpen[$key] = $one;
+                break;
+            }
+        }
+        foreach ($balClose as $key => $one) {
+            $asset = $one->getAsset();
+            if ($asset == Cfg::CODE_TYPE_ASSET_PV) {
+                $amntClose = $one->getValue();
+                $amntDecreased = $amntClose - $amntOpen;
+                $one->setValue($amntDecreased);
+                $balClose[$key] = $one;
+                break;
+            }
+        }
+
         return [$balOpen, $balClose];
     }
 
