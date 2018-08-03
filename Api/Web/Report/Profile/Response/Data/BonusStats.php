@@ -27,14 +27,14 @@ class BonusStats
         return $result;
     }
 
-    /** @return int */
+    /** @return string */
     public function getOv()
     {
         $result = parent::get(self::A_OV);
         return $result;
     }
 
-    /** @return int */
+    /** @return string */
     public function getPv()
     {
         $result = parent::get(self::A_PV);
@@ -48,7 +48,7 @@ class BonusStats
         return $result;
     }
 
-    /** @return int */
+    /** @return string */
     public function getTv()
     {
         $result = parent::get(self::A_TV);
@@ -61,13 +61,13 @@ class BonusStats
         parent::set(self::A_DATE_UPDATED, $data);
     }
 
-    /** @param int $data */
+    /** @param string $data */
     public function setOv($data)
     {
         parent::set(self::A_OV, $data);
     }
 
-    /** @param int $data */
+    /** @param string $data */
     public function setPv($data)
     {
         parent::set(self::A_PV, $data);
@@ -79,7 +79,7 @@ class BonusStats
         parent::set(self::A_RANK, $data);
     }
 
-    /** @param int $data */
+    /** @param string $data */
     public function setTv($data)
     {
         parent::set(self::A_TV, $data);

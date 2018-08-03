@@ -166,9 +166,9 @@ class Profile
             if (count($rs)) {
                 /** @var EBonDwnl $entry */
                 $entry = reset($rs);
-                $pv = $entry->getPv();
-                $tv = $entry->getTv();
-                $ov = $entry->getOv();
+                $pv = $this->hlpFormat->roundBonus($entry->getPv());
+                $tv = $this->hlpFormat->roundBonus($entry->getTv());
+                $ov = $this->hlpFormat->roundBonus($entry->getOv());
                 $rankId = $entry->getRankRef();
                 $rank = $this->daoRank->getById($rankId);
                 $rankCode = $rank->getCode();
