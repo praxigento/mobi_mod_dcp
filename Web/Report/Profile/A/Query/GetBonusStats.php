@@ -69,7 +69,7 @@ class GetBonusStats
         $result->where("($byCalcCode) AND ($byState)");
 
         /* add order */
-        $result->order("$asPeriod." . EPeriod::A_DSTAMP_END . ' DESC');
+        $result->order("$asPeriod." . EPeriod::A_DSTAMP_END . ' ASC');
 
         /* limit */
         $result->limit(1);

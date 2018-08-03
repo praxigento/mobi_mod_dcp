@@ -148,7 +148,7 @@ class Profile
     private function getBonusStats($custId)
     {
         $result = new \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats();
-        /* get the last complete forecast calculation ID */
+        /* get the first complete forecast calculation ID */
         $query = $this->qbGetBonusStats->build();
         $conn = $query->getConnection();
         $rs = $conn->fetchRow($query);
