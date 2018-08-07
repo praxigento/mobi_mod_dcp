@@ -198,6 +198,12 @@ class Downline
     private function prepareDownline($downline, $rootId, $rootPath, $rootDepth)
     {
         $result = [];
+        /* MOBI-1600: find min. depth in selection to prevent negative depth in compressed tree */
+        $depthMin = $rootDepth;
+        foreach ($downline as $one) {
+            $depth = $one[QBDownline::A_DEPTH];
+            if ($depth < $depthMin) $depthMin = $depth;
+        }
         foreach ($downline as $one) {
             $custId = $one[QBDownline::A_CUSTOMER_REF];
             $one[QBDownline::A_PARENT_REF] = ($custId == $rootId) ? $custId : $one[QBDownline::A_PARENT_REF];
@@ -205,7 +211,7 @@ class Downline
             $path = $one[QBDownline::A_PATH];
             $one[QBDownline::A_PATH] = str_replace($rootPath, '', $path);
             /* decrease depth */
-            $one[QBDownline::A_DEPTH] = $one[QBDownline::A_DEPTH] - $rootDepth;
+            $one[QBDownline::A_DEPTH] = $one[QBDownline::A_DEPTH] - $depthMin;
             /* change rank code to UI value */
             $rankCode = $one[QBDownline::A_RANK_CODE];
             $one[QBDownline::A_RANK_CODE] = $this->hlpDcpMap->rankCodeToUi($rankCode);
