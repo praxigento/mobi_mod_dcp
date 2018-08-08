@@ -6,6 +6,7 @@
 namespace Praxigento\Dcp\Web\Report;
 
 use Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder as QBLastCalc;
+use Praxigento\BonusHybrid\Repo\Data\Downline as EDownline;
 use Praxigento\Core\Api\Helper\Period as HPeriod;
 use Praxigento\Dcp\Api\Web\Report\Downline\Request as ARequest;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response as AResponse;
@@ -23,10 +24,8 @@ class Downline
 
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
-    /** @var \Praxigento\Downline\Repo\Dao\Customer */
-    private $daoDwnlCust;
-    /** @var \Praxigento\Downline\Repo\Dao\Snap */
-    private $daoSnap;
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
+    private $daoBonDwnl;
     /** @var \Praxigento\Dcp\Api\Helper\Map */
     private $hlpDcpMap;
     /** @var \Praxigento\Core\Api\Helper\Period */
@@ -41,8 +40,7 @@ class Downline
     public function __construct(
         \Praxigento\Core\Api\App\Web\Authenticator\Front $authenticator,
         \Praxigento\Core\App\Web\Processor\WithQuery\Conditions $procQuery,
-        \Praxigento\Downline\Repo\Dao\Customer $daoDwnlCust,
-        \Praxigento\Downline\Repo\Dao\Snap $daoSnap,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwnl,
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
         \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
@@ -51,8 +49,7 @@ class Downline
         /* don't pass query builder to the parent - we have 4 builders in the operation, not one */
         $this->authenticator = $authenticator;
         $this->procQuery = $procQuery;
-        $this->daoDwnlCust = $daoDwnlCust;
-        $this->daoSnap = $daoSnap;
+        $this->daoBonDwnl = $daoBonDwnl;
         $this->qbDownline = $qbDownline;
         $this->qbLastCalc = $qbLastCalc;
         $this->hlpPeriod = $hlpPeriod;
@@ -77,7 +74,7 @@ class Downline
             $period = $this->validatePeriod($period);
             $type = $this->validateReportType($type);
             $calcId = $this->getCalculationId($period, $type);
-            list($path, $depth) = $this->getPath($custId, $period);
+            list($path, $depth) = $this->getPath($custId, $calcId);
             $downline = $this->loadDownline($calcId, $custId, $path, $cond);
             $respData = $this->prepareDownline($downline, $custId, $path, $depth);
             $result->setData($respData);
@@ -152,20 +149,20 @@ class Downline
     }
 
     /**
-     * Define root customer & path to the root customer on the date.
+     * Define root customer & path to the root customer for the given calculation (plain or compressed).
      *
      * @param int $custId
-     * @param string $period YYYYMMDD
+     * @param int $calcId
      * @return array
      */
-    private function getPath($custId, $period)
+    private function getPath($custId, $calcId)
     {
-        /** @var \Praxigento\Downline\Repo\Data\Snap $customerRoot */
-        $customerRoot = $this->daoSnap->getByCustomerIdOnDate($custId, $period);
-        if ($customerRoot === false) {
-            /* probably this is new customer that is not in Downline Snaps */
-            $customerRoot = $this->daoDwnlCust->getById($custId);
-        }
+        $byCalcId = EDownline::A_CALC_REF . '=' . (int)$calcId;
+        $byCustId = EDownline::A_CUST_REF . '=' . (int)$custId;
+        $where = "($byCalcId) AND ($byCustId)";
+        $found = $this->daoBonDwnl->get($where);
+        /* one only item should be found */
+        $customerRoot = reset($found);
         $path = $customerRoot->getPath();
         $depth = $customerRoot->getDepth();
         return [$path, $depth];
