@@ -53,9 +53,9 @@ class Customer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRank(): string
+    public function getRank()
     {
         $result = parent::get(self::A_RANK);
         return $result;
