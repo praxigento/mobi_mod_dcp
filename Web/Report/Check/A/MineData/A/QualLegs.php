@@ -10,10 +10,10 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs as DQualLegs;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Item as DItem;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification as DQual;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchemeEu;
-use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "QualificationLegs" section of the DCP's "Check" report.
@@ -136,14 +136,26 @@ class QualLegs
         ];
         /** @var ELegs $entity */
         $entity = $this->daoLegs->getById($ids);
-        $maxLegCust = $entity->getCustMaxRef();
-        $maxLegOv = $entity->getLegMax();
-        $maxLegQual = $entity->getPvQualMax();
-        $secondLegCust = $entity->getCustSecondRef();
-        $secondLegOv = $entity->getLegSecond();
-        $secondLegQual = $entity->getPvQualSecond();
-        $otherLegsOv = $entity->getLegOthers();
-        $otherLegsQual = $entity->getPvQualOther();
+        if ($entity) {
+            $maxLegCust = $entity->getCustMaxRef();
+            $maxLegOv = $entity->getLegMax();
+            $maxLegQual = $entity->getPvQualMax();
+            $secondLegCust = $entity->getCustSecondRef();
+            $secondLegOv = $entity->getLegSecond();
+            $secondLegQual = $entity->getPvQualSecond();
+            $otherLegsOv = $entity->getLegOthers();
+            $otherLegsQual = $entity->getPvQualOther();
+        } else {
+            $maxLegCust = 0;
+            $maxLegOv = 0;
+            $maxLegQual = 0;
+            $secondLegCust = 0;
+            $secondLegOv = 0;
+            $secondLegQual = 0;
+            $otherLegsOv = 0;
+            $otherLegsQual = 0;
+        }
+
 
         /* compose result */
         $result = new DQual();
