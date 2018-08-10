@@ -12,6 +12,7 @@ class Customer
     const A_LEVEL = 'level';
     const A_MLM_ID = 'mlm_id';
     const A_NAME = 'name';
+    const A_RANK = 'rank';
 
     /**
      * @return int
@@ -51,6 +52,15 @@ class Customer
         return $result;
     }
 
+    /**
+     * @return string
+     */
+    public function getRank(): string
+    {
+        $result = parent::get(self::A_RANK);
+        return $result;
+    }
+
     public function setId(int $data)
     {
         parent::set(self::A_ID, $data);
@@ -74,5 +84,10 @@ class Customer
     public function setName(string $data)
     {
         parent::set(self::A_NAME, $data);
+    }
+
+    public function setRank(string $data)
+    {
+        parent::set(self::A_RANK, $data);
     }
 }

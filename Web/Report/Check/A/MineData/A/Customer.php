@@ -5,7 +5,9 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
+use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer\A\Query as QBGetCustomer;
 
 /**
@@ -13,17 +15,32 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer\A\Query as QBGetCustom
  */
 class Customer
 {
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
+    private $daoBonDwn;
+    /** @var \Praxigento\BonusBase\Repo\Dao\Rank */
+    private $daoRank;
+    /** @var \Praxigento\Dcp\Api\Helper\Map */
+    private $hlpDcpMap;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
+    private $hlpGetCalcs;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer\A\Query */
     private $qbGetCustomer;
 
     public function __construct(
+        \Praxigento\BonusBase\Repo\Dao\Rank $daoRank,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwn,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
+        \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs $hlpGetCalcs,
         \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer\A\Query $qbGetCustomer
-    )
-    {
+    ) {
+        $this->daoRank = $daoRank;
+        $this->daoBonDwn = $daoBonDwn;
         $this->hlpPeriod = $hlpPeriod;
+        $this->hlpDcpMap = $hlpDcpMap;
+        $this->hlpGetCalcs = $hlpGetCalcs;
         $this->qbGetCustomer = $qbGetCustomer;
     }
 
@@ -55,6 +72,7 @@ class Customer
         $nameFirst = $rs[QBGetCustomer::A_NAME_FIRST] ?? null;
         $nameLast = $rs[QBGetCustomer::A_NAME_LAST] ?? null;
         $name = "$nameFirst $nameLast";
+        $rank = $this->getRank($period, $custId);
 
         /* compose result */
         $result = null;
@@ -62,9 +80,43 @@ class Customer
             $result = new DCustomer();
             $result->setId($custId);
             $result->setMlmId($mlmId);
-            $result->setLevel($level);
             $result->setName($name);
+            $result->setLevel($level);
+            $result->setRank($rank);
         }
+        return $result;
+    }
+
+    private function getCalcId($period)
+    {
+
+
+    }
+
+    private function getRank($period, $custId)
+    {
+        $rankCode = Cfg::RANK_DISTRIBUTOR;
+
+        $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
+        $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
+        if (isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF])) {
+            $calcPvWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
+            $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcPvWriteOff;
+            $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
+            $where = "($byCalcId) AND ($byCustId)";
+            $rs = $this->daoBonDwn->get($where);
+            if (
+                is_array($rs) &&
+                (count($rs) > 0)
+            ) {
+                $row = reset($rs);
+                $rankId = $row->get(EBonDwnl::A_RANK_REF);
+                $rank = $this->daoRank->getById($rankId);
+                $rankCode = $rank->getCode();
+            }
+        }
+        $result = $this->hlpDcpMap->rankCodeToUi($rankCode);
         return $result;
     }
 }
