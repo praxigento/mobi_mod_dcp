@@ -81,12 +81,15 @@ class PersBonus
      */
     private function getPv($calcId, $custId)
     {
+        $result = 0;
         $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
         $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";
         $rs = $this->daoBonDwn->get($where);
-        $row = reset($rs);
-        $pv = $row->get(EBonDwnl::A_PV);
-        return $pv;
+        if ($rs) {
+            $row = reset($rs);
+            $result = $row->get(EBonDwnl::A_PV);
+        }
+        return $result;
     }
 }
