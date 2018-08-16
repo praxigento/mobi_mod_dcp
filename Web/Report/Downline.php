@@ -161,10 +161,16 @@ class Downline
         $byCustId = EDownline::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";
         $found = $this->daoBonDwnl->get($where);
-        /* one only item should be found */
-        $customerRoot = reset($found);
-        $path = $customerRoot->getPath();
-        $depth = $customerRoot->getDepth();
+        if ($found) {
+            /* one only item should be found */
+            $customerRoot = reset($found);
+            $path = $customerRoot->getPath();
+            $depth = $customerRoot->getDepth();
+        } else {
+            /* customer can be omitted in compressed tree */
+            $path = $depth = null;
+        }
+
         return [$path, $depth];
     }
 
