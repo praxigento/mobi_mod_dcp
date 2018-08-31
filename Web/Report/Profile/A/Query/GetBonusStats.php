@@ -25,6 +25,9 @@ class GetBonusStats
     const A_CALC_ID = 'calcId';
     const A_DATE_UPDATED = 'dateUpdated';
 
+    /** Bound variables names ('camelCase' naming) */
+    const BND_CALC_TYPE_CODE = 'calcTypeCode';
+
     /** Entities are used in the query */
     const E_CALC = ECalc::ENTITY_NAME;
     const E_CALC_TYPE = ETypeCalc::ENTITY_NAME;
@@ -62,8 +65,7 @@ class GetBonusStats
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* add filters */
-        $quoted = $this->conn->quote(Cfg::CODE_TYPE_CALC_FORECAST_PHASE1);
-        $byCalcCode = "$asType." . ETypeCalc::A_CODE . "=$quoted";
+        $byCalcCode = "$asType." . ETypeCalc::A_CODE . "=:".self::BND_CALC_TYPE_CODE;
         $quoted = $this->conn->quote(Cfg::CALC_STATE_COMPLETE);
         $byState = "$asCalc." . ECalc::A_STATE . "=$quoted";
         $result->where("($byCalcCode) AND ($byState)");

@@ -148,37 +148,59 @@ class Profile
     private function getBonusStats($custId)
     {
         $result = new \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats();
-        /* get the first complete forecast calculation ID */
+
+        /* get the first complete plain forecast calculation */
         $query = $this->qbGetBonusStats->build();
+        $bind = [QBGetBonusStats::BND_CALC_TYPE_CODE => Cfg::CODE_TYPE_CALC_FORECAST_PLAIN];
         $conn = $query->getConnection();
-        $rs = $conn->fetchRow($query);
+        $rs = $conn->fetchRow($query, $bind);
         if ($rs) {
             $calcId = $rs[QBGetBonusStats::A_CALC_ID];
+
+            /* compose updated date */
             $updated = $rs[QBGetBonusStats::A_DATE_UPDATED];
             $updated .= ' UTC'; // see \Praxigento\BonusBase\Repo\Dao\Calculation::markComplete
             $result->setDateUpdated($updated);
-            /* get PV/TV/OV/Rank */
-            $pv = $tv = $ov = 0;
-            $rankCode = Cfg::RANK_DISTRIBUTOR;
+
+            /* get PV from plain calc and default rank */
             $byCalc = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
             $byCust = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
             $rs = $this->daoBonDwnl->get("($byCalc) AND ($byCust)");
-            if (count($rs)) {
-                /** @var EBonDwnl $entry */
-                $entry = reset($rs);
-                $pv = $this->hlpFormat->roundBonus($entry->getPv());
-                $tv = $this->hlpFormat->roundBonus($entry->getTv());
-                $ov = $this->hlpFormat->roundBonus($entry->getOv());
-                $rankId = $entry->getRankRef();
-                $rank = $this->daoRank->getById($rankId);
-                $rankCode = $rank->getCode();
+            /** @var EBonDwnl $entry */
+            $entry = reset($rs);
+            $pv = $this->hlpFormat->roundBonus($entry->getPv());
+            $result->setPv($pv);
+            $rankCode = Cfg::RANK_DISTRIBUTOR;
 
+            /* get the first complete compressed forecast calculation */
+            $query = $this->qbGetBonusStats->build();
+            $bind = [QBGetBonusStats::BND_CALC_TYPE_CODE => Cfg::CODE_TYPE_CALC_FORECAST_PHASE1];
+            $conn = $query->getConnection();
+            $rs = $conn->fetchRow($query, $bind);
+            if ($rs) {
+                $calcId = $rs[QBGetBonusStats::A_CALC_ID];
+                /* get TV/OV/Rank */
+                $tv = $ov = 0;
+                $byCalc = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
+                $byCust = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
+                $rs = $this->daoBonDwnl->get("($byCalc) AND ($byCust)");
+                if (count($rs)) {
+                    /** @var EBonDwnl $entry */
+                    $entry = reset($rs);
+                    $tv = $this->hlpFormat->roundBonus($entry->getTv());
+                    $ov = $this->hlpFormat->roundBonus($entry->getOv());
+                    $rankId = $entry->getRankRef();
+                    $rank = $this->daoRank->getById($rankId);
+                    $rankCode = $rank->getCode();
+
+                }
+                $result->setTv($tv);
+                $result->setOv($ov);
             }
+
+            /* set UI rank code */
             $rankUiCode = $this->hlpDcpMap->rankCodeToUi($rankCode);
             $result->setRank($rankUiCode);
-            $result->setPv($pv);
-            $result->setTv($tv);
-            $result->setOv($ov);
         }
         return $result;
     }
