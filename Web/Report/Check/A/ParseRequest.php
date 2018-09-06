@@ -24,7 +24,7 @@ class ParseRequest
 
             /* step's activity */
             $period = (string)$reqData->getPeriod();
-            $customerId = (int)$reqDev->getCustId();
+            $customerId = $reqDev ? (int)$reqDev->getCustId() : null;
 
             /* put step's result data back into the context */
             $ctx->setCustomerId($customerId);
