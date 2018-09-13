@@ -170,6 +170,7 @@ class Profile
             $entry = reset($rs);
             $pv = $this->hlpFormat->roundBonus($entry->getPv());
             $result->setPv($pv);
+            /* 'distributor' is the minimal rank for customers been authorized to use DCP */
             $rankCode = Cfg::RANK_DISTRIBUTOR;
 
             /* get the first complete compressed forecast calculation */

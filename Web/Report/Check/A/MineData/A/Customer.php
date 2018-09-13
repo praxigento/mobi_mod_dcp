@@ -87,36 +87,47 @@ class Customer
         return $result;
     }
 
-    private function getCalcId($period)
-    {
-
-
-    }
-
     private function getRank($period, $custId)
     {
-        $rankCode = Cfg::RANK_DISTRIBUTOR;
+        $rankCode = Cfg::RANK_UNRANKED;
 
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF])) {
-            $calcPvWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
-            $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcPvWriteOff;
-            $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
-            $where = "($byCalcId) AND ($byCustId)";
-            $rs = $this->daoBonDwn->get($where);
-            if (
-                is_array($rs) &&
-                (count($rs) > 0)
-            ) {
-                $row = reset($rs);
-                $rankId = $row->get(EBonDwnl::A_RANK_REF);
-                $rank = $this->daoRank->getById($rankId);
-                $rankCode = $rank->getCode();
-            }
+            $calcId = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
+            $rankCode = $this->getRankCodeForCalc($calcId, $custId);
+        } elseif (isset($calcs[Cfg::CODE_TYPE_CALC_FORECAST_PHASE1])) {
+            $calcId = $calcs[Cfg::CODE_TYPE_CALC_FORECAST_PHASE1];
+            $rankCode = $this->getRankCodeForCalc($calcId, $custId);
         }
         $result = $this->hlpDcpMap->rankCodeToUi($rankCode);
+        return $result;
+    }
+
+    /**
+     * Get rank code for given calculation & customer.
+     *
+     * @param int $calcId
+     * @param int $custId
+     */
+    private function getRankCodeForCalc($calcId, $custId)
+    {
+        $result = Cfg::RANK_UNRANKED;
+
+        $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
+        $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
+        $where = "($byCalcId) AND ($byCustId)";
+        $rs = $this->daoBonDwn->get($where);
+        if (
+            is_array($rs) &&
+            (count($rs) > 0)
+        ) {
+            $row = reset($rs);
+            $rankId = $row->get(EBonDwnl::A_RANK_REF);
+            $rank = $this->daoRank->getById($rankId);
+            $result = $rank->getCode();
+        }
         return $result;
     }
 }
