@@ -46,7 +46,7 @@ class Balance
 
     /**
      * @param string $data
-     * @return null
+     * @return void
      */
     public function setAsset($data)
     {
@@ -55,7 +55,7 @@ class Balance
 
     /**
      * @param string $data
-     * @return null
+     * @return void
      */
     public function setCurrency($data)
     {
@@ -64,7 +64,7 @@ class Balance
 
     /**
      * @param string $data
-     * @return null
+     * @return void
      */
     public function setValue($data)
     {

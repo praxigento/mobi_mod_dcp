@@ -27,7 +27,7 @@ class Response
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data $data
-     * @return null
+     * @return void
      */
     public function setData($data)
     {

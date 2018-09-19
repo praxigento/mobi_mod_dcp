@@ -27,7 +27,7 @@ class Data
      * End of the calculation period.
      *
      * @param string $data 'YYYY', 'YYYYMM', 'YYYYMMDD'
-     * @return null
+     * @return void
      */
     public function setPeriod($data) {
         parent::set(self::PERIOD, $data);

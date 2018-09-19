@@ -67,7 +67,7 @@ class Data
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data
-     * @return null
+     * @return void
      */
     public function setBalanceClose($data)
     {
@@ -76,7 +76,7 @@ class Data
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data
-     * @return null
+     * @return void
      */
     public function setBalanceOpen($data)
     {
@@ -85,7 +85,7 @@ class Data
 
     /**
      * @param string $data
-     * @return null
+     * @return void
      */
     public function setCurrency($data)
     {
@@ -94,7 +94,7 @@ class Data
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer $data
-     * @return null
+     * @return void
      */
     public function setCustomer($data)
     {
@@ -103,7 +103,7 @@ class Data
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] $data
-     * @return null
+     * @return void
      */
     public function setTrans($data)
     {
