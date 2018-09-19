@@ -24,6 +24,7 @@ class Request
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Request\Data $data
+     * @return null
      */
     public function setData($data) {
         parent::setData($data);

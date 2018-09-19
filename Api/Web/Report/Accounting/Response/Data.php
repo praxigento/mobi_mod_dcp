@@ -9,17 +9,6 @@ namespace Praxigento\Dcp\Api\Web\Report\Accounting\Response;
  * Accessors use 'CamelCase' naming strategy (data object default), but data inside use 'snake_case' naming strategy
  * (API default). Repo queries should use 'snake_case' namings to prepare array data, DataObject will return
  * 'snake_case' property if 'CamelCase' will not be found.
- *
- * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] getBalanceClose()
- * @method void setBalanceClose(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data)
- * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] getBalanceOpen()
- * @method void setBalanceOpen(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data)
- * @method string getCurrency()
- * @method void setCurrency(string $data)
- * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer getCustomer()
- * @method void setCustomer(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer $data)
- * @method \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] getTrans()
- * @method void setTrans(\Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] $data)
  */
 class Data
     extends \Praxigento\Core\Data
@@ -30,4 +19,94 @@ class Data
     const A_CUSTOMER = 'customer';
     const A_TRANS = 'trans';
 
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[]
+     */
+    public function getBalanceClose()
+    {
+        $result = parent::get(self::A_BAL_CLOSE);
+        return $result;
+    }
+
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[]
+     */
+    public function getBalanceOpen()
+    {
+        $result = parent::get(self::A_BAL_OPEN);
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        $result = parent::get(self::A_CURRENCY);
+        return $result;
+    }
+
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer
+     */
+    public function getCustomer()
+    {
+        $result = parent::get(self::A_CUSTOMER);
+        return $result;
+    }
+
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[]
+     */
+    public function getTrans()
+    {
+        $result = parent::get(self::A_TRANS);
+        return $result;
+    }
+
+
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data
+     * @return null
+     */
+    public function setBalanceClose($data)
+    {
+        parent::set(self::A_BAL_CLOSE, $data);
+    }
+
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Balance[] $data
+     * @return null
+     */
+    public function setBalanceOpen($data)
+    {
+        parent::set(self::A_BAL_OPEN, $data);
+    }
+
+    /**
+     * @param string $data
+     * @return null
+     */
+    public function setCurrency($data)
+    {
+        parent::set(self::A_CURRENCY, $data);
+    }
+
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer $data
+     * @return null
+     */
+    public function setCustomer($data)
+    {
+        parent::set(self::A_CUSTOMER, $data);
+    }
+
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[] $data
+     * @return null
+     */
+    public function setTrans($data)
+    {
+        parent::set(self::A_TRANS, $data);
+    }
 }
