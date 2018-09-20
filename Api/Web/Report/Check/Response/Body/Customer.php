@@ -61,7 +61,11 @@ class Customer
         return $result;
     }
 
-    public function setId(int $data)
+    /**
+     * @param int $data
+     * @return void
+     */
+    public function setId($data)
     {
         parent::set(self::A_ID, $data);
     }
@@ -70,23 +74,36 @@ class Customer
      * Absolute customer level int the downline tree.
      *
      * @param int $data
+     * @return void
      */
-    public function setLevel(int $data)
+    public function setLevel($data)
     {
         parent::set(self::A_LEVEL, $data);
     }
 
-    public function setMlmId(string $data)
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function setMlmId($data)
     {
         parent::set(self::A_MLM_ID, $data);
     }
 
-    public function setName(string $data)
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function setName($data)
     {
         parent::set(self::A_NAME, $data);
     }
 
-    public function setRank(string $data)
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function setRank($data)
     {
         parent::set(self::A_RANK, $data);
     }

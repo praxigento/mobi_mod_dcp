@@ -90,41 +90,73 @@ class Totals
         return $result;
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setCourtesyAmount($data)
     {
         parent::set(self::A_COURTESY_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setInfinityAmount($data)
     {
         parent::set(self::A_INFINITY_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setNetAmount($data)
     {
         parent::set(self::A_NET_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setOverrideAmount($data)
     {
         parent::set(self::A_OVERRIDE_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setPersonalAmount($data)
     {
         parent::set(self::A_PERSONAL_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setProcessingFee($data)
     {
         parent::set(self::A_PROCESSING_FEE, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setTeamAmount($data)
     {
         parent::set(self::A_TEAM_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setTotalAmount($data)
     {
         parent::set(self::A_TOTAL_AMOUNT, $data);

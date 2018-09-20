@@ -22,7 +22,7 @@ class QualLegs
     }
 
     /**
-     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification
+     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification[]
      */
     public function getQualification()
     {
@@ -30,11 +30,19 @@ class QualLegs
         return $result;
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Item[] $data
+     * @return void
+     */
     public function setItems($data)
     {
         parent::set(self::A_ITEMS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification[] $data
+     * @return void
+     */
     public function setQualification($data)
     {
         parent::set(self::A_QUALIFICATION, $data);

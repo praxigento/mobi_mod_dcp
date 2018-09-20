@@ -87,36 +87,64 @@ class Sections
         return $result;
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\InfBonus $data
+     * @return void
+     */
     public function setInfBonus(DInf $data)
     {
         parent::set(self::A_INFINITY_BONUS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile $data
+     * @return void
+     */
     public function setOrgProfile(DOrgProfile $data)
     {
         parent::set(self::A_ORG_PROFILE, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OverBonus $data
+     * @return void
+     */
     public function setOverBonus(DOver $data)
     {
         parent::set(self::A_OVERRIDE_BONUS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus $data
+     * @return void
+     */
     public function setPersonalBonus(DPersonal $data)
     {
         parent::set(self::A_PERSONAL_BONUS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs $data
+     * @return void
+     */
     public function setQualLegs(DQualLegs $data)
     {
         parent::set(self::A_QUAL_LEGS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus $data
+     * @return void
+     */
     public function setTeamBonus(DTeam $data)
     {
         parent::set(self::A_TEAM_BONUS, $data);
     }
 
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\Totals $data
+     * @return void
+     */
     public function setTotals(DTotals $data)
     {
         parent::set(self::A_TOTALS, $data);

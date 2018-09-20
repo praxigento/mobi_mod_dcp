@@ -20,7 +20,10 @@ class InfBonus
         return $result;
     }
 
-
+    /**
+     * @param $data
+     * @return void
+     */
     public function setItems($data)
     {
         parent::set(self::A_ITEMS, $data);

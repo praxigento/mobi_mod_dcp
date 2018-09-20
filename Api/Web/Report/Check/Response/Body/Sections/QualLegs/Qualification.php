@@ -90,41 +90,73 @@ class Qualification
         return $result;
     }
 
-    public function setMaxLegCust($data)
+    /**
+     * @param $data
+     * @return void
+     */
+    public function setMaxLegCustId($data)
     {
         parent::set(self::A_MAX_LEG_CUST_ID, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setMaxLegOv($data)
     {
         parent::set(self::A_MAX_LEG_OV, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setMaxLegQual($data)
     {
         parent::set(self::A_MAX_LEG_QUAL, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setOtherLegsOv($data)
     {
         parent::set(self::A_OTHER_LEGS_OV, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setOtherLegsQual($data)
     {
         parent::set(self::A_OTHER_LEGS_QUAL, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setSecondLegCust($data)
     {
         parent::set(self::A_SECOND_LEG_CUST_ID, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setSecondLegOv($data)
     {
         parent::set(self::A_SECOND_LEG_OV, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setSecondLegQual($data)
     {
         parent::set(self::A_SECOND_LEG_QUAL, $data);

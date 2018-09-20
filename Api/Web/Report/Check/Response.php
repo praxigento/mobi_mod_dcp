@@ -27,6 +27,7 @@ class Response
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body $data
+     * @return void
      */
     public function setData($data)
     {

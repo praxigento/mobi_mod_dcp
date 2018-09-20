@@ -159,7 +159,7 @@ class QualLegs
 
         /* compose result */
         $result = new DQual();
-        $result->setMaxLegCust($maxLegCust);
+        $result->setMaxLegCustId($maxLegCust);
         $result->setMaxLegOv($maxLegOv);
         $result->setMaxLegQual($maxLegQual);
         $result->setSecondLegCust($secondLegCust);

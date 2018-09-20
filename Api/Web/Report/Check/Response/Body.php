@@ -54,6 +54,7 @@ class Body
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer $data
+     * @return void
      */
     public function setCustomer($data)
     {
@@ -62,19 +63,25 @@ class Body
 
     /**
      * @param string $data
+     * @return void
      */
     public function setCurrency($data)
     {
         parent::set(self::A_CURRENCY, $data);
     }
 
-    public function setPeriod(string $data)
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function setPeriod($data)
     {
         parent::set(self::A_PERIOD, $data);
     }
 
     /**
      * @param  \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections $data
+     * @return void
      */
     public function setSections($data)
     {

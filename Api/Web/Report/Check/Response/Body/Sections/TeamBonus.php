@@ -40,16 +40,28 @@ class TeamBonus
         return $result;
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setItems($data)
     {
         parent::set(self::A_ITEMS, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setPercent($data)
     {
         parent::set(self::A_PERCENT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setTotalVolume($data)
     {
         parent::set(self::A_TOTAL_VOLUME, $data);

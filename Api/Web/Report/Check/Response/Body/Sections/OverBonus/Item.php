@@ -28,7 +28,7 @@ class Item
     /**
      * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer
      */
-    public function getCustomer(): \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer
+    public function getCustomer()
     {
         $result = parent::get(self::A_CUSTOMER);
         return $result;
@@ -61,26 +61,46 @@ class Item
         return $result;
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setAmount($data)
     {
         parent::set(self::A_AMOUNT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setCustomer($data)
     {
         parent::set(self::A_CUSTOMER, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setPercent($data)
     {
         parent::set(self::A_PERCENT, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setRank($data)
     {
         parent::set(self::A_RANK, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setVolume($data)
     {
         parent::set(self::A_VOLUME, $data);

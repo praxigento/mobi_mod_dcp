@@ -91,41 +91,73 @@ class Item
         return $result;
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setActive($data)
     {
         parent::set(self::A_ACTIVE, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setGeneration($data)
     {
         parent::set(self::A_GENERATION, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setInactive($data)
     {
         parent::set(self::A_INACTIVE, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setMgr($data)
     {
         parent::set(self::A_MGR, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setMgrAvg($data)
     {
         parent::set(self::A_MGR_AVG, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setQual($data)
     {
         parent::set(self::A_QUAL, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setTotal($data)
     {
         parent::set(self::A_TOTAL, $data);
     }
 
+    /**
+     * @param $data
+     * @return void
+     */
     public function setVolume($data)
     {
         parent::set(self::A_VOLUME, $data);
