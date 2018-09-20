@@ -55,21 +55,37 @@ class Pension
         return $result;
     }
 
+    /**
+     * @param int $data
+     * @return void
+     */
     public function setMonthLeft($data)
     {
         parent::set(self::A_MONTH_LEFT, $data);
     }
 
+    /**
+     * @param string $data
+     * @return void
+     */
     public function setMonthSince($data)
     {
         parent::set(self::A_MONTH_SINCE, $data);
     }
 
+    /**
+     * @param int $data
+     * @return void
+     */
     public function setMonthTotal($data)
     {
         parent::set(self::A_MONTH_TOTAL, $data);
     }
 
+    /**
+     * @param int $data
+     * @return void
+     */
     public function setMonthUnq($data)
     {
         parent::set(self::A_MONTH_UNQ, $data);

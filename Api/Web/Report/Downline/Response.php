@@ -27,6 +27,7 @@ class Response
 
     /**
      * @param \Praxigento\Dcp\Api\Web\Report\Downline\Response\Entry[] $data
+     * @return void
      */
     public function setData($data)
     {

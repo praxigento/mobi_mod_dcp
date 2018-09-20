@@ -40,6 +40,7 @@ class Data
      * End of the calculation period.
      *
      * @param string $data 'YYYY', 'YYYYMM', 'YYYYMMDD'
+     * @return void
      */
     public function setPeriod($data) {
         parent::set(self::PERIOD, $data);
@@ -49,6 +50,7 @@ class Data
      * Type of the requested report (complete|compressed).
      *
      * @param string $data
+     * @return void
      */
     public function setType($data) {
         parent::set(self::TYPE, $data);

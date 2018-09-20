@@ -39,19 +39,28 @@ class Item
         return $result;
     }
 
-    /** @param string $data */
+    /**
+     * @param string $data
+     * @return void
+     */
     public function setAsset($data)
     {
         parent::set(self::A_ASSET, $data);
     }
 
-    /** @param string $data */
+    /**
+     * @param string $data
+     * @return void
+     */
     public function setCurrency($data)
     {
         parent::set(self::A_CURRENCY, $data);
     }
 
-    /** @param float $data */
+    /**
+     * @param float $data
+     * @return void
+     */
     public function setValue($data)
     {
         parent::set(self::A_VALUE, $data);

@@ -55,31 +55,46 @@ class Data
         return $result;
     }
 
-    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Balance\Item[] $data */
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Balance\Item[] $data
+     * @return void
+     */
     public function setBalances($data)
     {
         parent::set(self::A_BALANCES, $data);
     }
 
-    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats $data */
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\BonusStats $data
+     * @return void
+     */
     public function setBonusStats($data)
     {
         parent::set(self::A_BONUS_STATS, $data);
     }
 
-    /** @param string $data */
+    /**
+     * @param string $data
+     * @return void
+     */
     public function setMlmIdOwn($data)
     {
         parent::set(self::A_MLM_ID_OWN, $data);
     }
 
-    /** @param string $data */
+    /**
+     * @param string $data
+     * @return void
+     */
     public function setMlmIdParent($data)
     {
         parent::set(self::A_MLM_ID_PARENT, $data);
     }
 
-    /** @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Pension $data */
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Profile\Response\Data\Pension $data
+     * @return void
+     */
     public function setPension($data)
     {
         parent::set(self::A_PENSION, $data);

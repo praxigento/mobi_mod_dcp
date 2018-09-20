@@ -25,6 +25,7 @@ class Request
 
     /**
      * @param \Praxigento\Core\Data $data
+     * @return void
      */
     public function setData($data)
     {
