@@ -22,7 +22,7 @@ class QualLegs
     }
 
     /**
-     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification[]
+     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification
      */
     public function getQualification()
     {
@@ -40,7 +40,7 @@ class QualLegs
     }
 
     /**
-     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification[] $data
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs\Qualification $data
      * @return void
      */
     public function setQualification($data)
