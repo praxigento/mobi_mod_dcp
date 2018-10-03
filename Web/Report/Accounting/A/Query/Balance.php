@@ -9,7 +9,7 @@ use Praxigento\Accounting\Repo\Data\Account as EAccount;
 use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
 
 class Balance
-    extends \Praxigento\Accounting\Repo\Query\Balance\OnDate\Closing\Builder
+    extends \Praxigento\Accounting\Repo\Query\Balance\OnDate\Closing
 {
     /** Tables aliases for external usage ('camelCase' naming) */
     const AS_ASSET_TYPE = 'assType';
