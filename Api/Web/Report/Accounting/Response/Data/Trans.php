@@ -15,6 +15,7 @@ class Trans
 {
     const A_ASSET = 'asset';
     const A_CUSTOMER_ID = 'customer_id';
+    const A_CUSTOMER_NAME = 'customer_name';
     const A_DATE = 'date';
     const A_DETAILS = 'details';
     const A_TRANS_ID = 'trans_id';
@@ -31,11 +32,20 @@ class Trans
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getCustomerId()
     {
         $result = parent::get(self::A_CUSTOMER_ID);
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerName()
+    {
+        $result = parent::get(self::A_CUSTOMER_NAME);
         return $result;
     }
 
@@ -95,12 +105,21 @@ class Trans
     }
 
     /**
-     * @param int $data
+     * @param string $data
      * @return void
      */
     public function setCustomerId($data)
     {
         parent::set(self::A_CUSTOMER_ID, $data);
+    }
+
+    /**
+     * @param string $data
+     * @return void
+     */
+    public function setCustomerName($data)
+    {
+        parent::set(self::A_CUSTOMER_NAME, $data);
     }
 
     /**

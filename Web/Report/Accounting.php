@@ -214,13 +214,18 @@ class Accounting
             $date = $tran[QBAccTrans::A_DATE];
             $details = $tran[QBAccTrans::A_DETAILS];
             $itemId = $tran[QBAccTrans::A_ITEM_ID];
-            $otherCustId = $tran[QBAccTrans::A_OTHER_CUST];
+            $otherCustId = $tran[QBAccTrans::A_OTHER_MLM_ID];
+            $otherName = $tran[QBAccTrans::A_OTHER_NAME];
             $type = $tran[QBAccTrans::A_TYPE];
             $value = $this->hlpFormat->toNumber($tran[QBAccTrans::A_VALUE]);
 
             /* pre-process data */
-            if ($accOwn == $accDebit) $value = -$value;
-            if (is_null($otherCustId)) $otherCustId = Cfg::CUST_SYS_NAME;
+            if ($accOwn == $accDebit) {
+                $value = -$value;
+            }
+            if (is_null($otherCustId)) {
+                $otherCustId = Cfg::CUST_SYS_NAME;
+            }
             /* trash code :( */
             if ($currency) {
                 /**
@@ -234,6 +239,7 @@ class Accounting
             $item = new DRespTrans();
             $item->setAsset($asset);
             $item->setCustomerId($otherCustId);
+            $item->setCustomerName($otherName);
             $item->setDate($date);
             $item->setDetails($details);
             $item->setTransId($itemId);
@@ -265,7 +271,7 @@ class Accounting
             /* trash code :( */
             if ($currency) {
                 /**
-                 * Currency is null for not-money-assets (PV),
+                 * Currency is null for not-a-money-assets (PV),
                  * convert asset value from asset currency to customer currency
                  */
                 $value = $this->hlpCustCurrency->convertFromBase($value, $custId);

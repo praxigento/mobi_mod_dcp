@@ -10,6 +10,8 @@ use Praxigento\Accounting\Repo\Data\Operation as EOper;
 use Praxigento\Accounting\Repo\Data\Transaction as ETran;
 use Praxigento\Accounting\Repo\Data\Type\Asset as ETypeAsset;
 use Praxigento\Accounting\Repo\Data\Type\Operation as ETypeOper;
+use Praxigento\Core\App\Repo\Query\Expression as AnExpress;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 
 /**
@@ -24,6 +26,7 @@ class Trans
     const AS_ASSET_TYPE = 'assType';
     const AS_DWNL_CUST = 'dwnlCust';
     const AS_DWNL_OTHER = 'dwnlOther';
+    const AS_NAME_OTHER = 'nameOther';
     const AS_OPER = 'opr';
     const AS_OPER_TYPE = 'oprType';
     const AS_TRAN = 'trn';
@@ -36,7 +39,8 @@ class Trans
     const A_DATE = 'date';
     const A_DETAILS = 'details';
     const A_ITEM_ID = 'itemId';
-    const A_OTHER_CUST = 'otherCust';
+    const A_OTHER_MLM_ID = 'otherCust';
+    const A_OTHER_NAME = 'otherName';
     const A_TYPE = 'type';
     const A_VALUE = 'value';
 
@@ -54,6 +58,7 @@ class Trans
         $asAccCust = self::AS_ACC_CUST;
         $asAccOther = self::AS_ACC_OTHER;
         $asAssType = self::AS_ASSET_TYPE;
+        $asCustOther = self::AS_NAME_OTHER;
         $asDwnlCust = self::AS_DWNL_CUST;
         $asDwnlOther = self::AS_DWNL_OTHER;
         $asOper = self::AS_OPER;
@@ -104,10 +109,25 @@ class Trans
         $tbl = $this->resource->getTableName(EDwnlCust::ENTITY_NAME);
         $as = $asDwnlOther;
         $cols = [
-            self::A_OTHER_CUST => EDwnlCust::A_MLM_ID
+            self::A_OTHER_MLM_ID => EDwnlCust::A_MLM_ID
         ];
         $cond = "$as." . EDwnlCust::A_CUSTOMER_ID . "=$asAccOther." . EAcc::A_CUST_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
+
+        /* LEFT JOIN customer_entity as nameOther */
+        $tbl = $this->resource->getTableName(Cfg::ENTITY_MAGE_CUSTOMER);
+        $as = $asCustOther;
+        $exp = "CONCAT(";
+        $exp .= self::AS_NAME_OTHER . "." . Cfg::E_CUSTOMER_A_FIRSTNAME;
+        $exp .= ", ' ',";
+        $exp .= self::AS_NAME_OTHER . "." . Cfg::E_CUSTOMER_A_LASTNAME;
+        $exp .= ")";
+        $cols = [
+            self::A_OTHER_NAME => $exp
+        ];
+        $cond = "$as." . Cfg::E_CUSTOMER_A_ENTITY_ID . "=$asAccOther." . EAcc::A_CUST_ID;
+        $result->joinLeft([$as => $tbl], $cond, $cols);
+        AnExpress::class;
 
         /* LEFT JOIN prxgt_acc_operation */
         $tbl = $this->resource->getTableName(EOper::ENTITY_NAME);
