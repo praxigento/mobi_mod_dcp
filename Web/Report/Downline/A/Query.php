@@ -7,9 +7,10 @@ namespace Praxigento\Dcp\Web\Report\Downline\A;
 
 use Praxigento\BonusBase\Repo\Data\Rank as ERank;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
+use Praxigento\BonusHybrid\Repo\Data\Downline\Inactive as EBonDwnlInact;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response\Entry as DReportEntry;
-use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 use Praxigento\Dcp\Config as Cfg;
+use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
 
 /**
  * Build query to get DCP Downline Report data.
@@ -20,6 +21,7 @@ class Query
     /** Tables aliases */
     const AS_BONUS_DWNL = 'bdwnl';
     const AS_DWNL_CUSTOMER = 'dcust';
+    const AS_INACT = 'inact';
     const AS_MAGE_CUSTOMER = 'mcust';
     const AS_RANK = 'rank';
 
@@ -44,6 +46,13 @@ class Query
     const BND_CUST_ID = 'custId';
     const BND_PATH = 'path';
 
+    /** Entities are used in the query */
+    const E_BONUS_DWNL = EBonDwnl::ENTITY_NAME;
+    const E_DWN_CUSTOMER = EDwnlCust::ENTITY_NAME;
+    const E_MAGE_CUSTOMER = Cfg::ENTITY_MAGE_CUSTOMER;
+    const E_INACT = EBonDwnlInact::ENTITY_NAME;
+    const E_RANK = ERank::ENTITY_NAME;
+
     public function build(\Magento\Framework\DB\Select $source = null)
     {
         $result = $this->conn->select();
@@ -51,10 +60,11 @@ class Query
         $asBonDwnl = self::AS_BONUS_DWNL;
         $asDwnlCust = self::AS_DWNL_CUSTOMER;
         $asMageCust = self::AS_MAGE_CUSTOMER;
+        $asInact = self::AS_INACT;
         $asRank = self::AS_RANK;
 
         /* FROM prxgt_bon_hyb_dwnl */
-        $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
+        $tbl = $this->resource->getTableName(self::E_BONUS_DWNL);
         $as = $asBonDwnl;
         $cols = [
             self::A_CUSTOMER_REF => EBonDwnl::A_CUST_REF,
@@ -69,7 +79,7 @@ class Query
         $result->from([$as => $tbl], $cols);
 
         /* LEFT JOIN prxgt_dwnl_customer */
-        $tbl = $this->resource->getTableName(EDwnlCust::ENTITY_NAME);
+        $tbl = $this->resource->getTableName(self::E_DWN_CUSTOMER);
         $as = $asDwnlCust;
         $cols = [
             self::A_COUNTRY => EDwnlCust::A_COUNTRY_CODE,
@@ -79,7 +89,7 @@ class Query
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN customer_entity */
-        $tbl = $this->resource->getTableName(Cfg::ENTITY_MAGE_CUSTOMER);
+        $tbl = $this->resource->getTableName(self::E_MAGE_CUSTOMER);
         $as = $asMageCust;
         $cols = [
             self::A_EMAIL => Cfg::E_CUSTOMER_A_EMAIL,
@@ -89,8 +99,17 @@ class Query
         $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
+        /* LEFT JOIN prxgt_bon_hyb_dwnl_inact */
+        $tbl = $this->resource->getTableName(self::E_INACT);
+        $as = $asInact;
+        $cols = [
+            self::A_UNQ_MONTHS => EBonDwnlInact::A_INACT_MONTHS
+        ];
+        $cond = $as . '.' . EBonDwnlInact::A_TREE_ENTRY_REF . '=' . $asBonDwnl . '.' . EBonDwnl::A_ID;
+        $result->joinLeft([$as => $tbl], $cond, $cols);
+
         /* LEFT JOIN prxgt_bon_base_rank */
-        $tbl = $this->resource->getTableName(ERank::ENTITY_NAME);
+        $tbl = $this->resource->getTableName(self::E_RANK);
         $as = $asRank;
         $cols = [
             self::A_RANK_CODE => ERank::A_CODE
