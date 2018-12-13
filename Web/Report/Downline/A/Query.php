@@ -73,8 +73,7 @@ class Query
             self::A_PARENT_REF => EBonDwnl::A_PARENT_REF,
             self::A_PATH => EBonDwnl::A_PATH,
             self::A_PV => EBonDwnl::A_PV,
-            self::A_TV => EBonDwnl::A_TV,
-            self::A_UNQ_MONTHS => EBonDwnl::A_UNQ_MONTHS
+            self::A_TV => EBonDwnl::A_TV
         ];
         $result->from([$as => $tbl], $cols);
 
