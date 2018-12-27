@@ -65,7 +65,7 @@ class Query
         $cols = [
             self::A_MLM_ID => EDwnCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnCust::A_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
+        $cond = $as . '.' . EDwnCust::A_CUSTOMER_REF . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN customer_entity to get name */
@@ -75,7 +75,7 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */

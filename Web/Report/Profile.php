@@ -75,7 +75,7 @@ class Profile
             /* get downline props (data's root props) */
             $dwnlCust = $this->daoDwnlCust->getById($custId);
             $mlmIdOwn = $dwnlCust->getMlmId();
-            $parentId = $dwnlCust->getParentId();
+            $parentId = $dwnlCust->getParentRef();
             $dwnlParen = $this->daoDwnlCust->getById($parentId);
             $mlmIdParent = $dwnlParen->getMlmId();
 

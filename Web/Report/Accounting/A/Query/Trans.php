@@ -77,7 +77,7 @@ class Trans
         $cols = [
             self::A_ACC_OWN => EAcc::A_ID
         ];
-        $cond = "$as." . EAcc::A_CUST_ID . "=$asDwnlCust." . EDwnlCust::A_CUSTOMER_ID;
+        $cond = "$as." . EAcc::A_CUST_ID . "=$asDwnlCust." . EDwnlCust::A_CUSTOMER_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN prxgt_acc_transaction */
@@ -111,7 +111,7 @@ class Trans
         $cols = [
             self::A_OTHER_MLM_ID => EDwnlCust::A_MLM_ID
         ];
-        $cond = "$as." . EDwnlCust::A_CUSTOMER_ID . "=$asAccOther." . EAcc::A_CUST_ID;
+        $cond = "$as." . EDwnlCust::A_CUSTOMER_REF . "=$asAccOther." . EAcc::A_CUST_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN customer_entity as nameOther */
@@ -160,7 +160,7 @@ class Trans
          * Query tuning.
          */
         /* WHERE */
-        $result->where($asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_ID . '=:' . self::BND_CUST_ID);
+        $result->where($asDwnlCust . '.' . EDwnlCust::A_CUSTOMER_REF . '=:' . self::BND_CUST_ID);
         $result->where($asTrans . '.' . ETran::A_DATE_APPLIED . '>:' . self::BND_DATE_FROM);
         $result->where($asTrans . '.' . ETran::A_DATE_APPLIED . '<:' . self::BND_DATE_TO);
 

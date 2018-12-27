@@ -102,7 +102,7 @@ class Query
         $cols = [
             self::A_MLM_ID => EDwnCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnCust::A_CUSTOMER_ID . '=' . $asLogCust . '.' . ELogCust::A_CUSTOMER_ID;
+        $cond = $as . '.' . EDwnCust::A_CUSTOMER_REF . '=' . $asLogCust . '.' . ELogCust::A_CUSTOMER_ID;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN customer_entity to get name */
@@ -112,7 +112,7 @@ class Query
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
             self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
         ];
-        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
+        $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* JOIN prxgt_bon_hyb_dwnl to get PV & depth for donors */
@@ -123,7 +123,7 @@ class Query
             self::A_PV => EBonDwnl::A_PV
         ];
         $onCalcRef = $as . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_PV_WRITE_OFF;
-        $onCustId = $as . '.' . EBonDwnl::A_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_ID;
+        $onCustId = $as . '.' . EBonDwnl::A_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_REF;
         $cond = "($onCalcRef) AND ($onCustId)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
 

@@ -84,7 +84,7 @@ class Query
             self::A_COUNTRY => EDwnlCust::A_COUNTRY_CODE,
             self::A_MLM_ID => EDwnlCust::A_MLM_ID
         ];
-        $cond = $as . '.' . EDwnlCust::A_CUSTOMER_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
+        $cond = $as . '.' . EDwnlCust::A_CUSTOMER_REF . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* LEFT JOIN customer_entity */
