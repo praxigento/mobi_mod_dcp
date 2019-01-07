@@ -5,37 +5,39 @@
 
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A;
 
-use Praxigento\BonusHybrid\Repo\Dao\Downline as RBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile as DOrgProfile;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile\Item as DItem;
-use Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
-use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 use Praxigento\Dcp\Config as Cfg;
+use Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query as QBGetGen;
 
 /**
  * Action to build "Organization Profile" section of the DCP's "Check" report.
  */
 class OrgProfile
 {
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
+    private $daoBonDwnl;
+    /** @var \Praxigento\BonusBase\Repo\Dao\Rank */
+    private $daoRank;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
+    private $hlpGetCalcs;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
-    /** @var QBGetGen */
-    private $qbGetGen;
-    /** @var RBonDwnl */
-    private $daoBonDwnl;
-    /** @var HGetCalcs */
-    private $hlpGetCalcs;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query */
+    private $qGetGen;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        RBonDwnl $daoBonDwnl,
-        QBGetGen $qbGetGen,
-        HGetCalcs $hlpGetCalcs
+        \Praxigento\BonusBase\Repo\Dao\Rank $daoRank,
+        \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwnl,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A\Query $qGetGen,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs $hlpGetCalcs
     )
     {
         $this->hlpPeriod = $hlpPeriod;
+        $this->daoRank = $daoRank;
         $this->daoBonDwnl = $daoBonDwnl;
-        $this->qbGetGen = $qbGetGen;
+        $this->qGetGen = $qGetGen;
         $this->hlpGetCalcs = $hlpGetCalcs;
     }
 
@@ -70,24 +72,28 @@ class OrgProfile
     }
 
     /**
+     *
      * Get DB data and compose API data.
      *
      * @param int $calcIdPlain
      * @param int $custId
      * @return DItem[]
+     * @throws \Exception
      */
     private function getItems($calcIdPlain, $custId)
     {
         /* get working data */
         list($depthCust, $pathKey) = $this->getPathKey($calcIdPlain, $custId);
+        $rankIdUnranked = $this->daoRank->getIdByCode(Cfg::RANK_UNRANKED);
 
         /* compose query to get plain tree data */
-        $query = $this->qbGetGen->build();
+        $query = $this->qGetGen->build();
         $conn = $query->getConnection();
         $bind = [
             QBGetGen::BND_CALC_ID => $calcIdPlain,
+            QBGetGen::BND_PATH => $pathKey,
             QBGetGen::BND_PV => -1,
-            QBGetGen::BND_PATH => $pathKey
+            QBGetGen::BND_RANK_ID_UNRANKED => $rankIdUnranked
         ];
         $rs = $conn->fetchAll($query, $bind);
 
@@ -123,8 +129,9 @@ class OrgProfile
         /* process active items only (PV>0) */
         $bind = [
             QBGetGen::BND_CALC_ID => $calcIdPlain,
+            QBGetGen::BND_PATH => $pathKey,
             QBGetGen::BND_PV => 0,
-            QBGetGen::BND_PATH => $pathKey
+            QBGetGen::BND_RANK_ID_UNRANKED => $rankIdUnranked
         ];
         $rs = $conn->fetchAll($query, $bind);
         foreach ($rs as $one) {
@@ -165,4 +172,5 @@ class OrgProfile
         $result = [$depth, $pathKey];
         return $result;
     }
+
 }

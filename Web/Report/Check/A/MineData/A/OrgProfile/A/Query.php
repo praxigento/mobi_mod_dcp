@@ -6,7 +6,7 @@
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile\A;
 
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\BonusHybrid\Repo\Data\Downline\Qualification as EBonQual;
+use Praxigento\Core\App\Repo\Query\Expression as AnExpress;
 
 /**
  * Get downline tree data by generations.
@@ -29,10 +29,10 @@ class Query
     const BND_CALC_ID = 'calcId';
     const BND_PATH = 'path';
     const BND_PV = 'pv';
+    const BND_RANK_ID_UNRANKED = 'rankIdUnranked';
 
     /** Entities are used in the query */
     const E_BON_DWNL = EBonDwnl::ENTITY_NAME;
-    const E_BON_QUAL = EBonQual::ENTITY_NAME;
 
 
     public function build(\Magento\Framework\DB\Select $source = null)
@@ -47,10 +47,8 @@ class Query
         /* FROM prxgt_bon_hyb_dwnl  */
         $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asDwnl;
-        $expCountSrc = 'COUNT(' . EBonDwnl::A_CUST_REF . ')';
-        $expCount = new \Praxigento\Core\App\Repo\Query\Expression($expCountSrc);
-        $expVolumeSrc = 'SUM(' . EBonDwnl::A_PV . ')';
-        $expVolume = new \Praxigento\Core\App\Repo\Query\Expression($expVolumeSrc);
+        $expCount = $this->expCount();
+        $expVolume = $this->expVolume();
         $cols = [
             self::A_DEPTH => EBonDwnl::A_DEPTH,
             self::A_COUNT => $expCount,
@@ -58,16 +56,16 @@ class Query
         ];
         $result->from([$as => $tbl], $cols);
 
-        /* LEFT JOIN prxgt_bon_hyb_dwnl_qual */
-        $tbl = $this->resource->getTableName(EBonQual::ENTITY_NAME);
+        /* LEFT JOIN prxgt_bon_hyb_dwnl as qual */
+        $tbl = $this->resource->getTableName(EBonDwnl::ENTITY_NAME);
         $as = $asQual;
-        /* TODO: do we really need this entity? See \Praxigento\BonusHybrid\Repo\Data\Downline::A_RANK_REF */
-        $expMgrSrc = 'COUNT(' . self::AS_BON_DWNL_QUAL . '.' . EBonQual::A_RANK_REF . ')';
-        $expMgr = new \Praxigento\Core\App\Repo\Query\Expression($expMgrSrc);
+        $expQual = $this->expQual();
         $cols = [
-            self::A_QUAL => $expMgr
+            self::A_QUAL => $expQual
         ];
-        $cond = $as . '.' . EBonQual::A_TREE_ENTRY_REF . '=' . $asDwnl . '.' . EBonDwnl::A_ID;
+        $byId = $as . '.' . EBonDwnl::A_ID . '=' . $asDwnl . '.' . EBonDwnl::A_ID;
+        $byRankId = $as . '.' . EBonDwnl::A_RANK_REF . '!=:' . self::BND_RANK_ID_UNRANKED;
+        $cond = "($byId) AND ($byRankId)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
         /* query tuning */
@@ -79,6 +77,42 @@ class Query
         /* group by */
         $result->group($asDwnl . '.' . EBonDwnl::A_DEPTH);
 
+        return $result;
+    }
+
+    /**
+     * Get expression to collect total count of qualified customers in downline.
+     *
+     * @return \Praxigento\Core\App\Repo\Query\Expression
+     */
+    private function expCount()
+    {
+        $exp = 'COUNT(' . self::AS_BON_DWNL . '.' . EBonDwnl::A_CUST_REF . ')';
+        $result = new AnExpress($exp);
+        return $result;
+    }
+
+    /**
+     * Get expression to collect total count of qualified customers in downline.
+     *
+     * @return \Praxigento\Core\App\Repo\Query\Expression
+     */
+    private function expQual()
+    {
+        $exp = 'COUNT(' . self::AS_BON_DWNL_QUAL . '.' . EBonDwnl::A_RANK_REF . ')';
+        $result = new AnExpress($exp);
+        return $result;
+    }
+
+    /**
+     * Get expression to collect PV volume for all customers in downline.
+     *
+     * @return \Praxigento\Core\App\Repo\Query\Expression
+     */
+    private function expVolume()
+    {
+        $exp = 'SUM(' . self::AS_BON_DWNL . '.' . EBonDwnl::A_PV . ')';
+        $result = new AnExpress($exp);
         return $result;
     }
 }
