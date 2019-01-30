@@ -7,7 +7,6 @@ namespace Praxigento\Dcp\Web\Report\Downline\A;
 
 use Praxigento\BonusBase\Repo\Data\Rank as ERank;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\BonusHybrid\Repo\Data\Downline\Inactive as EBonDwnlInact;
 use Praxigento\Dcp\Api\Web\Report\Downline\Response\Entry as DReportEntry;
 use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Downline\Repo\Data\Customer as EDwnlCust;
@@ -21,7 +20,6 @@ class Query
     /** Tables aliases */
     const AS_BONUS_DWNL = 'bdwnl';
     const AS_DWNL_CUSTOMER = 'dcust';
-    const AS_INACT = 'inact';
     const AS_MAGE_CUSTOMER = 'mcust';
     const AS_RANK = 'rank';
 
@@ -50,7 +48,6 @@ class Query
     const E_BONUS_DWNL = EBonDwnl::ENTITY_NAME;
     const E_DWN_CUSTOMER = EDwnlCust::ENTITY_NAME;
     const E_MAGE_CUSTOMER = Cfg::ENTITY_MAGE_CUSTOMER;
-    const E_INACT = EBonDwnlInact::ENTITY_NAME;
     const E_RANK = ERank::ENTITY_NAME;
 
     public function build(\Magento\Framework\DB\Select $source = null)
@@ -60,7 +57,6 @@ class Query
         $asBonDwnl = self::AS_BONUS_DWNL;
         $asDwnlCust = self::AS_DWNL_CUSTOMER;
         $asMageCust = self::AS_MAGE_CUSTOMER;
-        $asInact = self::AS_INACT;
         $asRank = self::AS_RANK;
 
         /* FROM prxgt_bon_hyb_dwnl */
@@ -73,7 +69,8 @@ class Query
             self::A_PARENT_REF => EBonDwnl::A_PARENT_REF,
             self::A_PATH => EBonDwnl::A_PATH,
             self::A_PV => EBonDwnl::A_PV,
-            self::A_TV => EBonDwnl::A_TV
+            self::A_TV => EBonDwnl::A_TV,
+            self::A_UNQ_MONTHS => EBonDwnl::A_UNQ_MONTHS
         ];
         $result->from([$as => $tbl], $cols);
 
@@ -98,15 +95,6 @@ class Query
         $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);
 
-        /* LEFT JOIN prxgt_bon_hyb_dwnl_inact */
-        $tbl = $this->resource->getTableName(self::E_INACT);
-        $as = $asInact;
-        $cols = [
-            self::A_UNQ_MONTHS => EBonDwnlInact::A_INACT_MONTHS
-        ];
-        $cond = $as . '.' . EBonDwnlInact::A_TREE_ENTRY_REF . '=' . $asBonDwnl . '.' . EBonDwnl::A_ID;
-        $result->joinLeft([$as => $tbl], $cond, $cols);
-
         /* LEFT JOIN prxgt_bon_base_rank */
         $tbl = $this->resource->getTableName(self::E_RANK);
         $as = $asRank;
@@ -124,6 +112,5 @@ class Query
 
         return $result;
     }
-
 
 }
