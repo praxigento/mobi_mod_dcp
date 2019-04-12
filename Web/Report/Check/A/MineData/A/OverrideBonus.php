@@ -18,22 +18,25 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchem
  */
 class OverrideBonus
 {
-    /** @var \Praxigento\Core\Api\Helper\Period */
-    private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus\A\Query */
-    private $qbGetItems;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
     private $hlpIsSchemeEu;
+    /** @var \Praxigento\Core\Api\Helper\Period */
+    private $hlpPeriod;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus\A\Query */
+    private $qbGetItems;
 
     public function __construct(
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu
-    )
-    {
+    ) {
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->qbGetItems = $qbGetItems;
         $this->hlpGetCalcs = $hlpGetCalcs;
@@ -109,7 +112,8 @@ class OverrideBonus
             $pv = $one[QBGetItems::A_PV];
             $rankCode = $one[QBGetItems::A_RANK_CODE];
 
-            /* composite values */
+            /* calculated values */
+            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
             $name = "$nameFirst $nameLast";
             $percent = $amount / $pv;
             $percent = round($percent, 2);;

@@ -9,31 +9,34 @@ use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Customer as DCustomer;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus as DTeamBonus;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus\Item as DItem;
+use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus\A\Query as QBGetItems;
 use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
-use Praxigento\Dcp\Config as Cfg;
 
 /**
  * Action to build "Team Bonus" section of the DCP's "Check" report.
  */
 class TeamBonus
 {
+    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
+    private $daoBonDwn;
+    /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
+    private $hlpCustCurrency;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
+    private $hlpGetCalcs;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus\A\Query */
     private $qbGetItems;
-    /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
-    private $daoBonDwn;
-    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
-    private $hlpGetCalcs;
 
     public function __construct(
+        \Praxigento\Core\Api\Helper\Customer\Currency $hlpCustCurrency,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwn,
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs
-    )
-    {
+    ) {
+        $this->hlpCustCurrency = $hlpCustCurrency;
         $this->hlpPeriod = $hlpPeriod;
         $this->daoBonDwn = $daoBonDwn;
         $this->qbGetItems = $qbGetItems;
@@ -114,7 +117,8 @@ class TeamBonus
             $pv = $one[QBGetItems::A_PV];
             $amount = $one[QBGetItems::A_AMOUNT];
 
-            /* composite values */
+            /* calculated values */
+            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
             $name = "$nameFirst $nameLast";
 
             /* compose API data */

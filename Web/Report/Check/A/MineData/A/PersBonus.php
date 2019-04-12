@@ -15,19 +15,18 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
  */
 class PersBonus
 {
-    /** @var \Praxigento\Core\Api\Helper\Period */
-    private $hlpPeriod;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $daoBonDwn;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
+    /** @var \Praxigento\Core\Api\Helper\Period */
+    private $hlpPeriod;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
         \Praxigento\BonusHybrid\Repo\Dao\Downline $daoBonDwn,
         HGetCalcs $hlpGetCalcs
-    )
-    {
+    ) {
         $this->hlpPeriod = $hlpPeriod;
         $this->daoBonDwn = $daoBonDwn;
         $this->hlpGetCalcs = $hlpGetCalcs;
