@@ -205,7 +205,9 @@ class Downline
         $depthMin = $rootDepth;
         foreach ($downline as $one) {
             $depth = $one[QBDownline::A_DEPTH];
-            if ($depth < $depthMin) $depthMin = $depth;
+            if ($depth < $depthMin) {
+                $depthMin = $depth;
+            }
         }
         foreach ($downline as $one) {
             $custId = $one[QBDownline::A_CUSTOMER_REF];
@@ -252,8 +254,8 @@ class Downline
      */
     private function validateReportType($type)
     {
-        if ($type != self::REPORT_TYPE_COMPLETE) {
-            $type = self::REPORT_TYPE_COMPRESSED;
+        if ($type != self::REPORT_TYPE_COMPRESSED) {
+            $type = self::REPORT_TYPE_COMPLETE;
         }
         return $type;
     }
