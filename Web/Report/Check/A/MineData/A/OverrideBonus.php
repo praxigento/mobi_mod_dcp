@@ -113,10 +113,10 @@ class OverrideBonus
             $rankCode = $one[QBGetItems::A_RANK_CODE];
 
             /* calculated values */
-            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
+            $amountCust = $this->hlpCustCurrency->convertFromBase($amount, $custId);
             $name = "$nameFirst $nameLast";
             $percent = $amount / $pv;
-            $percent = round($percent, 2);;
+            $percent = round($percent, 2);
 
             /* compose API data */
             $customer = new DCustomer();
@@ -125,7 +125,7 @@ class OverrideBonus
             $customer->setMlmId($mlmId);
             $customer->setName($name);
             $item = new DItem();
-            $item->setAmount($amount);
+            $item->setAmount($amountCust);
             $item->setCustomer($customer);
             $item->setPercent($percent);
             $item->setRank($rankCode);
