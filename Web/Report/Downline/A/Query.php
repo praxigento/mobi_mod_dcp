@@ -28,6 +28,7 @@ class Query
     const A_CUSTOMER_REF = DReportEntry::A_CUSTOMER_REF;
     const A_DEPTH = DReportEntry::A_DEPTH;
     const A_EMAIL = DReportEntry::A_EMAIL;
+    const A_GROUP_ID = 'groupId';
     const A_MLM_ID = DReportEntry::A_MLM_ID;
     const A_NAME_FIRST = DReportEntry::A_NAME_FIRST;
     const A_NAME_LAST = DReportEntry::A_NAME_LAST;
@@ -38,7 +39,6 @@ class Query
     const A_RANK_CODE = DReportEntry::A_RANK_CODE;
     const A_TV = DReportEntry::A_TV;
     const A_UNQ_MONTHS = DReportEntry::A_UNQ_MONTHS;
-
     /** Bound variables names ('camelCase' naming) */
     const BND_CALC_ID = 'calcId';
     const BND_CUST_ID = 'custId';
@@ -90,7 +90,8 @@ class Query
         $cols = [
             self::A_EMAIL => Cfg::E_CUSTOMER_A_EMAIL,
             self::A_NAME_FIRST => Cfg::E_CUSTOMER_A_FIRSTNAME,
-            self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME
+            self::A_NAME_LAST => Cfg::E_CUSTOMER_A_LASTNAME,
+            self::A_GROUP_ID => Cfg::E_CUSTOMER_A_GROUP_ID
         ];
         $cond = $as . '.' . Cfg::E_CUSTOMER_A_ENTITY_ID . '=' . $asBonDwnl . '.' . EBonDwnl::A_CUST_REF;
         $result->joinLeft([$as => $tbl], $cond, $cols);

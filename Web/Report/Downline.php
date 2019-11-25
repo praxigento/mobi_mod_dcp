@@ -26,6 +26,8 @@ class Downline
     private $authenticator;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $daoBonDwnl;
+    /** @var \Praxigento\Downline\Api\Helper\Config */
+    private $hlpCfgDwnl;
     /** @var \Praxigento\Dcp\Api\Helper\Map */
     private $hlpDcpMap;
     /** @var \Praxigento\Core\Api\Helper\Period */
@@ -44,7 +46,8 @@ class Downline
         \Praxigento\BonusBase\Repo\Query\Period\Calcs\GetLast\ByCalcTypeCode\Builder $qbLastCalc,
         \Praxigento\Dcp\Web\Report\Downline\A\Query $qbDownline,
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
-        \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap
+        \Praxigento\Dcp\Api\Helper\Map $hlpDcpMap,
+        \Praxigento\Downline\Api\Helper\Config $hlpCfgDwnl
     ) {
         /* don't pass query builder to the parent - we have 4 builders in the operation, not one */
         $this->authenticator = $authenticator;
@@ -54,6 +57,7 @@ class Downline
         $this->qbLastCalc = $qbLastCalc;
         $this->hlpPeriod = $hlpPeriod;
         $this->hlpDcpMap = $hlpDcpMap;
+        $this->hlpCfgDwnl = $hlpCfgDwnl;
     }
 
     public function exec($request)
@@ -203,14 +207,31 @@ class Downline
         $result = [];
         /* MOBI-1600: find min. depth in selection to prevent negative depth in compressed tree */
         $depthMin = $rootDepth;
+        /* MILC-79: registry all parents to prevent "holes" in tree structure */
+        $regParents = [];
         foreach ($downline as $one) {
             $depth = $one[QBDownline::A_DEPTH];
+            $parentId = $one[QBDownline::A_PARENT_REF];
             if ($depth < $depthMin) {
                 $depthMin = $depth;
             }
+            /* add parent to processed parents registry */
+            if (!in_array($parentId, $regParents)) {
+                $regParents[] = $parentId;
+            }
         }
+        /* delete tree leaves that are not distributors */
+        $groupDistrs = $this->hlpCfgDwnl->getDowngradeGroupsDistrs();
         foreach ($downline as $one) {
             $custId = $one[QBDownline::A_CUSTOMER_REF];
+            $groupId = $one[QBDownline::A_GROUP_ID];
+            if (
+                !in_array($groupId, $groupDistrs) &&
+                !in_array($custId, $regParents)
+            ) {
+                continue; // skip all not-distrs that are tree leaves
+            }
+            unset($one[QBDownline::A_GROUP_ID]); // remove extra attribute from result set
             $one[QBDownline::A_PARENT_REF] = ($custId == $rootId) ? $custId : $one[QBDownline::A_PARENT_REF];
             /* shrink path */
             $path = $one[QBDownline::A_PATH];
