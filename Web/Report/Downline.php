@@ -235,7 +235,9 @@ class Downline
             $one[QBDownline::A_PARENT_REF] = ($custId == $rootId) ? $custId : $one[QBDownline::A_PARENT_REF];
             /* shrink path */
             $path = $one[QBDownline::A_PATH];
-            $one[QBDownline::A_PATH] = str_replace($rootPath, '', $path);
+            if ($rootPath != Cfg::DTPS) {
+                $one[QBDownline::A_PATH] = str_replace($rootPath, '', $path);
+            }
             /* decrease depth */
             $one[QBDownline::A_DEPTH] = $one[QBDownline::A_DEPTH] - $depthMin;
             /* change rank code to UI value */
