@@ -11,6 +11,7 @@ class Item
 {
     const A_AMOUNT = 'amount';
     const A_CUSTOMER = 'customer';
+    const A_PERCENT = 'percent';
     const A_VOLUME = 'volume';
 
     /**
@@ -28,6 +29,15 @@ class Item
     public function getCustomer()
     {
         $result = parent::get(self::A_CUSTOMER);
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPercent()
+    {
+        $result = parent::get(self::A_PERCENT);
         return $result;
     }
 
@@ -56,6 +66,15 @@ class Item
     public function setCustomer($data)
     {
         parent::set(self::A_CUSTOMER, $data);
+    }
+
+    /**
+     * @param $data
+     * @return void
+     */
+    public function setPercent($data)
+    {
+        parent::set(self::A_PERCENT, $data);
     }
 
     /**

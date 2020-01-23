@@ -64,16 +64,16 @@ class TeamBonus
         /* perform processing */
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (
-            isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF]) &&
+            isset($calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1]) &&
             isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF]) &&
             isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_EU])
         ) {
-            $calcPvWriteOff = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
+            $calcCompressPhaseI = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1];
             $calcDef = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_DEF];
             $calcEu = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_EU];
 
-            $pv = $this->getPv($calcPvWriteOff, $custId);
-            $items = $this->getItems($calcPvWriteOff, $calcDef, $calcEu, $custId);
+            $pv = $this->getPv($calcCompressPhaseI, $custId);
+            $items = $this->getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId);
         }
 
         /* compose result */
@@ -88,18 +88,19 @@ class TeamBonus
     /**
      * Get DB data and compose API data.
      *
-     * @param $calcPvWriteOff
+     * @param $calcCompressPhaseI
      * @param $calcDef
      * @param $calcEu
      * @param $custId
      * @return array
+     * @throws \Exception
      */
-    private function getItems($calcPvWriteOff, $calcDef, $calcEu, $custId)
+    private function getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId)
     {
         $query = $this->qbGetItems->build();
         $conn = $query->getConnection();
         $bind = [
-            QBGetItems::BND_CALC_ID_PV_WRITE_OFF => $calcPvWriteOff,
+            QBGetItems::BND_CALC_ID_COMPRESS_PHASE_I => $calcCompressPhaseI,
             QBGetItems::BND_CALC_ID_TEAM_DEF => $calcDef,
             QBGetItems::BND_CALC_ID_TEAM_EU => $calcEu,
             QBGetItems::BND_CUST_ID => $custId
@@ -109,7 +110,7 @@ class TeamBonus
         $result = [];
         foreach ($rs as $one) {
             /* get DB data */
-            $custId = $one[QBGetItems::A_CUST_ID];
+            $memberId = $one[QBGetItems::A_CUST_ID];
             $depth = $one[QBGetItems::A_DEPTH];
             $mlmId = $one[QBGetItems::A_MLM_ID];
             $nameFirst = $one[QBGetItems::A_NAME_FIRST];
@@ -120,10 +121,11 @@ class TeamBonus
             /* calculated values */
             $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
             $name = "$nameFirst $nameLast";
+            $percent = intval(($amount / $pv) * 100);
 
             /* compose API data */
             $customer = new DCustomer();
-            $customer->setId($custId);
+            $customer->setId($memberId);
             $customer->setMlmId($mlmId);
             $customer->setName($name);
             $customer->setLevel($depth);
@@ -131,6 +133,7 @@ class TeamBonus
             $item->setCustomer($customer);
             $item->setAmount($amount);
             $item->setVolume($pv);
+            $item->setPercent($percent);
 
             $result[] = $item;
         }

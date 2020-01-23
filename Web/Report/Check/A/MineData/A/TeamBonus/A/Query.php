@@ -3,15 +3,15 @@
  * User: Alex Gusev <alex@flancer64.com>
  */
 
-namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus\A ;
+namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus\A;
 
 use Praxigento\Accounting\Repo\Data\Account as EAcc;
 use Praxigento\Accounting\Repo\Data\Transaction as ETrans;
 use Praxigento\BonusBase\Repo\Data\Log\Customers as ELogCust;
 use Praxigento\BonusBase\Repo\Data\Log\Opers as ELogOper;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 use Praxigento\Dcp\Config as Cfg;
+use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 
 class Query
     extends \Praxigento\Core\App\Repo\Query\Builder
@@ -36,7 +36,7 @@ class Query
     const A_PV = 'pv';
 
     /** Bound variables names ('camelCase' naming) */
-    const BND_CALC_ID_PV_WRITE_OFF = 'calcIdPvWriteOff';
+    const BND_CALC_ID_COMPRESS_PHASE_I = 'calcIdCompressPhaseI';
     const BND_CALC_ID_TEAM_DEF = 'calcIdTeamDef';
     const BND_CALC_ID_TEAM_EU = 'calcIdTeamEu';
     const BND_CUST_ID = 'custId';
@@ -122,7 +122,7 @@ class Query
             self::A_DEPTH => EBonDwnl::A_DEPTH,
             self::A_PV => EBonDwnl::A_PV
         ];
-        $onCalcRef = $as . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_PV_WRITE_OFF;
+        $onCalcRef = $as . '.' . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS_PHASE_I;
         $onCustId = $as . '.' . EBonDwnl::A_CUST_REF . '=' . $asDwnlCust . '.' . EDwnCust::A_CUSTOMER_REF;
         $cond = "($onCalcRef) AND ($onCustId)";
         $result->joinLeft([$as => $tbl], $cond, $cols);
