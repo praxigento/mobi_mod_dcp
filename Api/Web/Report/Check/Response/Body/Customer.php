@@ -10,6 +10,7 @@ class Customer
 {
     const A_ID = 'id';
     const A_LEVEL = 'level';
+    const A_LEVEL_COMPRESSED = 'levelCompressed';
     const A_MLM_ID = 'mlm_id';
     const A_NAME = 'name';
     const A_RANK = 'rank';
@@ -31,6 +32,17 @@ class Customer
     public function getLevel(): int
     {
         $result = parent::get(self::A_LEVEL);
+        return $result;
+    }
+
+    /**
+     * Absolute customer level int the compressed downline tree.
+     *
+     * @return int|null
+     */
+    public function getLevelCompressed()
+    {
+        $result = parent::get(self::A_LEVEL_COMPRESSED);
         return $result;
     }
 
@@ -79,6 +91,17 @@ class Customer
     public function setLevel($data)
     {
         parent::set(self::A_LEVEL, $data);
+    }
+
+    /**
+     * Absolute customer level int the compressed downline tree.
+     *
+     * @param int $data
+     * @return void
+     */
+    public function setLevelCompressed($data)
+    {
+        parent::set(self::A_LEVEL_COMPRESSED, $data);
     }
 
     /**

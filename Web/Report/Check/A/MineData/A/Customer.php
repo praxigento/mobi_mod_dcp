@@ -53,13 +53,23 @@ class Customer
     public function exec($custId, $period)
     {
         /* define local working data */
-        $onDate = $this->hlpPeriod->getPeriodLastDate($period);
+        $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
+        $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
+        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
+
 
         /* prepare query & parameters */
         $query = $this->qbGetCustomer->build();
+
+        if (isset($calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1])) {
+            $calcIdCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1];
+        } else {
+            $calcIdCompress = $calcs[Cfg::CODE_TYPE_CALC_FORECAST_PHASE1];
+        }
         $bind = [
-            QBGetCustomer::BND_ON_DATE => $onDate,
-            QBGetCustomer::BND_CUST_ID => $custId
+            QBGetCustomer::BND_ON_DATE => $dsEnd,
+            QBGetCustomer::BND_CUST_ID => $custId,
+            QBGetCustomer::BND_CALC_ID_COMPRESS_I => $calcIdCompress
         ];
 
         /* perform query and extract data from result set */
@@ -69,10 +79,11 @@ class Customer
         $custId = $rs[QBGetCustomer::A_CUST_ID] ?? null;
         $mlmId = $rs[QBGetCustomer::A_MLM_ID] ?? null;
         $level = $rs[QBGetCustomer::A_DEPTH] ?? null;
+        $levelCompress = $rs[QBGetCustomer::A_DEPTH_COMPRESSED] ?? null;
         $nameFirst = $rs[QBGetCustomer::A_NAME_FIRST] ?? null;
         $nameLast = $rs[QBGetCustomer::A_NAME_LAST] ?? null;
         $name = "$nameFirst $nameLast";
-        $rank = $this->getRank($period, $custId);
+        $rank = $this->getRank($calcs, $custId);
 
         /* compose result */
         $result = null;
@@ -82,18 +93,16 @@ class Customer
             $result->setMlmId($mlmId);
             $result->setName($name);
             $result->setLevel($level);
+            $result->setLevelCompressed($levelCompress);
             $result->setRank($rank);
         }
         return $result;
     }
 
-    private function getRank($period, $custId)
+    private function getRank($calcs, $custId)
     {
         $rankCode = Cfg::RANK_UNRANKED;
 
-        $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
-        $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
-        $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (isset($calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF])) {
             $calcId = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
             $rankCode = $this->getRankCodeForCalc($calcId, $custId);

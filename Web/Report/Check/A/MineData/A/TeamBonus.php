@@ -121,7 +121,7 @@ class TeamBonus
             /* calculated values */
             $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
             $name = "$nameFirst $nameLast";
-            $percent = intval(($amount / $pv) * 100);
+            $percent = intval(($amount / $pv) * 100) / 100;
 
             /* compose API data */
             $customer = new DCustomer();
@@ -129,6 +129,7 @@ class TeamBonus
             $customer->setMlmId($mlmId);
             $customer->setName($name);
             $customer->setLevel($depth);
+            $customer->setLevelCompressed($depth);
             $item = new DItem();
             $item->setCustomer($customer);
             $item->setAmount($amount);
