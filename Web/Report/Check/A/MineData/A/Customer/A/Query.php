@@ -35,7 +35,7 @@ class Query
     const A_PATH = QBBase::A_PATH;
 
     /** Bound variables names ('camelCase' naming) */
-    const BND_CALC_ID_COMPRESS_I = 'calcId';
+    const BND_CALC_ID = 'calcId';
     const BND_CUST_ID = 'custId';
     const BND_ON_DATE = QBBase::BND_ON_DATE;
 
@@ -93,7 +93,7 @@ class Query
 
         /* where */
         $byCustId = "$asDwnlCust." . EDwnlCust::A_CUSTOMER_REF . '=:' . self::BND_CUST_ID;
-        $byCalcId = "$asBonDwnl." . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID_COMPRESS_I;
+        $byCalcId = "$asBonDwnl." . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID;
         $result->where("($byCustId) AND ($byCalcId)");
 
         return $result;

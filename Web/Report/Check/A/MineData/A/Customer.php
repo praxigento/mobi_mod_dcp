@@ -63,19 +63,26 @@ class Customer
 
         if (isset($calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1])) {
             $calcIdCompress = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1];
+            $calcIdPlain = $calcs[Cfg::CODE_TYPE_CALC_PV_WRITE_OFF];
         } else {
             $calcIdCompress = $calcs[Cfg::CODE_TYPE_CALC_FORECAST_PHASE1];
+            $calcIdPlain = $calcs[Cfg::CODE_TYPE_CALC_FORECAST_PLAIN];
         }
         $bind = [
             QBGetCustomer::BND_ON_DATE => $dsEnd,
             QBGetCustomer::BND_CUST_ID => $custId,
-            QBGetCustomer::BND_CALC_ID_COMPRESS_I => $calcIdCompress
+            QBGetCustomer::BND_CALC_ID => $calcIdCompress
         ];
 
         /* perform query and extract data from result set */
         $conn = $query->getConnection();
         $rs = $conn->fetchRow($query, $bind);
 
+        if (!$rs) {
+            /* search plain tree if customer is not found in compressed tree */
+            $bind[QBGetCustomer::BND_CALC_ID] = $calcIdPlain;
+            $rs = $conn->fetchRow($query, $bind);
+        }
         $custId = $rs[QBGetCustomer::A_CUST_ID] ?? null;
         $mlmId = $rs[QBGetCustomer::A_MLM_ID] ?? null;
         $level = $rs[QBGetCustomer::A_DEPTH] ?? null;

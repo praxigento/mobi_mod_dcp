@@ -155,9 +155,7 @@ class TeamBonus
         $where = "($byCalcId) AND ($byCustId)";
         $rs = $this->daoBonDwn->get($where);
         $row = reset($rs);
-        $pv = $row->get(EBonDwnl::A_PV);
-//        $rankId = $row->get(EBonDwnl::A_RANK_REF);
-//        return [$pv, $rankId];
+        $pv = $row ? $row->get(EBonDwnl::A_PV) : 0;
         return $pv;
     }
 }
