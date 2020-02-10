@@ -93,7 +93,7 @@ class Totals
             /* fetch data from DB */
             $amntPers = $this->getAmountCredit($idBonPers, $custId);
             $amntTeam = $this->getSumCredit($idBonTeam, $custId);
-            $amntCourt = $this->getAmountCredit($idBonCourt, $custId);
+            $amntCourt = $this->getSumCredit($idBonCourt, $custId);
             $amntOver = $this->getSumCredit($idBonOver, $custId);
             $amntInf = $this->getSumCredit($idBonInf, $custId);
             $amntFee = $this->getAmountDebit($idProcFee, $custId);
