@@ -30,8 +30,7 @@ class Check
         \Praxigento\Dcp\Web\Report\Check\A\ComposeResponse $procComposeResp,
         \Praxigento\Dcp\Web\Report\Check\A\MineData $procMineData,
         \Praxigento\Dcp\Web\Report\Check\A\ParseRequest $procParseRequest
-    )
-    {
+    ) {
         $this->hlpCustCurrency = $hlpCustCurrency;
         $this->procAuthorize = $procAuthorize;
         $this->procComposeResp = $procComposeResp;
@@ -56,6 +55,7 @@ class Check
         $this->procComposeResp->exec($ctx);
         $custId = $ctx->getCustomerId();
         $currency = $this->hlpCustCurrency->getCurrency($custId);
+        $currencyBase = $this->hlpCustCurrency->getCurrencyBase();
 
         /* get result from context */
         $result = $ctx->getWebResponse();
@@ -63,6 +63,7 @@ class Check
         $data = $result->getData();
         $cust = $data->getCustomer();
         $data->setCurrency($currency);
+        $data->setCurrencyBase($currencyBase);
 
         if (is_null($cust)) {
             $respRes->setCode(AResponse::CODE_NO_DATA);

@@ -116,12 +116,12 @@ class TeamBonus
             $nameFirst = $one[QBGetItems::A_NAME_FIRST];
             $nameLast = $one[QBGetItems::A_NAME_LAST];
             $pv = $one[QBGetItems::A_PV];
-            $amount = $one[QBGetItems::A_AMOUNT];
+            $amountBase = $one[QBGetItems::A_AMOUNT];
 
             /* calculated values */
-            $amount = $this->hlpCustCurrency->convertFromBase($amount, $custId);
+            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId);
             $name = "$nameFirst $nameLast";
-            $percent = intval(($amount / $pv) * 100) / 100;
+            $percent = round($amountBase / $pv, 2);
 
             /* compose API data */
             $customer = new DCustomer();
@@ -133,6 +133,7 @@ class TeamBonus
             $item = new DItem();
             $item->setCustomer($customer);
             $item->setAmount($amount);
+            $item->setAmountBase($amountBase);
             $item->setVolume($pv);
             $item->setPercent($percent);
 

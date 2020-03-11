@@ -11,8 +11,9 @@ use Praxigento\BonusBase\Repo\Data\Log\Customers as ELogCust;
 use Praxigento\BonusBase\Repo\Data\Log\Opers as ELogOper;
 use Praxigento\BonusBase\Repo\Data\Rank as ERankCode;
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
+use Praxigento\Core\App\Repo\Query\Expression as AnExpress;
 use Praxigento\Dcp\Config as Cfg;
+use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 
 /**
  * the same as \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus\A\Query
@@ -55,7 +56,6 @@ class Query
     const E_LOG_OPER = ELogOper::ENTITY_NAME;
     const E_RANK_CODE = ERankCode::ENTITY_NAME;
     const E_TRANS = ETrans::ENTITY_NAME;
-
 
     public function build(\Magento\Framework\DB\Select $source = null)
     {
@@ -148,6 +148,21 @@ class Query
         $byCustId = "$asAcc." . EAcc::A_CUST_ID . '=:' . self::BND_CUST_ID;
         $result->where("($byCalcBonus) AND ($byCustId)");
 
+        $exp = $this->expByPathFull();
+        $result->order($exp);
+
+        return $result;
+    }
+
+    /**
+     * Get expression to order items by absolute path in the downline.
+     *
+     * @return \Praxigento\Core\App\Repo\Query\Expression
+     */
+    private function expByPathFull()
+    {
+        $exp = 'CONCAT(' . self::AS_BON_DWNL . '.' . EBonDwnl::A_PATH . ',' . self::AS_BON_DWNL . '.' . EBonDwnl::A_CUST_REF . ')';
+        $result = new AnExpress($exp);
         return $result;
     }
 }
