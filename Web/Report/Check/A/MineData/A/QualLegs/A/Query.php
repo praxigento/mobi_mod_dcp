@@ -6,8 +6,8 @@
 namespace Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A;
 
 use Praxigento\BonusHybrid\Repo\Data\Downline as EBonDwnl;
-use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 use Praxigento\Dcp\Config as Cfg;
+use Praxigento\Downline\Repo\Data\Customer as EDwnCust;
 
 /**
  * Query to get legs data (rank qualification).
@@ -80,8 +80,9 @@ class Query
 
         /* query tuning */
         $byCalcId = "$asBonDwnl." . EBonDwnl::A_CALC_REF . '=:' . self::BND_CALC_ID;
-        $byCustId = "$asBonDwnl." . EBonDwnl::A_PARENT_REF . '=:' . self::BND_CUST_ID;
-        $result->where("($byCalcId) AND ($byCustId)");
+        $byCustId = "$asBonDwnl." . EBonDwnl::A_CUST_REF . '=:' . self::BND_CUST_ID;
+        $byParentId = "$asBonDwnl." . EBonDwnl::A_PARENT_REF . '=:' . self::BND_CUST_ID;
+        $result->where("($byCalcId) AND (($byCustId) OR ($byParentId))");
 
         return $result;
     }

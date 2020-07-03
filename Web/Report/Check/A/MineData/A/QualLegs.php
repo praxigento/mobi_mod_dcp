@@ -20,16 +20,16 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchem
  */
 class QualLegs
 {
-    /** @var \Praxigento\Core\Api\Helper\Period */
-    private $hlpPeriod;
-    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query */
-    private $qbGetItems;
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs */
     private $daoLegs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
     private $hlpIsSchemeEu;
+    /** @var \Praxigento\Core\Api\Helper\Period */
+    private $hlpPeriod;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query */
+    private $qbGetItems;
 
     public function __construct(
         \Praxigento\Core\Api\Helper\Period $hlpPeriod,
@@ -37,8 +37,7 @@ class QualLegs
         QBGetItems $qbGetItems,
         HGetCalcs $hlpGetCalcs,
         HIsSchemeEu $hlpIsSchemeEu
-    )
-    {
+    ) {
         $this->hlpPeriod = $hlpPeriod;
         $this->daoLegs = $daoLegs;
         $this->qbGetItems = $qbGetItems;
@@ -72,8 +71,9 @@ class QualLegs
                 $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF] ?? null;
             }
             if ($calcId) {
-                $items = $this->getItems($calcId, $custId);
+                [$rootLevel, $items] = $this->getItems($calcId, $custId);
                 $qual = $this->getQualData($calcId, $custId);
+                $qual->setRootLevel($rootLevel);
             }
         }
 
@@ -87,7 +87,7 @@ class QualLegs
     /**
      * @param int $calcId
      * @param int $custId
-     * @return DItem[]
+     * @return array
      * @throws \Exception
      */
     private function getItems($calcId, $custId)
@@ -100,32 +100,39 @@ class QualLegs
         ];
         $rs = $conn->fetchAll($query, $bind);
 
-        $result = [];
+        $items = [];
+        $rootLevel = 0;
         foreach ($rs as $one) {
             /* get DB data */
-            $custId = $one[QBGetItems::A_CUST_ID];
-            $depth = $one[QBGetItems::A_DEPTH];
-            $mlmId = $one[QBGetItems::A_MLM_ID];
-            $nameFirst = trim($one[QBGetItems::A_NAME_FIRST]);
-            $nameLast = trim($one[QBGetItems::A_NAME_LAST]);
-            $ov = $one[QBGetItems::A_OV];
+            $custIdDb = $one[QBGetItems::A_CUST_ID];
+            if ($custIdDb == $custId) {
+                /* get root level for customer */
+                $rootLevel = $depth = $one[QBGetItems::A_DEPTH];
+            } else {
+                /* compose children items */
+                $depth = $one[QBGetItems::A_DEPTH];
+                $mlmId = $one[QBGetItems::A_MLM_ID];
+                $nameFirst = trim($one[QBGetItems::A_NAME_FIRST]);
+                $nameLast = trim($one[QBGetItems::A_NAME_LAST]);
+                $ov = $one[QBGetItems::A_OV];
 
-            /* composite values */
-            $name = "$nameFirst $nameLast";
+                /* composite values */
+                $name = "$nameFirst $nameLast";
 
-            /* compose API data */
-            $customer = new DCustomer();
-            $customer->setId($custId);
-            $customer->setMlmId($mlmId);
-            $customer->setName($name);
-            $customer->setLevel($depth);
-            $item = new DItem();
-            $item->setCustomer($customer);
-            $item->setVolume($ov);
+                /* compose API data */
+                $customer = new DCustomer();
+                $customer->setId($custIdDb);
+                $customer->setMlmId($mlmId);
+                $customer->setName($name);
+                $customer->setLevel($depth);
+                $item = new DItem();
+                $item->setCustomer($customer);
+                $item->setVolume($ov);
 
-            $result[] = $item;
+                $items[] = $item;
+            }
         }
-        return $result;
+        return [$rootLevel, $items];
     }
 
     private function getQualData($calcId, $custId)

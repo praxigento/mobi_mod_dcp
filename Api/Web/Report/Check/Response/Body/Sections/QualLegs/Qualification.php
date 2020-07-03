@@ -14,6 +14,7 @@ class Qualification
     const A_MAX_LEG_QUAL = 'max_leg_qual';
     const A_OTHER_LEGS_OV = 'other_legs_ov';
     const A_OTHER_LEGS_QUAL = 'other_legs_qual';
+    const A_ROOT_LEVEL = 'root_level';
     const A_SECOND_LEG_CUST_ID = 'second_leg_cust_id';
     const A_SECOND_LEG_OV = 'second_leg_ov';
     const A_SECOND_LEG_QUAL = 'second_leg_qual';
@@ -60,6 +61,15 @@ class Qualification
     public function getOtherLegsQual()
     {
         $result = parent::get(self::A_OTHER_LEGS_QUAL);
+        return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRootLevel()
+    {
+        $result = parent::get(self::A_ROOT_LEVEL);
         return $result;
     }
 
@@ -133,6 +143,15 @@ class Qualification
     public function setOtherLegsQual($data)
     {
         parent::set(self::A_OTHER_LEGS_QUAL, $data);
+    }
+
+    /**
+     * @param $data
+     * @return void
+     */
+    public function setRootLevel($data)
+    {
+        parent::set(self::A_ROOT_LEVEL, $data);
     }
 
     /**
