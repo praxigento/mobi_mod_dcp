@@ -14,41 +14,44 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections as DSections;
 class MineData
 {
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer */
-    private $ownCustomer;
+    private $aCustomer;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus */
-    private $ownInfBonus;
+    private $aInfBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile */
-    private $ownOrgProfile;
+    private $aOrgProfile;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus */
-    private $ownOverBonus;
+    private $aOverBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus */
-    private $ownPersBonus;
+    private $aPersBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs */
-    private $ownQualLegs;
+    private $aQualLegs;
+    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\SignUpBonus */
+    private $aSignupBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus */
-    private $ownTeamBonus;
+    private $aTeamBonus;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals */
-    private $ownTotals;
+    private $aTotals;
 
     public function __construct(
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer $ownCustomer,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus $ownInfBonus,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile $ownOrgProfile,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus $ownOverBonus,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus $ownPersBonus,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs $ownQualLegs,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus $ownTeamBonus,
-        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals $ownTotals
-    )
-    {
-        $this->ownCustomer = $ownCustomer;
-        $this->ownInfBonus = $ownInfBonus;
-        $this->ownOrgProfile = $ownOrgProfile;
-        $this->ownOverBonus = $ownOverBonus;
-        $this->ownPersBonus = $ownPersBonus;
-        $this->ownQualLegs = $ownQualLegs;
-        $this->ownTeamBonus = $ownTeamBonus;
-        $this->ownTotals = $ownTotals;
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Customer $aCustomer,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\InfinityBonus $aInfBonus,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OrgProfile $aOrgProfile,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\OverrideBonus $aOverBonus,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\PersBonus $aPersBonus,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs $aQualLegs,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\SignUpBonus $aSignupBonus,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\TeamBonus $aTeamBonus,
+        \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Totals $aTotals
+    ) {
+        $this->aCustomer = $aCustomer;
+        $this->aInfBonus = $aInfBonus;
+        $this->aOrgProfile = $aOrgProfile;
+        $this->aOverBonus = $aOverBonus;
+        $this->aPersBonus = $aPersBonus;
+        $this->aQualLegs = $aQualLegs;
+        $this->aSignupBonus = $aSignupBonus;
+        $this->aTeamBonus = $aTeamBonus;
+        $this->aTotals = $aTotals;
     }
 
     public function exec(AContext $ctx): AContext
@@ -60,14 +63,22 @@ class MineData
             $period = $ctx->getPeriod();
 
             /* perform processing */
-            $customer = $this->ownCustomer->exec($custId, $period);
-            $infBonus = $this->ownInfBonus->exec($custId, $period);
-            $orgProfile = $this->ownOrgProfile->exec($custId, $period);
-            $overBonus = $this->ownOverBonus->exec($custId, $period);
-            $persBonus = $this->ownPersBonus->exec($custId, $period);
-            $qualLegs = $this->ownQualLegs->exec($custId, $period);
-            $teamBonus = $this->ownTeamBonus->exec($custId, $period);
-            $totals = $this->ownTotals->exec($custId, $period);
+            $customer = $this->aCustomer->exec($custId, $period);
+            $infBonus = $this->aInfBonus->exec($custId, $period);
+            $orgProfile = $this->aOrgProfile->exec($custId, $period);
+            $overBonus = $this->aOverBonus->exec($custId, $period);
+            $persBonus = $this->aPersBonus->exec($custId, $period);
+            $qualLegs = $this->aQualLegs->exec($custId, $period);
+            $signupBonus = $this->aSignupBonus->exec($custId, $period);
+            $teamBonus = $this->aTeamBonus->exec($custId, $period);
+            $totals = $this->aTotals->exec($custId, $period);
+            // add sign up to totals
+            $amntSignup = $signupBonus->getTotalAmount();
+            $amntTotal = $totals->getTotalAmount();
+            $amntNet = $totals->getNetAmount();
+            $totals->setSignupAmount($amntSignup);
+            $totals->setTotalAmount($amntTotal + $amntSignup);
+            $totals->setNetAmount($amntNet + $amntSignup);
 
             /* put result data into context */
             $ctx->respCustomer = $customer;
@@ -77,6 +88,7 @@ class MineData
             $sections->setOverBonus($overBonus);
             $sections->setPersonalBonus($persBonus);
             $sections->setQualLegs($qualLegs);
+            $sections->setSignupBonus($signupBonus);
             $sections->setTeamBonus($teamBonus);
             $sections->setTotals($totals);
             $ctx->respSections = $sections;

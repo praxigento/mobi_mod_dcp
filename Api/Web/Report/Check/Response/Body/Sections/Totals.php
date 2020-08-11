@@ -15,6 +15,7 @@ class Totals
     const A_OVERRIDE_AMOUNT = 'override_amount';
     const A_PERSONAL_AMOUNT = 'personal_amount';
     const A_PROCESSING_FEE = 'processing_fee';
+    const A_SIGNUP_AMOUNT = 'signup_amount';
     const A_TEAM_AMOUNT = 'team_amount';
     const A_TOTAL_AMOUNT = 'total_amount';
 
@@ -69,6 +70,15 @@ class Totals
     public function getProcessingFee()
     {
         $result = parent::get(self::A_PROCESSING_FEE);
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSignupAmount()
+    {
+        $result = parent::get(self::A_SIGNUP_AMOUNT);
         return $result;
     }
 
@@ -142,6 +152,15 @@ class Totals
     public function setProcessingFee($data)
     {
         parent::set(self::A_PROCESSING_FEE, $data);
+    }
+
+    /**
+     * @param $data
+     * @return void
+     */
+    public function setSignupAmount($data)
+    {
+        parent::set(self::A_SIGNUP_AMOUNT, $data);
     }
 
     /**

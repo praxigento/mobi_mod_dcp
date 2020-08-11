@@ -10,6 +10,7 @@ use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OrgProfile as DOr
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\OverBonus as DOver;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\PersonalBonus as DPersonal;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs as DQualLegs;
+use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\SignupBonus as DSignup;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus as DTeam;
 use Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\Totals as DTotals;
 
@@ -21,6 +22,7 @@ class Sections
     const A_OVERRIDE_BONUS = 'override_bonus';
     const A_PERSONAL_BONUS = 'personal_bonus';
     const A_QUAL_LEGS = 'qual_legs';
+    const A_SIGNUP_BONUS = 'signup_bonus';
     const A_TEAM_BONUS = 'team_bonus';
     const A_TOTALS = 'totals';
 
@@ -66,6 +68,15 @@ class Sections
     public function getQualLegs()
     {
         $result = parent::get(self::A_QUAL_LEGS);
+        return $result;
+    }
+
+    /**
+     * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\SignupBonus
+     */
+    public function getSignupBonus()
+    {
+        $result = parent::get(self::A_SIGNUP_BONUS);
         return $result;
     }
 
@@ -130,6 +141,15 @@ class Sections
     public function setQualLegs(DQualLegs $data)
     {
         parent::set(self::A_QUAL_LEGS, $data);
+    }
+
+    /**
+     * @param \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\SignupBonus $data
+     * @return void
+     */
+    public function setSignupBonus(DSignup $data)
+    {
+        parent::set(self::A_SIGNUP_BONUS, $data);
     }
 
     /**
