@@ -50,16 +50,15 @@ class SignUpBonus
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
 
         /* default values for result attributes */
-        $totalBase = 0;
+        $totalBase = $total = 0;
         $items = [];
 
         /* perform processing */
         $calcs = $this->aHlpGetCalcs->exec($dsBegin, $dsEnd);
         if (isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_SIGN_UP_CREDIT])) {
             $calcCredit = $calcs[Cfg::CODE_TYPE_CALC_BONUS_SIGN_UP_CREDIT];
-            [$totalBase, $items] = $this->getItems($calcCredit, $custId);
+            [$totalBase, $total, $items] = $this->getItems($calcCredit, $custId);
         }
-        $total = $this->hlpCustCurrency->convertFromBase($totalBase, $custId);
 
         /* compose result */
         $result = new DSignUpBonus();
@@ -72,7 +71,7 @@ class SignUpBonus
 
     private function getItems($calcId, $custId)
     {
-        $totalBase = 0;
+        $totalBase = $total = 0;
         $items = [];
 
         $query = $this->aQuery->build();
@@ -91,6 +90,7 @@ class SignUpBonus
             /* calculated values */
             $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId);
             $totalBase += $amountBase;
+            $total += $amount;
 
             /* compose API data */
             $item = new DItem();
@@ -99,6 +99,6 @@ class SignUpBonus
             $item->setNote($note);
             $items[] = $item;
         }
-        return [$totalBase, $items];
+        return [$totalBase, $total, $items];
     }
 }
