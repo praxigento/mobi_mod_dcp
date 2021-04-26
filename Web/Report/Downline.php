@@ -14,8 +14,7 @@ use Praxigento\Dcp\Config as Cfg;
 use Praxigento\Dcp\Web\Report\Downline\A\Query as QBDownline;
 
 class Downline
-    implements \Praxigento\Dcp\Api\Web\Report\DownlineInterface
-{
+    implements \Praxigento\Dcp\Api\Web\Report\DownlineInterface {
     /**
      * Types of the requested report.
      */
@@ -60,8 +59,7 @@ class Downline
         $this->hlpCfgDwnl = $hlpCfgDwnl;
     }
 
-    public function exec($request)
-    {
+    public function exec($request) {
         assert($request instanceof ARequest);
         /** define local working data */
         $reqData = $request->getData();
@@ -80,7 +78,11 @@ class Downline
             $calcId = $this->getCalculationId($period, $type);
             list($path, $depth) = $this->getPath($custId, $calcId);
             $downline = $this->loadDownline($calcId, $custId, $path, $cond);
-            $respData = $this->prepareDownline($downline, $custId, $path, $depth);
+            if ($type == self::REPORT_TYPE_COMPRESSED) {
+                $respData = $this->prepareCompressed($downline, $custId, $path, $depth);
+            } else {
+                $respData = $this->prepareDownline($downline, $custId, $path, $depth);
+            }
             $result->setData($respData);
             $respRes->setCode(AResponse::CODE_SUCCESS);
         } else {
@@ -98,8 +100,7 @@ class Downline
      * @param $dateEnd
      * @return mixed
      */
-    private function getCalcId($calcTypeCode, $dateEnd)
-    {
+    private function getCalcId($calcTypeCode, $dateEnd) {
         $query = $this->qbLastCalc->build();
         $bind = [
             QBLastCalc::BND_CODE => $calcTypeCode,
@@ -129,8 +130,7 @@ class Downline
      * @param string $type
      * @return int
      */
-    private function getCalculationId($period, $type)
-    {
+    private function getCalculationId($period, $type) {
         $calcTypeCode = null;
         $onDate = $this->hlpPeriod->getPeriodLastDate($period);
 
@@ -159,8 +159,7 @@ class Downline
      * @param int $calcId
      * @return array
      */
-    private function getPath($custId, $calcId)
-    {
+    private function getPath($custId, $calcId) {
         $byCalcId = EDownline::A_CALC_REF . '=' . (int)$calcId;
         $byCustId = EDownline::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";
@@ -187,8 +186,7 @@ class Downline
      * @param \Praxigento\Core\Api\App\Web\Request\Conditions $cond
      * @return array
      */
-    private function loadDownline($calcId, $custId, $path, $cond)
-    {
+    private function loadDownline($calcId, $custId, $path, $cond) {
         $query = $this->qbDownline->build();
         $bndPath = $path . $custId . Cfg::DTPS . '%';
         $bind = [
@@ -202,8 +200,7 @@ class Downline
         return $rs;
     }
 
-    private function prepareDownline($downline, $rootId, $rootPath, $rootDepth)
-    {
+    private function prepareDownline($downline, $rootId, $rootPath, $rootDepth) {
         $result = [];
         /* MOBI-1600: find min. depth in selection to prevent negative depth in compressed tree */
         $depthMin = $rootDepth;
@@ -251,13 +248,81 @@ class Downline
     }
 
     /**
+     * Use OV for team members only and group it to 3 legs.
+     * @see \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs::compressLegs
+     *
+     * @param $downline
+     * @param $rootId
+     * @param $rootPath
+     * @param $rootDepth
+     * @return array
+     */
+    private function prepareCompressed($downline, $rootId, $rootPath, $rootDepth) {
+        $result = [];
+        // get compressed downline data without folding
+        $prepared = $this->prepareDownline($downline, $rootId, $rootPath, $rootDepth);
+        // leave only 3 legs of the first level
+        $root = $leg1Item = $leg2Item = null;
+        $leg3List = [];
+        foreach ($prepared as $one) {
+            $depth = $one[QBDownline::A_DEPTH];
+            if ($depth == 0) {
+                $root = $one;
+            } elseif ($depth == 1) {
+                $ov = $one[QBDownline::A_OV];
+                // check 1st leg
+                if (!$leg1Item || ($ov > $leg1Item[QBDownline::A_OV])) {
+                    // we need to place current item into 1st leg
+                    if ($leg2Item) $leg3List[] = $leg2Item; // transfer 2nd leg item into summarized 3rd leg list
+                    if ($leg1Item) $leg2Item = $leg1Item; // transfer former 1st leg to the 2nd leg
+                    $leg1Item = $one; // place item to the 1st leg
+                } elseif (!$leg2Item || ($ov > $leg2Item[QBDownline::A_OV])) { // check 2nd leg
+                    if ($leg2Item) $leg3List[] = $leg2Item; // we need to place current item into 2nd leg
+                    $leg2Item = $one;
+                } else {
+                    $leg3List[] = $one;
+                }
+            }
+        }
+        // transfer legs data to results
+        $result[] = $root;
+        if ($leg1Item) $result[] = $leg1Item;
+        if ($leg2Item) $result[] = $leg2Item;
+        if (count($leg3List)) {
+            $summary = [];
+            $summary[QBDownline::A_CUSTOMER_REF] = 0;
+            $summary[QBDownline::A_DEPTH] = 1;
+            $summary[QBDownline::A_OV] = 0;
+            $summary[QBDownline::A_PARENT_REF] = $leg1Item[QBDownline::A_PARENT_REF];
+            $summary[QBDownline::A_PATH] = $leg1Item[QBDownline::A_PARENT_REF] . ':0';
+            $summary[QBDownline::A_PV] = 0;
+            $summary[QBDownline::A_TV] = 0;
+            $summary[QBDownline::A_UNQ_MONTHS] = 0;
+            $summary[QBDownline::A_COUNTRY] = $root[QBDownline::A_COUNTRY];
+            $summary[QBDownline::A_MLM_ID] = 'N/A';
+            $summary[QBDownline::A_EMAIL] = 'N/A';
+            $summary[QBDownline::A_NAME_FIRST] = '3 Leg';
+            $summary[QBDownline::A_NAME_LAST] = 'Compressed';
+            $summary[QBDownline::A_RANK_CODE] = 'N/A';
+            usort($leg3List, function ($a, $b) {
+                return $b[QBDownline::A_OV] - $a[QBDownline::A_OV]; // descending order
+            });
+            foreach ($leg3List as $one) {
+                $summary[QBDownline::A_OV] += $one[QBDownline::A_OV];
+            }
+            $result[] = $summary;
+            $result = array_merge($result, $leg3List);
+        }
+        return $result;
+    }
+
+    /**
      * Validate & normalize given period.
      *
      * @param string $period YYYY, YYYYMM, YYYYMMDD
      * @return string YYYYMMDD
      */
-    private function validatePeriod($period)
-    {
+    private function validatePeriod($period) {
         if (!$period) {
             $period = $this->hlpPeriod->getPeriodCurrent(null, 0, HPeriod::TYPE_MONTH);
         }
@@ -275,8 +340,7 @@ class Downline
      * @param string $type
      * @return string
      */
-    private function validateReportType($type)
-    {
+    private function validateReportType($type) {
         if ($type != self::REPORT_TYPE_COMPRESSED) {
             $type = self::REPORT_TYPE_COMPLETE;
         }

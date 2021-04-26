@@ -18,14 +18,11 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchem
 /**
  * Action to build "QualificationLegs" section of the DCP's "Check" report.
  */
-class QualLegs
-{
+class QualLegs {
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Compression\Phase2\Legs */
     private $daoLegs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $hlpGetCalcs;
-    /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu */
-    private $hlpIsSchemeEu;
     /** @var \Praxigento\Core\Api\Helper\Period */
     private $hlpPeriod;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs\A\Query */
@@ -46,13 +43,70 @@ class QualLegs
     }
 
     /**
+     * @param DItem[] $items
+     * @param integer $rootLevel
+     * @return DItem[]
+     * @see \Praxigento\Dcp\Web\Report\Downline::prepareCompressed
+     *
+     */
+    private function compressLegs($items, $rootLevel) {
+        $result = [];
+        // leave only 3 legs of the first level
+        $root = $leg1Item = $leg2Item = null;
+        $leg3List = [];
+        $teamLevel = $rootLevel + 1;
+        foreach ($items as $one) {
+            $level = $one->getCustomer()->getLevel();
+            if ($level == $teamLevel) {
+                $ov = $one->getVolume();
+                // check 1st leg
+                if (!$leg1Item || ($ov > $leg1Item->getVolume())) {
+                    // we need to place current item into 1st leg
+                    if ($leg2Item) $leg3List[] = $leg2Item; // transfer 2nd leg item into summarized 3rd leg list
+                    if ($leg1Item) $leg2Item = $leg1Item; // transfer former 1st leg to the 2nd leg
+                    $leg1Item = $one; // place item to the 1st leg
+                } elseif (!$leg2Item || ($ov > $leg2Item->getVolume())) { // check 2nd leg
+                    if ($leg2Item) $leg3List[] = $leg2Item; // we need to place current item into 2nd leg
+                    $leg2Item = $one;
+                } else {
+                    $leg3List[] = $one;
+                }
+            } else {
+                $t = 6;
+            }
+
+        }
+        if ($leg1Item) $result[] = $leg1Item;
+        if ($leg2Item) $result[] = $leg2Item;
+        if (count($leg3List)) {
+            $summary = new DItem();
+            $cust = new DCustomer();
+            $cust->setId(0);
+            $cust->setLevel($rootLevel + 1);
+            $cust->setMlmId('N/A');
+            $cust->setName('Compressed Leg');
+            $summary->setCustomer($cust);
+            usort($leg3List, function ($a, $b) {
+                return $b->getVolume() - $a->getVolume(); // descending order
+            });
+            $sumOv = 0;
+            foreach ($leg3List as $one) {
+                $sumOv += $one->getVolume();
+            }
+            $summary->setVolume($sumOv);
+            $result[] = $summary;
+            $result = array_merge($result, $leg3List);
+        }
+        return $result;
+    }
+
+    /**
      * @param $custId
      * @param $period
      * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\QualLegs|null
      * @throws \Exception
      */
-    public function exec($custId, $period)
-    {
+    public function exec($custId, $period) {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
@@ -64,14 +118,10 @@ class QualLegs
         /* perform processing */
         $calcs = $this->hlpGetCalcs->exec($dsBegin, $dsEnd);
         if (count($calcs) > 0) {
-            $isSchemeEu = $this->hlpIsSchemeEu->exec($custId);
-            if ($isSchemeEu) {
-                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_EU] ?? null;
-            } else {
-                $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE2_DEF] ?? null;
-            }
+            $calcId = $calcs[Cfg::CODE_TYPE_CALC_COMPRESS_PHASE1] ?? null;
             if ($calcId) {
                 [$rootLevel, $items] = $this->getItems($calcId, $custId);
+                $items = $this->compressLegs($items, $rootLevel);
                 $qual = $this->getQualData($calcId, $custId);
                 $qual->setRootLevel($rootLevel);
             }
@@ -90,8 +140,7 @@ class QualLegs
      * @return array
      * @throws \Exception
      */
-    private function getItems($calcId, $custId)
-    {
+    private function getItems($calcId, $custId) {
         $query = $this->qbGetItems->build();
         $conn = $query->getConnection();
         $bind = [
@@ -135,8 +184,7 @@ class QualLegs
         return [$rootLevel, $items];
     }
 
-    private function getQualData($calcId, $custId)
-    {
+    private function getQualData($calcId, $custId) {
         $ids = [
             ELegs::A_CALC_REF => $calcId,
             ELegs::A_CUST_REF => $custId
