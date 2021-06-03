@@ -168,7 +168,8 @@ class Profile
             $rs = $this->daoBonDwnl->get("($byCalc) AND ($byCust)");
             /** @var EBonDwnl $entry */
             $entry = reset($rs);
-            $pv = $this->hlpFormat->roundBonus($entry->getPv());
+            $pv = ($entry) ? $entry->getPv() : 0;
+            $pv = $this->hlpFormat->roundBonus($pv);
             $result->setPv($pv);
             /* 'distributor' is the minimal rank for customers been authorized to use DCP */
             $rankCode = Cfg::RANK_DISTRIBUTOR;
