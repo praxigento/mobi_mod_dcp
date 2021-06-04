@@ -20,6 +20,7 @@ class Downline
      */
     const REPORT_TYPE_COMPLETE = 'complete';
     const REPORT_TYPE_COMPRESSED = 'compressed';
+    const REPORT_TYPE_LEGS = 'legs';
 
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
@@ -79,7 +80,11 @@ class Downline
             list($path, $depth) = $this->getPath($custId, $calcId);
             $downline = $this->loadDownline($calcId, $custId, $path, $cond);
             if ($type == self::REPORT_TYPE_COMPRESSED) {
-                $respData = $this->prepareCompressed($downline, $custId, $path, $depth);
+                // prepare compressed downline
+                $respData = $this->prepareDownline($downline, $custId, $path, $depth);
+            } elseif ($type == self::REPORT_TYPE_LEGS) {
+                // tuck the legs in compressed tree
+                $respData = $this->prepareLegs($downline, $custId, $path, $depth);
             } else {
                 $respData = $this->prepareDownline($downline, $custId, $path, $depth);
             }
@@ -249,15 +254,15 @@ class Downline
 
     /**
      * Use OV for team members only and group it to 3 legs.
-     * @see \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs::compressLegs
-     *
      * @param $downline
      * @param $rootId
      * @param $rootPath
      * @param $rootDepth
      * @return array
+     * @see \Praxigento\Dcp\Web\Report\Check\A\MineData\A\QualLegs::compressLegs
+     *
      */
-    private function prepareCompressed($downline, $rootId, $rootPath, $rootDepth) {
+    private function prepareLegs($downline, $rootId, $rootPath, $rootDepth) {
         $result = [];
         // get compressed downline data without folding
         $prepared = $this->prepareDownline($downline, $rootId, $rootPath, $rootDepth);
@@ -341,7 +346,10 @@ class Downline
      * @return string
      */
     private function validateReportType($type) {
-        if ($type != self::REPORT_TYPE_COMPRESSED) {
+        if (
+            ($type != self::REPORT_TYPE_COMPRESSED)
+            && ($type != self::REPORT_TYPE_LEGS)
+        ) {
             $type = self::REPORT_TYPE_COMPLETE;
         }
         return $type;
