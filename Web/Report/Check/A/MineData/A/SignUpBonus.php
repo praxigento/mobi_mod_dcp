@@ -14,8 +14,7 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\SignupBonus\A\Query as AQuery;
 /**
  * Action to build "SignUp Bonus" section of the DCP's "Check" report.
  */
-class SignUpBonus
-{
+class SignUpBonus {
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
     private $aHlpGetCalcs;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\SignupBonus\A\Query */
@@ -43,8 +42,7 @@ class SignUpBonus
      * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\SignupBonus
      * @throws \Exception
      */
-    public function exec($custId, $period)
-    {
+    public function exec($custId, $period) {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
@@ -57,7 +55,7 @@ class SignUpBonus
         $calcs = $this->aHlpGetCalcs->exec($dsBegin, $dsEnd);
         if (isset($calcs[Cfg::CODE_TYPE_CALC_BONUS_SIGN_UP_CREDIT])) {
             $calcCredit = $calcs[Cfg::CODE_TYPE_CALC_BONUS_SIGN_UP_CREDIT];
-            [$totalBase, $total, $items] = $this->getItems($calcCredit, $custId);
+            [$totalBase, $total, $items] = $this->getItems($calcCredit, $custId, $dsEnd);
         }
 
         /* compose result */
@@ -69,8 +67,7 @@ class SignUpBonus
         return $result;
     }
 
-    private function getItems($calcId, $custId)
-    {
+    private function getItems($calcId, $custId, $dsEnd) {
         $totalBase = $total = 0;
         $items = [];
 
@@ -88,7 +85,12 @@ class SignUpBonus
             $note = $one[AQuery::A_NOTE];
 
             /* calculated values */
-            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId);
+            $ds = $dsEnd;
+            $yyyy = substr($ds, 0, 4); // YYYY
+            $mm = substr($ds, 4, 2); // MM
+            $dd = substr($ds, 6, 2); // DD
+            $date = "$yyyy-$mm-$dd";
+            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId, true, $date);
             $totalBase += $amountBase;
             $total += $amount;
 

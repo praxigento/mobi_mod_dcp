@@ -18,8 +18,7 @@ use Praxigento\Dcp\Web\Report\Accounting\A\Query\Trans as QBAccTrans;
 use Praxigento\Downline\Repo\Query\Customer\Get as QBCust;
 
 class Accounting
-    implements \Praxigento\Dcp\Api\Web\Report\AccountingInterface
-{
+    implements \Praxigento\Dcp\Api\Web\Report\AccountingInterface {
     /** @var \Praxigento\Core\Api\App\Web\Authenticator */
     private $authenticator;
     /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
@@ -57,8 +56,7 @@ class Accounting
         $this->qbCust = $qbCust;
     }
 
-    public function exec($request)
-    {
+    public function exec($request) {
         assert($request instanceof ARequest);
         /** define local working data */
         $reqData = $request->getData();
@@ -106,8 +104,7 @@ class Accounting
      * @return array [$balOpen, $balClose]
      * @throws \Exception
      */
-    private function getBalances($custId, $period)
-    {
+    private function getBalances($custId, $period) {
         /* dates for balances */
         $dateFirst = $this->hlpPeriod->getPeriodFirstDate($period, HPeriod::TYPE_MONTH);
         $dsOpen = $this->hlpPeriod->getPeriodPrev($dateFirst);
@@ -157,8 +154,7 @@ class Accounting
      * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Customer
      * @throws \Exception
      */
-    private function getCustomer($custId)
-    {
+    private function getCustomer($custId) {
         /** @var \Magento\Framework\DB\Select $query */
         $query = $this->qbCust->build();
         $bind = [
@@ -188,8 +184,7 @@ class Accounting
      * @return \Praxigento\Dcp\Api\Web\Report\Accounting\Response\Data\Trans[]
      * @throws \Exception
      */
-    private function getTransactions($custId, $period, $cond)
-    {
+    private function getTransactions($custId, $period, $cond) {
         $result = [];
         $query = $this->qbDcpTrans->build();
 
@@ -232,7 +227,7 @@ class Accounting
                  * Currency is null for not-money-assets (PV),
                  * convert asset value from asset currency to customer currency
                  */
-                $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+                $value = $this->hlpCustCurrency->convertFromBase($value, $custId, true, $date);
             }
 
             /* compose API entry */
@@ -258,8 +253,7 @@ class Accounting
      * @return DRespBalance[]
      * @throws \Exception
      */
-    private function queryBalances(\Magento\Framework\DB\Select $query, $bind, $custId)
-    {
+    private function queryBalances(\Magento\Framework\DB\Select $query, $bind, $custId) {
         $result = [];
         $conn = $query->getConnection();
         $rs = $conn->fetchAll($query, $bind);
@@ -274,7 +268,12 @@ class Accounting
                  * Currency is null for not-a-money-assets (PV),
                  * convert asset value from asset currency to customer currency
                  */
-                $value = $this->hlpCustCurrency->convertFromBase($value, $custId);
+                $ds = $bind[QBBal::BND_MAX_DATE];
+                $yyyy = substr($ds, 0, 4); // YYYY
+                $mm = substr($ds, 4, 2); // MM
+                $dd = substr($ds, 6, 2); // DD
+                $date = "$yyyy-$mm-$dd";
+                $value = $this->hlpCustCurrency->convertFromBase($value, $custId, true, $date);
                 $currency = $this->hlpCustCurrency->getCurrency($custId);
             } else {
                 $value = $this->hlpFormat->toNumber($value);

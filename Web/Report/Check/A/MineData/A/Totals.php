@@ -98,13 +98,19 @@ class Totals
             $amntInf = $this->getSumCredit($idBonInf, $custId);
             $amntFee = $this->getAmountDebit($idProcFee, $custId);
 
+            // get date as string to convert EUR
+            $ds = $dsEnd;
+            $yyyy = substr($ds, 0, 4); // YYYY
+            $mm = substr($ds, 4, 2); // MM
+            $dd = substr($ds, 6, 2); // DD
+            $date = "$yyyy-$mm-$dd";
             /* convert values to customer currency */
-            $amntPers = $this->hlpCustCurrency->convertFromBase($amntPers, $custId);
-            $amntTeam = $this->hlpCustCurrency->convertFromBase($amntTeam, $custId);
-            $amntCourt = $this->hlpCustCurrency->convertFromBase($amntCourt, $custId);
-            $amntOver = $this->hlpCustCurrency->convertFromBase($amntOver, $custId);
-            $amntInf = $this->hlpCustCurrency->convertFromBase($amntInf, $custId);
-            $amntFee = $this->hlpCustCurrency->convertFromBase($amntFee, $custId);
+            $amntPers = $this->hlpCustCurrency->convertFromBase($amntPers, $custId, true, $date);
+            $amntTeam = $this->hlpCustCurrency->convertFromBase($amntTeam, $custId, true, $date);
+            $amntCourt = $this->hlpCustCurrency->convertFromBase($amntCourt, $custId, true, $date);
+            $amntOver = $this->hlpCustCurrency->convertFromBase($amntOver, $custId, true, $date);
+            $amntInf = $this->hlpCustCurrency->convertFromBase($amntInf, $custId, true, $date);
+            $amntFee = $this->hlpCustCurrency->convertFromBase($amntFee, $custId, true, $date);
 
             $amntTotal = $amntPers + $amntTeam + $amntCourt + $amntOver + $amntInf;
             $amntNet = $amntTotal - $amntFee;

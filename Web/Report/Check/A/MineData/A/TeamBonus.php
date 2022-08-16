@@ -16,8 +16,7 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs as HGetCalcs;
 /**
  * Action to build "Team Bonus" section of the DCP's "Check" report.
  */
-class TeamBonus
-{
+class TeamBonus {
     /** @var \Praxigento\BonusHybrid\Repo\Dao\Downline */
     private $daoBonDwn;
     /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
@@ -49,8 +48,7 @@ class TeamBonus
      * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\TeamBonus|null
      * @throws \Exception
      */
-    public function exec($custId, $period)
-    {
+    public function exec($custId, $period) {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
@@ -73,7 +71,7 @@ class TeamBonus
             $calcEu = $calcs[Cfg::CODE_TYPE_CALC_BONUS_TEAM_EU];
 
             $pv = $this->getPv($calcCompressPhaseI, $custId);
-            $items = $this->getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId);
+            $items = $this->getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId, $dsEnd);
         }
 
         /* compose result */
@@ -92,11 +90,11 @@ class TeamBonus
      * @param $calcDef
      * @param $calcEu
      * @param $custId
+     * @param $dsEnd
      * @return array
      * @throws \Exception
      */
-    private function getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId)
-    {
+    private function getItems($calcCompressPhaseI, $calcDef, $calcEu, $custId, $dsEnd) {
         $query = $this->qbGetItems->build();
         $conn = $query->getConnection();
         $bind = [
@@ -119,7 +117,12 @@ class TeamBonus
             $amountBase = $one[QBGetItems::A_AMOUNT];
 
             /* calculated values */
-            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId);
+            $ds = $dsEnd;
+            $yyyy = substr($ds, 0, 4); // YYYY
+            $mm = substr($ds, 4, 2); // MM
+            $dd = substr($ds, 6, 2); // DD
+            $date = "$yyyy-$mm-$dd";
+            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId, true, $date);
             $name = "$nameFirst $nameLast";
             $percent = round($amountBase / $pv, 2);
 
@@ -149,8 +152,7 @@ class TeamBonus
      * @param $custId
      * @return float
      */
-    private function getPv($calcId, $custId)
-    {
+    private function getPv($calcId, $custId) {
         $byCalcId = EBonDwnl::A_CALC_REF . '=' . (int)$calcId;
         $byCustId = EBonDwnl::A_CUST_REF . '=' . (int)$custId;
         $where = "($byCalcId) AND ($byCustId)";

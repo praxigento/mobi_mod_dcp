@@ -16,8 +16,7 @@ use Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\IsSchemeEu as HIsSchem
 /**
  * Action to build "Infinity Bonus" section of the DCP's "Check" report.
  */
-class InfinityBonus
-{
+class InfinityBonus {
     /** @var \Praxigento\Core\Api\Helper\Customer\Currency */
     private $hlpCustCurrency;
     /** @var \Praxigento\Dcp\Web\Report\Check\A\MineData\A\Z\Helper\GetCalcs */
@@ -49,8 +48,7 @@ class InfinityBonus
      * @return \Praxigento\Dcp\Api\Web\Report\Check\Response\Body\Sections\InfBonus|null
      * @throws \Exception
      */
-    public function exec($custId, $period)
-    {
+    public function exec($custId, $period) {
         /* get input and prepare working data */
         $dsBegin = $this->hlpPeriod->getPeriodFirstDate($period);
         $dsEnd = $this->hlpPeriod->getPeriodLastDate($period);
@@ -70,7 +68,7 @@ class InfinityBonus
                 $calcBonus = $calcs[Cfg::CODE_TYPE_CALC_BONUS_INFINITY_DEF] ?? null;
             }
             if ($calcCompress && $calcBonus) {
-                $items = $this->getItems($calcCompress, $calcBonus, $custId);
+                $items = $this->getItems($calcCompress, $calcBonus, $custId, $dsEnd);
             }
         }
 
@@ -86,11 +84,11 @@ class InfinityBonus
      * @param $calcCompress
      * @param $calcBonus
      * @param $custId
+     * @param $dsEnd
      * @return array
      * @throws \Exception
      */
-    private function getItems($calcCompress, $calcBonus, $custId)
-    {
+    private function getItems($calcCompress, $calcBonus, $custId, $dsEnd) {
         $query = $this->qbGetItems->build();
         $conn = $query->getConnection();
         $bind = [
@@ -113,7 +111,12 @@ class InfinityBonus
             $rankCode = $one[QBGetItems::A_RANK_CODE];
 
             /* calculated values */
-            $amount  = $this->hlpCustCurrency->convertFromBase($amountBase, $custId);
+            $ds = $dsEnd;
+            $yyyy = substr($ds, 0, 4); // YYYY
+            $mm = substr($ds, 4, 2); // MM
+            $dd = substr($ds, 6, 2); // DD
+            $date = "$yyyy-$mm-$dd";
+            $amount = $this->hlpCustCurrency->convertFromBase($amountBase, $custId, true, $date);
             $name = "$nameFirst $nameLast";
             $percent = $amountBase / $pv;
             $percent = round($percent, 2);
